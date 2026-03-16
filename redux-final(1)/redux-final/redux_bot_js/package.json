@@ -1,0 +1,13 @@
+{
+  "name": "redux-discord-bot",
+  "version": "1.0.0",
+  "description": "Redux Key System Discord Bot",
+  "main": "redux_bot.js",
+  "scripts": {
+    "start": "node redux_bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.0.0",
+    "axios": "^1.6.0"
+  }
+}
