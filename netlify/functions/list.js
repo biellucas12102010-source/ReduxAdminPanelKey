@@ -14,6 +14,13 @@ function res(body, code = 200) {
   return { statusCode: code, headers: CORS, body: JSON.stringify(body) };
 }
 
+function getConfiguredStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
+  if (siteID && token) return getStore({ name: 'redux-keys', siteID, token });
+  return getStore('redux-keys');
+}
+
 exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return res({}, 204);
 
@@ -22,7 +29,7 @@ exports.handler = async (event, context) => {
   if (token !== ADMIN_TOKEN) return res({ error: 'UNAUTHORIZED' }, 401);
 
   try {
-    const store  = getStore({ name: 'redux-keys', context });
+    const store  = getConfiguredStore();
     const idxRaw = await store.get('__index__');
     const idx    = idxRaw ? JSON.parse(idxRaw) : [];
 

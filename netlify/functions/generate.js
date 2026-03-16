@@ -14,6 +14,16 @@ function res(body, code = 200) {
   return { statusCode: code, headers: CORS, body: JSON.stringify(body) };
 }
 
+function getConfiguredStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
+  if (siteID && token) {
+    return getStore({ name: 'redux-keys', siteID, token });
+  }
+  // Tenta sem config (funciona quando Netlify injeta automaticamente)
+  return getStore('redux-keys');
+}
+
 function genKey(type) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const len   = type === 'premium' ? 20 : 15;
@@ -26,7 +36,7 @@ function genKey(type) {
 exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return res({}, 204);
 
-  const auth  = (event.headers['authorization'] || event.headers['Authorization'] || '').replace('Bearer ', '');
+  const auth  = (event.headers['authorization'] || '').replace('Bearer ', '');
   const token = (event.queryStringParameters || {}).token || auth;
   if (token !== ADMIN_TOKEN) return res({ error: 'UNAUTHORIZED' }, 401);
 
@@ -48,7 +58,7 @@ exports.handler = async (event, context) => {
   };
 
   try {
-    const store = getStore({ name: 'redux-keys', context });
+    const store = getConfiguredStore();
     await store.set(key, JSON.stringify(entry));
 
     // Atualiza índice

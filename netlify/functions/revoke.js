@@ -14,6 +14,13 @@ function res(body, code = 200) {
   return { statusCode: code, headers: CORS, body: JSON.stringify(body) };
 }
 
+function getConfiguredStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
+  if (siteID && token) return getStore({ name: 'redux-keys', siteID, token });
+  return getStore('redux-keys');
+}
+
 exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return res({}, 204);
 
@@ -25,7 +32,7 @@ exports.handler = async (event, context) => {
   if (!key) return res({ error: 'KEY_REQUIRED' });
 
   try {
-    const store = getStore({ name: 'redux-keys', context });
+    const store = getConfiguredStore();
     const raw   = await store.get(key);
     if (!raw) return res({ error: 'KEY_NOT_FOUND' });
 
