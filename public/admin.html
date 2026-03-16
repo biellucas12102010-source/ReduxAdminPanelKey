@@ -663,9 +663,16 @@ tr:hover td{background:rgba(34,51,204,.04)}
 const ADMIN_EMAIL = 'ReduxStudiosLtd@gmail.com';
 const ADMIN_PASS  = 'goham200@@';
 
+// Token de admin — deve bater com a env var REDUX_ADMIN_TOKEN no Netlify
+// Mude aqui E na env var do Netlify para o mesmo valor
+const ADMIN_API_TOKEN = 'redux-admin-secret';
+
 let keys = [];
 let lastKey = '';
-let adminApiKey = 'RADM_' + Array.from({length:24},()=>'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random()*36)]).join('');
+let adminApiKey = ADMIN_API_TOKEN;
+
+// API base — auto-detecta o domínio atual
+const API = window.location.origin + '/api';
 
 // ══════════════════════════════════════════
 //  LOGIN
@@ -679,7 +686,7 @@ function doLogin(){
     document.getElementById('app').style.display='block';
     document.getElementById('apiKeyDisplay').textContent = adminApiKey;
     document.getElementById('adminKeyShow').textContent = adminApiKey;
-    updateStats();
+    loadAllKeys().then(() => { updateStats(); renderRecent(); });
   } else {
     err.textContent = '// CREDENCIAIS INVÁLIDAS';
     setTimeout(()=>err.textContent='',2500);
@@ -722,64 +729,50 @@ function randStr(n, set){
   return r;
 }
 
-function generateKey(){
+async function generateKey(){
   const type = document.getElementById('genType').value;
   const user = document.getElementById('genUser').value.trim() || 'Anonymous';
   const dur  = document.getElementById('genDur').value;
+  const daysMap = {'24h':1,'7d':7,'30d':30,'inf':36500};
+  const days = daysMap[dur] || 1;
 
-  let key, expiry, expiryDate=null;
-  if(type==='premium'){
-    key = 'KEYP_' + randStr(20, CHARS_UPPER);
-    expiry = 'Ilimitado';
-  } else {
-    key = 'KEYF_' + randStr(15, CHARS_UPPER);
-    const map = {'24h':86400000,'7d':7*86400000,'30d':30*86400000,'inf':null};
-    expiryDate = map[dur] ? new Date(Date.now()+map[dur]) : null;
-    expiry = expiryDate ? expiryDate.toLocaleString('pt-BR') : 'Ilimitado';
+  showAlert('genAlert','ok','Gerando key...');
+  try {
+    const r = await fetch(`${API}/generate?token=${adminApiKey}&type=${type}&user=${encodeURIComponent(user)}&days=${days}`);
+    const data = await r.json();
+    if(!data.success) { showAlert('genAlert','err','Erro ao gerar: ' + (data.error||'desconhecido')); return; }
+
+    lastKey = data.key;
+    const kt = document.getElementById('genKeyText');
+    kt.textContent = data.key;
+    kt.className = 'key-text ' + type;
+    document.getElementById('genResult').classList.add('show');
+    showAlert('genAlert','ok',`Key ${type.toUpperCase()} gerada para ${user}`);
+
+    // Recarrega lista da API
+    await loadAllKeys();
+    updateStats(); renderRecent();
+  } catch(e) {
+    showAlert('genAlert','err','Erro de rede: ' + e.message);
   }
-
-  // Garante unicidade
-  while(keys.find(k=>k.key===key)){
-    key = (type==='premium'?'KEYP_':'KEYF_') + randStr(type==='premium'?20:15, CHARS_UPPER);
-  }
-
-  lastKey = key;
-  keys.unshift({
-    key, type, user, expiry, expiryDate,
-    valid: true, hwid: null, hwidDate: null,
-    created: new Date().toLocaleString('pt-BR')
-  });
-
-  const kt = document.getElementById('genKeyText');
-  kt.textContent = key;
-  kt.className = 'key-text ' + type;
-  document.getElementById('genResult').classList.add('show');
-
-  showAlert('genAlert','ok',`Key ${type.toUpperCase()} gerada para ${user}`);
-  updateStats();
-  renderAllKeys();
-  renderHWID();
-
-  // Mostrar no dashboard
-  renderRecent();
 }
 
 // ══════════════════════════════════════════
 //  VERIFICAR / REVOGAR KEY
 // ══════════════════════════════════════════
-function checkKey(){
+async function checkKey(){
   const val = document.getElementById('checkKeyInput').value.trim();
-  const k = keys.find(x=>x.key===val);
   const box = document.getElementById('keyDetailBox');
-  if(!k){
-    showAlert('checkAlert','err','Key não encontrada no sistema.');
-    box.style.display='none';
-    return;
-  }
+  if(!val){ showAlert('checkAlert','err','Digite uma key.'); return; }
+
+  // Busca na lista local primeiro, depois tenta API
+  const k = keys.find(x=>x.key===val);
+  if(!k){ showAlert('checkAlert','err','Key não encontrada. Recarregue a lista.'); box.style.display='none'; return; }
+
   document.getElementById('di-key').textContent  = k.key;
   document.getElementById('di-type').innerHTML   = `<span class="pill ${k.type==='premium'?'pill-premium':'pill-free'}">${k.type.toUpperCase()}</span>`;
-  document.getElementById('di-user').textContent = k.user;
-  document.getElementById('di-exp').textContent  = k.expiry;
+  document.getElementById('di-user').textContent = k.user || '-';
+  document.getElementById('di-exp').textContent  = k.expiry || 'Ilimitado';
   document.getElementById('di-hwid').textContent = k.hwid || '(não vinculado)';
   document.getElementById('di-status').innerHTML = k.valid
     ? '<span class="pill pill-valid">VÁLIDA</span>'
@@ -788,37 +781,43 @@ function checkKey(){
   showAlert('checkAlert','ok','Key encontrada — detalhes abaixo.');
 }
 
-function revokeKey(){
+async function revokeKey(){
   const val = document.getElementById('checkKeyInput').value.trim();
-  const k = keys.find(x=>x.key===val);
-  if(!k){ showAlert('checkAlert','err','Key não encontrada.'); return; }
-  if(!k.valid){ showAlert('checkAlert','err','Key já está revogada.'); return; }
-  k.valid = false;
-  showAlert('checkAlert','ok','Key revogada com sucesso.');
-  document.getElementById('keyDetailBox').style.display='none';
-  updateStats(); renderAllKeys(); renderHWID();
+  if(!val){ showAlert('checkAlert','err','Digite uma key.'); return; }
+  try {
+    const r = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(val)}`);
+    const data = await r.json();
+    if(data.success){
+      showAlert('checkAlert','ok','Key revogada com sucesso.');
+      document.getElementById('keyDetailBox').style.display='none';
+      await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID();
+    } else {
+      showAlert('checkAlert','err','Erro: ' + (data.error||'desconhecido'));
+    }
+  } catch(e) { showAlert('checkAlert','err','Erro de rede: '+e.message); }
 }
 
-function resetHWID(){
+async function resetHWID(){
   const val = document.getElementById('hwidResetInput').value.trim();
-  const k = keys.find(x=>x.key===val);
-  if(!k){ showAlert('hwidAlert','err','Key não encontrada.'); return; }
-  if(!k.hwid){ showAlert('hwidAlert','err','Key sem HWID vinculado.'); return; }
-  k.hwid = null;
-  k.hwidDate = null;
-  showAlert('hwidAlert','ok','HWID resetado. O usuário pode usar em outro PC.');
-  renderHWID(); renderAllKeys(); updateStats();
+  if(!val){ showAlert('hwidAlert','err','Digite uma key.'); return; }
+  try {
+    const r = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(val)}`);
+    const data = await r.json();
+    if(data.success){
+      showAlert('hwidAlert','ok','HWID resetado. O usuário pode usar em outro PC.');
+      await loadAllKeys(); renderHWID(); renderAllKeys(); updateStats();
+    } else {
+      showAlert('hwidAlert','err','Erro: ' + (data.error||'desconhecido'));
+    }
+  } catch(e) { showAlert('hwidAlert','err','Erro de rede: '+e.message); }
 }
 
 // ══════════════════════════════════════════
 //  SIMULAR USO (HWID bind) — para demo
 // ══════════════════════════════════════════
 function simulateUse(keyStr){
-  const k = keys.find(x=>x.key===keyStr);
-  if(!k || !k.valid || k.hwid) return;
-  k.hwid = randStr(16,'ABCDEF0123456789');
-  k.hwidDate = new Date().toLocaleString('pt-BR');
-  renderAllKeys(); renderHWID(); updateStats();
+  // Simulação removida — HWID é vinculado automaticamente pelo executor
+  showAlert('checkAlert','ok','HWID é vinculado automaticamente quando o executor valida a key.');
 }
 
 // ══════════════════════════════════════════
@@ -872,10 +871,9 @@ function renderHWID(){
   `).join('');
 }
 
-function resetHWIDDirect(keyStr){
+async function resetHWIDDirect(keyStr){
   document.getElementById('hwidResetInput').value = keyStr;
-  resetHWID();
-  renderHWID();
+  await resetHWID();
 }
 
 function rowHtml(k, cols){
@@ -915,9 +913,13 @@ function rowHtml(k, cols){
   </tr>`;
 }
 
-function quickRevoke(keyStr){
-  const k = keys.find(x=>x.key===keyStr);
-  if(k){ k.valid=false; updateStats(); renderAllKeys(); renderHWID(); }
+async function quickRevoke(keyStr){
+  try {
+    const r = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}`);
+    const data = await r.json();
+    if(data.success){ await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID(); }
+    else showAlert('checkAlert','err','Erro ao revogar: '+(data.error||''));
+  } catch(e) { console.error(e); }
 }
 
 function shortKey(k){
@@ -927,6 +929,27 @@ function shortKey(k){
 // ══════════════════════════════════════════
 //  STATS
 // ══════════════════════════════════════════
+// Carrega todas as keys da API e atualiza array local
+async function loadAllKeys(){
+  try {
+    const r = await fetch(`${API}/list?token=${adminApiKey}`);
+    const data = await r.json();
+    if(data.success){
+      keys = data.keys.map(k => ({
+        key: k.key,
+        type: k.type || 'free',
+        user: k.user || 'Anonymous',
+        expiry: k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
+        expiryDate: k.expiry ? new Date(k.expiry) : null,
+        valid: k.active !== false,
+        hwid: k.hwid || null,
+        hwidDate: k.hwid ? (k.hwid_date || '-') : null,
+        created: k.created ? new Date(k.created).toLocaleString('pt-BR') : '-'
+      }));
+    }
+  } catch(e) { console.error('loadAllKeys error:', e); }
+}
+
 function updateStats(){
   document.getElementById('s-total').textContent   = keys.length;
   document.getElementById('s-valid').textContent   = keys.filter(k=>k.valid).length;
