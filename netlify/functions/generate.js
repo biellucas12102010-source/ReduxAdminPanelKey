@@ -1,6 +1,4 @@
 // netlify/functions/generate.js
-// Gera novas keys (requer admin token)
-
 const { getStore } = require('@netlify/blobs');
 
 const CORS = {
@@ -25,17 +23,15 @@ function genKey(type) {
   return (type === 'premium' ? 'KEYP_' : 'KEYF_') + key;
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return res({}, 204);
 
-  // Verificação de admin
-  const auth = event.headers['authorization'] || event.headers['Authorization'] || '';
-  const token = event.queryStringParameters?.token || '';
-  if (auth.replace('Bearer ', '') !== ADMIN_TOKEN && token !== ADMIN_TOKEN)
-    return res({ error: 'UNAUTHORIZED' }, 401);
+  const auth  = (event.headers['authorization'] || event.headers['Authorization'] || '').replace('Bearer ', '');
+  const token = (event.queryStringParameters || {}).token || auth;
+  if (token !== ADMIN_TOKEN) return res({ error: 'UNAUTHORIZED' }, 401);
 
   const p    = event.queryStringParameters || {};
-  const type = (p.type || 'free').toLowerCase(); // 'free' ou 'premium'
+  const type = (p.type || 'free').toLowerCase();
   const user = p.user || 'Anonymous';
   const days = parseInt(p.days || '1', 10);
 
@@ -52,17 +48,18 @@ exports.handler = async (event) => {
   };
 
   try {
-    const store = getStore('redux-keys');
+    const store = getStore({ name: 'redux-keys', context });
     await store.set(key, JSON.stringify(entry));
 
-    // Atualiza índice de keys
-    const idxRaw = await store.get('__index__');
-    const idx    = idxRaw ? JSON.parse(idxRaw) : [];
-    idx.push(key);
+    // Atualiza índice
+    let idx = [];
+    try { const raw = await store.get('__index__'); if (raw) idx = JSON.parse(raw); } catch {}
+    if (!idx.includes(key)) idx.push(key);
     await store.set('__index__', JSON.stringify(idx));
 
     return res({ success: true, key, type, user, expiry: entry.expiry });
   } catch (e) {
+    console.error('generate error:', e.message);
     return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
   }
 };

@@ -1,5 +1,4 @@
 // netlify/functions/list.js
-// Lista todas as keys (admin only)
 const { getStore } = require('@netlify/blobs');
 
 const CORS = {
@@ -15,24 +14,25 @@ function res(body, code = 200) {
   return { statusCode: code, headers: CORS, body: JSON.stringify(body) };
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return res({}, 204);
 
-  const auth  = event.headers['authorization'] || event.headers['Authorization'] || '';
-  const token = event.queryStringParameters?.token || '';
-  if (auth.replace('Bearer ', '') !== ADMIN_TOKEN && token !== ADMIN_TOKEN)
-    return res({ error: 'UNAUTHORIZED' }, 401);
+  const auth  = (event.headers['authorization'] || '').replace('Bearer ', '');
+  const token = (event.queryStringParameters || {}).token || auth;
+  if (token !== ADMIN_TOKEN) return res({ error: 'UNAUTHORIZED' }, 401);
 
   try {
-    const store  = getStore('redux-keys');
+    const store  = getStore({ name: 'redux-keys', context });
     const idxRaw = await store.get('__index__');
     const idx    = idxRaw ? JSON.parse(idxRaw) : [];
 
     const keys = [];
-    for (const key of idx) {
-      if (key === '__index__') continue;
-      const raw = await store.get(key);
-      if (raw) keys.push({ key, ...JSON.parse(raw) });
+    for (const k of idx) {
+      if (k === '__index__') continue;
+      try {
+        const raw = await store.get(k);
+        if (raw) keys.push({ key: k, ...JSON.parse(raw) });
+      } catch {}
     }
 
     return res({ success: true, count: keys.length, keys });

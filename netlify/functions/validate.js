@@ -1,6 +1,4 @@
 // netlify/functions/validate.js
-// Valida key + HWID usando Netlify Blobs para persistência
-
 const { getStore } = require('@netlify/blobs');
 
 const CORS = {
@@ -13,7 +11,7 @@ const CORS = {
 function ok(body)  { return { statusCode: 200, headers: CORS, body: JSON.stringify(body) }; }
 function err(body) { return { statusCode: 200, headers: CORS, body: JSON.stringify({ valid: false, ...body }) }; }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
 
   const p    = event.queryStringParameters || {};
@@ -22,12 +20,12 @@ exports.handler = async (event) => {
 
   if (!key) return err({ error: 'KEY_INVALID' });
 
-  // Dev key — sempre válida, sem HWID
+  // Dev key — sempre válida
   if (key === 'DEVK_REDUXSTUDIOS1#')
     return ok({ valid: true, type: 'dev', hwid_ok: true });
 
   try {
-    const store = getStore('redux-keys');
+    const store = getStore({ name: 'redux-keys', context });
     const raw   = await store.get(key);
 
     if (!raw) return err({ error: 'KEY_INVALID' });
@@ -36,7 +34,7 @@ exports.handler = async (event) => {
 
     if (!entry.active) return err({ error: 'KEY_REVOKED' });
 
-    // Verifica expiração
+    // Expiração
     if (entry.expiry && Date.now() > new Date(entry.expiry).getTime()) {
       entry.active = false;
       await store.set(key, JSON.stringify(entry));
@@ -45,21 +43,17 @@ exports.handler = async (event) => {
 
     // HWID — vincula no primeiro uso
     if (!entry.hwid) {
-      if (hwid) {
-        entry.hwid = hwid;
-        await store.set(key, JSON.stringify(entry));
-      }
+      if (hwid) { entry.hwid = hwid; await store.set(key, JSON.stringify(entry)); }
       return ok({ valid: true, type: entry.type, hwid_ok: true });
     }
 
-    // HWID já vinculado — verifica se bate
-    if (entry.hwid !== hwid)
-      return err({ error: 'HWID_MISMATCH' });
+    // HWID já vinculado — verifica
+    if (entry.hwid !== hwid) return err({ error: 'HWID_MISMATCH' });
 
     return ok({ valid: true, type: entry.type, hwid_ok: true });
 
   } catch (e) {
-    console.error('validate error:', e);
+    console.error('validate error:', e.message);
     return err({ error: 'SERVER_ERROR', detail: e.message });
   }
 };
