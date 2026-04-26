@@ -3,22 +3,73 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Redux Key System</title>
+<title>RBX Key System</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#04050F;color:white;font-family:'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}
-  .card{text-align:center;padding:48px 40px;border:1px solid #2A3585;border-radius:14px;background:linear-gradient(160deg,#0D1040,#070B2A);max-width:420px;width:90%}
-  h1{font-size:36px;font-weight:900;letter-spacing:5px;margin-bottom:8px;color:#4455FF}
-  p{color:#7788BB;font-size:13px;margin-bottom:32px;letter-spacing:1px}
-  a{display:inline-block;padding:13px 40px;background:linear-gradient(135deg,#2233CC,#4455FF);color:white;text-decoration:none;border-radius:8px;font-weight:700;letter-spacing:2px;font-size:13px;transition:opacity .2s}
-  a:hover{opacity:.85}
+  body{
+    background:#000000;color:white;
+    font-family:'Orbitron',sans-serif;
+    display:flex;align-items:center;justify-content:center;min-height:100vh;
+    overflow:hidden;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(204,34,51,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(204,34,51,0.04) 1px,transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+  }
+  body::after{
+    content:'';position:fixed;inset:0;
+    background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(180,20,40,0.1),transparent 70%);
+    pointer-events:none;
+  }
+  .card{
+    text-align:center;padding:52px 44px;
+    border:1px solid #2a0a10;
+    border-radius:16px;
+    background:linear-gradient(160deg,#0f0404,#060101);
+    max-width:440px;width:90%;
+    position:relative;z-index:1;
+    box-shadow:0 0 40px rgba(180,20,40,0.12);
+  }
+  .card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:16px 16px 0 0;
+    background:linear-gradient(90deg,transparent,#FF2244,#FF4466,transparent);
+  }
+  h1{
+    font-size:40px;font-weight:900;letter-spacing:6px;margin-bottom:6px;
+    background:linear-gradient(90deg,#FF2244,#FF4466);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .sub{
+    color:#442030;font-size:11px;margin-bottom:8px;
+    letter-spacing:3px;font-family:'Share Tech Mono',monospace;
+  }
+  .divider{height:1px;background:linear-gradient(90deg,transparent,#2a0a10,transparent);margin:24px 0}
+  p{color:#664455;font-size:12px;margin-bottom:32px;letter-spacing:1px;font-family:'Share Tech Mono',monospace}
+  a{
+    display:inline-block;padding:14px 44px;
+    background:linear-gradient(135deg,#CC2233,#FF2244);
+    color:white;text-decoration:none;border-radius:8px;
+    font-weight:700;letter-spacing:2px;font-size:12px;
+    transition:opacity .2s,transform .1s;
+    font-family:'Orbitron',sans-serif;
+    box-shadow:0 0 20px rgba(204,34,51,0.3);
+  }
+  a:hover{opacity:.85;transform:translateY(-1px)}
+  a:active{transform:scale(.98)}
 </style>
 </head>
 <body>
   <div class="card">
-    <h1>REDUX</h1>
-    <p>Key Management System</p>
-    <a href="/admin.html">Acessar Painel Admin</a>
+    <h1>RBX KEY</h1>
+    <div class="sub">// KEY MANAGEMENT SYSTEM</div>
+    <div class="divider"></div>
+    <p>Painel de gerenciamento de keys</p>
+    <a href="/admin.html">ACESSAR PAINEL ADMIN</a>
   </div>
 </body>
 </html>

@@ -3,30 +3,31 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Redux Key System — Admin Panel</title>
+<title>RBX Key System — Admin Panel</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-  --bg0: #04050F;
-  --bg1: #080B1A;
-  --bg2: #0C1028;
-  --bg3: #101438;
-  --blue: #2233CC;
-  --blue2: #4455FF;
-  --blue3: #6677FF;
+  --bg0: #000000;
+  --bg1: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --red: #CC2233;
+  --red2: #FF2244;
+  --red3: #FF4466;
   --gold: #DDAA33;
   --gold2: #FFCC55;
   --green: #22BB66;
   --green2: #44FF88;
-  --red: #CC2233;
-  --red2: #FF4455;
+  --blue: #2233CC;
+  --blue2: #4455FF;
   --purple: #9944FF;
-  --border: #1A2255;
-  --border2: #2A3585;
-  --text: #C8D0F0;
-  --text2: #7788BB;
-  --text3: #3A4480;
+  --border: #1a1a1a;
+  --border2: #2a2a2a;
+  --border3: #3a1020;
+  --text: #E0D0D5;
+  --text2: #886677;
+  --text3: #3a2530;
   --mono: 'Share Tech Mono', monospace;
   --head: 'Orbitron', sans-serif;
   --body: 'Rajdhani', sans-serif;
@@ -39,14 +40,14 @@ html,body{min-height:100vh;background:var(--bg0);color:var(--text);font-family:v
 body::before{
   content:'';position:fixed;inset:0;
   background-image:
-    linear-gradient(rgba(34,51,204,0.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(34,51,204,0.04) 1px,transparent 1px);
+    linear-gradient(rgba(204,34,51,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(204,34,51,0.03) 1px,transparent 1px);
   background-size:40px 40px;
   pointer-events:none;z-index:0;
 }
 body::after{
   content:'';position:fixed;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(34,51,204,0.12),transparent 70%);
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(180,20,40,0.08),transparent 70%);
   pointer-events:none;z-index:0;
 }
 
@@ -54,78 +55,78 @@ body::after{
 #loginScreen{
   position:fixed;inset:0;z-index:9999;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(4,5,15,0.97);
+  background:rgba(0,0,0,0.97);
 }
 .login-card{
-  width:400px;border:1px solid var(--border2);border-radius:16px;
-  background:linear-gradient(160deg,#0D1040,#070A28);
+  width:400px;border:1px solid #2a0a10;border-radius:16px;
+  background:linear-gradient(160deg,#0f0505,#080202);
   padding:40px 36px;position:relative;overflow:hidden;
 }
 .login-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--blue2),var(--purple),transparent);
+  background:linear-gradient(90deg,transparent,var(--red2),var(--red3),transparent);
 }
 .login-logo{
   text-align:center;margin-bottom:28px;
 }
 .login-logo h1{
-  font-family:var(--head);font-size:28px;font-weight:900;
-  background:linear-gradient(90deg,var(--blue2),var(--purple));
+  font-family:var(--head);font-size:32px;font-weight:900;
+  background:linear-gradient(90deg,var(--red2),var(--red3));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  letter-spacing:4px;
+  letter-spacing:5px;
 }
 .login-logo p{font-size:12px;color:var(--text2);margin-top:4px;letter-spacing:2px;font-family:var(--mono)}
 
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;font-family:var(--mono)}
 .form-group input{
-  width:100%;background:#06091C;border:1px solid var(--border2);border-radius:8px;
+  width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:8px;
   color:white;padding:11px 14px;font-size:14px;font-family:var(--mono);outline:none;
   transition:border-color .2s;
 }
-.form-group input:focus{border-color:var(--blue2)}
+.form-group input:focus{border-color:var(--red2)}
 
 .btn-login{
   width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;
   font-family:var(--head);font-size:14px;font-weight:700;letter-spacing:2px;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;
+  background:linear-gradient(135deg,var(--red),var(--red2));color:white;
   transition:opacity .2s,transform .1s;margin-top:6px;
 }
 .btn-login:hover{opacity:.88}
 .btn-login:active{transform:scale(.98)}
-.login-err{color:var(--red2);font-size:12px;font-family:var(--mono);margin-top:10px;text-align:center;min-height:18px}
+.login-err{color:var(--red3);font-size:12px;font-family:var(--mono);margin-top:10px;text-align:center;min-height:18px}
 
 /* ── MAIN APP ── */
 #app{display:none;min-height:100vh;position:relative;z-index:1}
 
 /* TOPBAR */
 .topbar{
-  height:56px;background:linear-gradient(180deg,#131640,#0C1028);
-  border-bottom:1px solid var(--border);
+  height:56px;background:linear-gradient(180deg,#0f0404,#080101);
+  border-bottom:1px solid #1a0508;
   display:flex;align-items:center;padding:0 24px;gap:16px;
   position:sticky;top:0;z-index:100;
 }
 .topbar-logo{
   font-family:var(--head);font-size:20px;font-weight:900;letter-spacing:3px;
-  background:linear-gradient(90deg,var(--blue2),var(--purple));
+  background:linear-gradient(90deg,var(--red2),var(--red3));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
 .topbar-sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:1px}
 .topbar-spacer{flex:1}
 .topbar-badge{
   font-size:10px;padding:4px 10px;border-radius:4px;font-family:var(--mono);
-  background:rgba(153,68,255,.15);border:1px solid rgba(153,68,255,.3);color:var(--purple);
+  background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);color:var(--red3);
 }
 .btn-logout{
-  background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);
-  color:var(--red2);padding:6px 14px;border-radius:6px;cursor:pointer;
+  background:rgba(20,20,20,.8);border:1px solid #2a0a10;
+  color:var(--text2);padding:6px 14px;border-radius:6px;cursor:pointer;
   font-family:var(--mono);font-size:11px;transition:all .2s;
 }
-.btn-logout:hover{background:rgba(204,34,51,.3)}
+.btn-logout:hover{background:rgba(204,34,51,.2);color:var(--red3)}
 
 /* TABS */
 .tabs{
-  display:flex;gap:0;border-bottom:1px solid var(--border);
+  display:flex;gap:0;border-bottom:1px solid #1a0508;
   padding:0 24px;background:var(--bg1);
 }
 .tab{
@@ -134,60 +135,60 @@ body::after{
   transition:all .2s;text-transform:uppercase;
 }
 .tab:hover{color:var(--text2)}
-.tab.active{color:var(--blue3);border-bottom-color:var(--blue2)}
+.tab.active{color:var(--red3);border-bottom-color:var(--red2)}
 
 /* CONTENT */
 .content{padding:28px 24px;max-width:1100px;margin:0 auto}
 
 /* CARDS */
 .card{
-  background:linear-gradient(160deg,#0E1252,#0A0D28);
-  border:1px solid var(--border);border-radius:12px;padding:24px;
+  background:linear-gradient(160deg,#0d0505,#080202);
+  border:1px solid #1a0508;border-radius:12px;padding:24px;
   margin-bottom:20px;position:relative;overflow:hidden;
 }
 .card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+  background:linear-gradient(90deg,transparent,#2a0a10,transparent);
 }
 .card-title{
   font-family:var(--mono);font-size:11px;color:var(--text2);
   letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;
   display:flex;align-items:center;gap:8px;
 }
-.card-title::before{content:'//';color:var(--blue2)}
+.card-title::before{content:'//';color:var(--red2)}
 
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
 
 /* STATS */
 .stat{
-  background:#060810;border:1px solid var(--border);border-radius:10px;
+  background:#050000;border:1px solid #1a0508;border-radius:10px;
   padding:16px;text-align:center;
 }
-.stat-num{font-family:var(--head);font-size:28px;font-weight:900;color:var(--blue2)}
+.stat-num{font-family:var(--head);font-size:28px;font-weight:900;color:var(--red2)}
 .stat-num.green{color:var(--green2)}
 .stat-num.gold{color:var(--gold)}
-.stat-num.red{color:var(--red2)}
+.stat-num.red{color:var(--red3)}
 .stat-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:4px;letter-spacing:1px}
 
 /* FORM */
 .fg{margin-bottom:14px}
 .fg label{display:block;font-size:10px;color:var(--text2);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
 .fg input,.fg select{
-  width:100%;background:#06091C;border:1px solid var(--border2);border-radius:7px;
+  width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:7px;
   color:white;padding:9px 13px;font-size:13px;font-family:var(--mono);outline:none;
   transition:border-color .2s;
 }
-.fg input:focus,.fg select:focus{border-color:var(--blue2)}
-.fg select option{background:#0E1040}
+.fg input:focus,.fg select:focus{border-color:var(--red2)}
+.fg select option{background:#0d0404}
 
 .btn{
   padding:10px 20px;border:none;border-radius:7px;cursor:pointer;
   font-family:var(--mono);font-size:12px;letter-spacing:1px;transition:all .2s;
 }
-.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:white}
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--red2));color:white}
 .btn-primary:hover{opacity:.85}
-.btn-danger{background:linear-gradient(135deg,#7A1818,#AA2222);color:white}
+.btn-danger{background:linear-gradient(135deg,#7A0010,#AA0020);color:white}
 .btn-danger:hover{opacity:.85}
 .btn-success{background:linear-gradient(135deg,#187A3A,#22AA50);color:white}
 .btn-success:hover{opacity:.85}
@@ -198,7 +199,7 @@ body::after{
 
 /* KEY RESULT BOX */
 .key-box{
-  background:#04060F;border:1px solid var(--border2);border-radius:8px;
+  background:#050000;border:1px solid #2a0a10;border-radius:8px;
   padding:12px 16px;font-family:var(--mono);font-size:13px;
   display:none;margin-top:12px;
 }
@@ -214,56 +215,56 @@ body::after{
 }
 .alert.show{display:block}
 .alert-ok{background:rgba(34,187,102,.1);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
-.alert-err{background:rgba(204,34,51,.1);border:1px solid rgba(204,34,51,.3);color:var(--red2)}
-.alert-info{background:rgba(34,51,204,.1);border:1px solid rgba(34,51,204,.3);color:var(--blue3)}
+.alert-err{background:rgba(204,34,51,.1);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
+.alert-info{background:rgba(180,20,40,.1);border:1px solid rgba(180,20,40,.3);color:var(--red3)}
 
 /* TABLE */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:10px 12px;color:var(--text3);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;border-bottom:1px solid var(--border);text-transform:uppercase}
-td{padding:9px 12px;border-bottom:1px solid rgba(26,34,85,.5);color:var(--text);vertical-align:middle;font-family:var(--mono);font-size:11px}
-tr:hover td{background:rgba(34,51,204,.04)}
+th{text-align:left;padding:10px 12px;color:var(--text3);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;border-bottom:1px solid #1a0508;text-transform:uppercase}
+td{padding:9px 12px;border-bottom:1px solid rgba(26,5,8,.8);color:var(--text);vertical-align:middle;font-family:var(--mono);font-size:11px}
+tr:hover td{background:rgba(204,34,51,.04)}
 
 /* PILLS */
 .pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:9px;font-family:var(--mono);font-weight:700;letter-spacing:1px}
 .pill-premium{background:rgba(221,170,51,.15);border:1px solid rgba(221,170,51,.3);color:var(--gold)}
 .pill-free{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
 .pill-valid{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
-.pill-invalid{background:rgba(204,34,51,.12);border:1px solid rgba(204,34,51,.3);color:var(--red2)}
+.pill-invalid{background:rgba(204,34,51,.12);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
 .pill-used{background:rgba(153,68,255,.12);border:1px solid rgba(153,68,255,.3);color:var(--purple)}
 
 /* HWID */
-.hwid-tag{font-family:var(--mono);font-size:10px;color:var(--text3);background:#04060F;border:1px solid var(--border);border-radius:4px;padding:2px 6px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+.hwid-tag{font-family:var(--mono);font-size:10px;color:var(--text3);background:#050000;border:1px solid #1a0508;border-radius:4px;padding:2px 6px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
 
 /* API DOCS */
-.api-block{background:#04060F;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:11px;line-height:1.8;margin-bottom:14px}
+.api-block{background:#050000;border:1px solid #1a0508;border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:11px;line-height:1.8;margin-bottom:14px}
 .c-comment{color:var(--text3)}
-.c-key{color:var(--purple)}
+.c-key{color:var(--red3)}
 .c-val{color:var(--green2)}
 .c-str{color:var(--gold)}
-.c-url{color:var(--blue3)}
+.c-url{color:var(--red2)}
 
-.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:20px 0}
+.sep{height:1px;background:linear-gradient(90deg,transparent,#2a0a10,transparent);margin:20px 0}
 
 /* COPY BTN */
-.copy-btn{background:rgba(34,51,204,.2);border:1px solid rgba(68,85,255,.3);color:var(--blue3);padding:5px 10px;border-radius:5px;cursor:pointer;font-family:var(--mono);font-size:10px;white-space:nowrap;transition:all .2s}
-.copy-btn:hover{background:rgba(34,51,204,.4)}
+.copy-btn{background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);color:var(--red3);padding:5px 10px;border-radius:5px;cursor:pointer;font-family:var(--mono);font-size:10px;white-space:nowrap;transition:all .2s}
+.copy-btn:hover{background:rgba(204,34,51,.35)}
 
 /* TAB PANELS */
 .panel{display:none}
 .panel.active{display:block}
 
-/* SCAN ANIMATION ON KEY RESULT */
+/* SCAN ANIMATION */
 @keyframes scanline{0%{top:-10%}100%{top:110%}}
 .key-box::after{
   content:'';position:absolute;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--blue2),transparent);
+  background:linear-gradient(90deg,transparent,var(--red2),transparent);
   animation:scanline 2s linear infinite;pointer-events:none;
 }
 .key-box{position:relative;overflow:hidden}
 
 /* GLOW */
-.glow-blue{box-shadow:0 0 20px rgba(34,51,204,.25)}
+.glow-red{box-shadow:0 0 20px rgba(204,34,51,.2)}
 .glow-gold{box-shadow:0 0 20px rgba(221,170,51,.2)}
 
 /* RESPONSIVE */
@@ -276,12 +277,12 @@ tr:hover td{background:rgba(34,51,204,.04)}
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">
-      <h1>REDUX</h1>
+      <h1>RBX KEY</h1>
       <p>// KEY MANAGEMENT SYSTEM</p>
     </div>
     <div class="form-group">
       <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="admin@reduxstudios.com" autocomplete="off"/>
+      <input type="email" id="loginEmail" placeholder="admin@rbxexploit.com" autocomplete="off"/>
     </div>
     <div class="form-group">
       <label>Senha</label>
@@ -297,7 +298,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
 
   <div class="topbar">
     <div>
-      <div class="topbar-logo">REDUX</div>
+      <div class="topbar-logo">RBX KEY</div>
       <div class="topbar-sub">// KEY MANAGEMENT PANEL V3</div>
     </div>
     <div class="topbar-spacer"></div>
@@ -341,7 +342,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
     <!-- ── GERAR KEY ── -->
     <div class="panel" id="panel-generate">
       <div class="grid2">
-        <div class="card glow-blue">
+        <div class="card glow-red">
           <div class="card-title">Gerar Nova Key</div>
           <div class="fg">
             <label>Tipo de Key</label>
@@ -352,7 +353,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
           </div>
           <div class="fg">
             <label>Usuário / Discord ID (opcional)</label>
-            <input type="text" id="genUser" placeholder="Ex: ReduxUser#1234"/>
+            <input type="text" id="genUser" placeholder="Ex: RBXUser#1234"/>
           </div>
           <div class="fg" id="genDurGroup">
             <label>Duração (Free)</label>
@@ -419,7 +420,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
               <div><span style="color:var(--text3)">KEY &nbsp;&nbsp;&nbsp;</span> <span id="di-key" style="color:var(--gold)"></span></div>
               <div><span style="color:var(--text3)">TIPO &nbsp;&nbsp;</span> <span id="di-type"></span></div>
               <div><span style="color:var(--text3)">USER &nbsp;&nbsp;</span> <span id="di-user" style="color:var(--text2)"></span></div>
-              <div><span style="color:var(--text3)">EXPIRA</span> <span id="di-exp" style="color:var(--blue3)"></span></div>
+              <div><span style="color:var(--text3)">EXPIRA</span> <span id="di-exp" style="color:var(--red3)"></span></div>
               <div><span style="color:var(--text3)">HWID &nbsp;&nbsp;</span> <span id="di-hwid" style="color:var(--purple)"></span></div>
               <div><span style="color:var(--text3)">STATUS</span> <span id="di-status"></span></div>
             </div>
@@ -448,13 +449,13 @@ tr:hover td{background:rgba(34,51,204,.04)}
       <div class="card">
         <div class="card-title">Todas as Keys Geradas</div>
         <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-          <input type="text" id="filterInput" placeholder="Buscar key ou usuário..." style="background:#06091C;border:1px solid var(--border2);border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderAllKeys()"/>
-          <select id="filterType" style="background:#06091C;border:1px solid var(--border2);border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
+          <input type="text" id="filterInput" placeholder="Buscar key ou usuário..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderAllKeys()"/>
+          <select id="filterType" style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
             <option value="all">Todos</option>
             <option value="premium">Premium</option>
             <option value="free">Free</option>
           </select>
-          <select id="filterStatus" style="background:#06091C;border:1px solid var(--border2);border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
+          <select id="filterStatus" style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
             <option value="all">Todos status</option>
             <option value="valid">Válidas</option>
             <option value="revoked">Revogadas</option>
@@ -501,7 +502,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
 <br>&nbsp;&nbsp;<span class="c-key">return</span> Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(raw)))[..<span class="c-val">16</span>];
 <br>}
 <br><br><span class="c-comment">// Chamar API de validação com HWID</span>
-<br><span class="c-key">var</span> url = <span class="c-str">$"<span class="c-url">https://reduxadminkey.netlify.app</span>/api/validate?key={key}&hwid={GetHWID()}"</span>;
+<br><span class="c-key">var</span> url = <span class="c-str">$"<span class="c-url">https://SEU-SITE.netlify.app</span>/api/validate?key={key}&hwid={GetHWID()}"</span>;
         </div>
       </div>
     </div>
@@ -514,7 +515,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
           <div style="margin-bottom:10px">
             <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px">SUA ADMIN KEY</div>
             <div style="display:flex;gap:8px;align-items:center">
-              <span id="adminKeyShow" style="font-family:var(--mono);font-size:11px;color:var(--purple);background:#04060F;border:1px solid var(--border);border-radius:5px;padding:6px 10px;flex:1;word-break:break-all"></span>
+              <span id="adminKeyShow" style="font-family:var(--mono);font-size:11px;color:var(--red3);background:#050000;border:1px solid #1a0508;border-radius:5px;padding:6px 10px;flex:1;word-break:break-all"></span>
               <button class="copy-btn" onclick="copyText(adminApiKey)">COPIAR</button>
             </div>
           </div>
@@ -552,14 +553,13 @@ tr:hover td{background:rgba(34,51,204,.04)}
         <div class="card">
           <div class="card-title">Código do Bot Discord</div>
 
-          <!-- Botões de linguagem -->
           <div style="display:flex;gap:8px;margin-bottom:14px">
             <button id="btnLangPy" onclick="switchBotLang('py')"
               style="flex:1;padding:8px;border:1px solid #DDAA33;border-radius:6px;background:rgba(221,170,51,.15);color:#DDAA33;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s">
               🐍 Python
             </button>
             <button id="btnLangJs" onclick="switchBotLang('js')"
-              style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s">
+              style="flex:1;padding:8px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--text2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s">
               ⚡ JavaScript
             </button>
           </div>
@@ -570,11 +570,11 @@ tr:hover td{background:rgba(34,51,204,.04)}
               // pip install discord.py requests
             </div>
             <div class="api-block" style="font-size:10px;line-height:1.9">
-<span class="c-comment"># redux_bot.py</span>
+<span class="c-comment"># rbx_bot.py</span>
 <br><span class="c-key">import</span> discord, requests
 <br><span class="c-key">from</span> discord.ext <span class="c-key">import</span> commands
 <br><br>bot = commands.Bot(command_prefix=<span class="c-str">'!'</span>)
-<br>API = <span class="c-str">"https://reduxadminkey.netlify.app/api"</span>
+<br>API = <span class="c-str">"https://SEU-SITE.netlify.app/api"</span>
 <br>ADMIN = <span class="c-str" id="botAdminKeyPy">"ADMIN_KEY_GERADA_NO_PAINEL"</span>
 <br><br>@bot.command()
 <br><span class="c-key">async def</span> <span class="c-val">getkey</span>(ctx, tipo=<span class="c-str">"premium"</span>):
@@ -600,10 +600,10 @@ tr:hover td{background:rgba(34,51,204,.04)}
               // npm install discord.js axios
             </div>
             <div class="api-block" style="font-size:10px;line-height:1.9">
-<span class="c-comment">// redux_bot.js</span>
+<span class="c-comment">// rbx_bot.js</span>
 <br><span class="c-key">const</span> { Client, GatewayIntentBits } = <span class="c-val">require</span>(<span class="c-str">'discord.js'</span>)
 <br><span class="c-key">const</span> axios = <span class="c-val">require</span>(<span class="c-str">'axios'</span>)
-<br><br><span class="c-key">const</span> API   = <span class="c-str">"https://reduxadminkey.netlify.app/api"</span>
+<br><br><span class="c-key">const</span> API   = <span class="c-str">"https://SEU-SITE.netlify.app/api"</span>
 <br><span class="c-key">const</span> ADMIN = <span class="c-str" id="botAdminKeyJs">"ADMIN_KEY_GERADA_NO_PAINEL"</span>
 <br><span class="c-key">const</span> TOKEN = <span class="c-str">"SEU_TOKEN_DISCORD"</span>
 <br><br><span class="c-key">const</span> client = <span class="c-key">new</span> Client({
@@ -629,7 +629,6 @@ tr:hover td{background:rgba(34,51,204,.04)}
             </div>
             <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="copyBotCode('js')">// COPIAR CÓDIGO JAVASCRIPT</button>
           </div>
-
         </div>
       </div>
 
@@ -641,7 +640,7 @@ tr:hover td{background:rgba(34,51,204,.04)}
 <br>{
 <br>&nbsp;&nbsp;<span class="c-key">string</span> hwid = GetHWID(); <span class="c-comment">// função acima</span>
 <br>&nbsp;&nbsp;<span class="c-key">using var</span> http = <span class="c-key">new</span> HttpClient();
-<br>&nbsp;&nbsp;<span class="c-key">var</span> url = <span class="c-str">$"https://reduxadminkey.netlify.app/api/validate?key={key}&hwid={hwid}"</span>;
+<br>&nbsp;&nbsp;<span class="c-key">var</span> url = <span class="c-str">$"https://SEU-SITE.netlify.app/api/validate?key={key}&hwid={hwid}"</span>;
 <br>&nbsp;&nbsp;<span class="c-key">var</span> res = <span class="c-key">await</span> http.GetStringAsync(url);
 <br>&nbsp;&nbsp;<span class="c-key">var</span> json = System.Text.Json.JsonDocument.Parse(res);
 <br>&nbsp;&nbsp;<span class="c-key">return</span> json.RootElement.GetProperty(<span class="c-str">"valid"</span>).GetBoolean();
@@ -660,11 +659,10 @@ tr:hover td{background:rgba(34,51,204,.04)}
 // ══════════════════════════════════════════
 //  DADOS
 // ══════════════════════════════════════════
-const ADMIN_EMAIL = 'ReduxStudiosLtd@gmail.com';
-const ADMIN_PASS  = 'goham200@@';
+const ADMIN_EMAIL = 'RBXexploit@gmail.com';
+const ADMIN_PASS  = 'RBX1#';
 
 // Token de admin — deve bater com a env var REDUX_ADMIN_TOKEN no Netlify
-// Mude aqui E na env var do Netlify para o mesmo valor
 const ADMIN_API_TOKEN = 'redux-admin-secret';
 
 let keys = [];
@@ -749,7 +747,6 @@ async function generateKey(){
     document.getElementById('genResult').classList.add('show');
     showAlert('genAlert','ok',`Key ${type.toUpperCase()} gerada para ${user}`);
 
-    // Recarrega lista da API
     await loadAllKeys();
     updateStats(); renderRecent();
   } catch(e) {
@@ -765,7 +762,6 @@ async function checkKey(){
   const box = document.getElementById('keyDetailBox');
   if(!val){ showAlert('checkAlert','err','Digite uma key.'); return; }
 
-  // Busca na lista local primeiro, depois tenta API
   const k = keys.find(x=>x.key===val);
   if(!k){ showAlert('checkAlert','err','Key não encontrada. Recarregue a lista.'); box.style.display='none'; return; }
 
@@ -813,10 +809,9 @@ async function resetHWID(){
 }
 
 // ══════════════════════════════════════════
-//  SIMULAR USO (HWID bind) — para demo
+//  SIMULAR USO
 // ══════════════════════════════════════════
 function simulateUse(keyStr){
-  // Simulação removida — HWID é vinculado automaticamente pelo executor
   showAlert('checkAlert','ok','HWID é vinculado automaticamente quando o executor valida a key.');
 }
 
@@ -929,7 +924,6 @@ function shortKey(k){
 // ══════════════════════════════════════════
 //  STATS
 // ══════════════════════════════════════════
-// Carrega todas as keys da API e atualiza array local
 async function loadAllKeys(){
   try {
     const r = await fetch(`${API}/list?token=${adminApiKey}`);
@@ -972,7 +966,6 @@ function showAlert(id, type, msg){
 
 function copyText(txt){
   navigator.clipboard.writeText(txt).catch(()=>{});
-  // pequeno feedback visual
   const ev = window.event;
   if(ev && ev.target){
     const orig = ev.target.textContent;
@@ -989,19 +982,19 @@ function switchBotLang(lang) {
   const btnJs = document.getElementById('btnLangJs');
   if (isPy) {
     btnPy.style.borderColor = '#DDAA33'; btnPy.style.background = 'rgba(221,170,51,.15)'; btnPy.style.color = '#DDAA33';
-    btnJs.style.borderColor = 'var(--border)'; btnJs.style.background = 'transparent'; btnJs.style.color = 'var(--text2)';
+    btnJs.style.borderColor = 'var(--border2)'; btnJs.style.background = 'transparent'; btnJs.style.color = 'var(--text2)';
   } else {
     btnJs.style.borderColor = '#44FF88'; btnJs.style.background = 'rgba(68,255,136,.1)'; btnJs.style.color = '#44FF88';
-    btnPy.style.borderColor = 'var(--border)'; btnPy.style.background = 'transparent'; btnPy.style.color = 'var(--text2)';
+    btnPy.style.borderColor = 'var(--border2)'; btnPy.style.background = 'transparent'; btnPy.style.color = 'var(--text2)';
   }
 }
 
 function copyBotCode(lang) {
   let code;
   if (lang === 'py') {
-    code = `import discord, requests\nfrom discord.ext import commands\n\nbot = commands.Bot(command_prefix='!')\nAPI = "https://reduxadminkey.netlify.app/api"\nADMIN = "${adminApiKey}"\n\n@bot.command()\nasync def getkey(ctx, tipo="premium"):\n    r = requests.get(f"{API}/generate",\n        params={"type": tipo, "user": str(ctx.author), "token": ADMIN})\n    data = r.json()\n    if data["success"]:\n        await ctx.author.send(f"Sua key: {data['key']}")\n        await ctx.send("Key enviada no DM!")\n    else:\n        await ctx.send("Erro ao gerar key.")\n\nbot.run("SEU_TOKEN_DISCORD")`;
+    code = `import discord, requests\nfrom discord.ext import commands\n\nbot = commands.Bot(command_prefix='!')\nAPI = "https://SEU-SITE.netlify.app/api"\nADMIN = "${adminApiKey}"\n\n@bot.command()\nasync def getkey(ctx, tipo="premium"):\n    r = requests.get(f"{API}/generate",\n        params={"type": tipo, "user": str(ctx.author), "token": ADMIN})\n    data = r.json()\n    if data["success"]:\n        await ctx.author.send(f"Sua key: {data['key']}")\n        await ctx.send("Key enviada no DM!")\n    else:\n        await ctx.send("Erro ao gerar key.")\n\nbot.run("SEU_TOKEN_DISCORD")`;
   } else {
-    code = `const { Client, GatewayIntentBits } = require('discord.js')\nconst axios = require('axios')\n\nconst API   = "https://reduxadminkey.netlify.app/api"\nconst ADMIN = "${adminApiKey}"\nconst TOKEN = "SEU_TOKEN_DISCORD"\n\nconst client = new Client({\n  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]\n})\n\nclient.on('messageCreate', async msg => {\n  if (!msg.content.startsWith('!')) return\n  const [cmd, tipo = 'premium'] = msg.content.slice(1).split(' ')\n  if (cmd !== 'getkey') return\n  const { data } = await axios.get(API + '/generate', {\n    params: { type: tipo, user: msg.author.tag, token: ADMIN }\n  })\n  if (data.success) {\n    await msg.author.send('Sua key: ' + data.key)\n    await msg.reply('Key enviada no DM!')\n  } else {\n    await msg.reply('Erro ao gerar key.')\n  }\n})\n\nclient.login(TOKEN)`;
+    code = `const { Client, GatewayIntentBits } = require('discord.js')\nconst axios = require('axios')\n\nconst API   = "https://SEU-SITE.netlify.app/api"\nconst ADMIN = "${adminApiKey}"\nconst TOKEN = "SEU_TOKEN_DISCORD"\n\nconst client = new Client({\n  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]\n})\n\nclient.on('messageCreate', async msg => {\n  if (!msg.content.startsWith('!')) return\n  const [cmd, tipo = 'premium'] = msg.content.slice(1).split(' ')\n  if (cmd !== 'getkey') return\n  const { data } = await axios.get(API + '/generate', {\n    params: { type: tipo, user: msg.author.tag, token: ADMIN }\n  })\n  if (data.success) {\n    await msg.author.send('Sua key: ' + data.key)\n    await msg.reply('Key enviada no DM!')\n  } else {\n    await msg.reply('Erro ao gerar key.')\n  }\n})\n\nclient.login(TOKEN)`;
   }
   navigator.clipboard.writeText(code).catch(()=>{});
 }
@@ -1010,7 +1003,7 @@ function copyBotCode(lang) {
 document.getElementById('genType').addEventListener('change',function(){
   document.getElementById('genDurGroup').style.display = this.value==='free' ? 'block' : 'none';
 });
-document.getElementById('genDurGroup').style.display = 'none'; // premium default, sem duração
+document.getElementById('genDurGroup').style.display = 'none';
 
 // Login com Enter
 document.getElementById('loginPass').addEventListener('keydown', e=>{
