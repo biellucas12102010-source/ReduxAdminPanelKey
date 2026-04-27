@@ -27,8 +27,9 @@ exports.handler = async (event, context) => {
 
   if (!key) return err({ error: 'KEY_INVALID' });
 
+  // Dev key — sem expiração
   if (key === 'DEVK_REDUXSTUDIOS1#')
-    return ok({ valid: true, type: 'dev', hwid_ok: true });
+    return ok({ valid: true, type: 'dev', hwid_ok: true, expiry: null });
 
   try {
     const store = getConfiguredStore();
@@ -46,14 +47,26 @@ exports.handler = async (event, context) => {
       return err({ error: 'KEY_REVOKED' });
     }
 
+    // Primeiro uso: ainda sem HWID — vincula agora
+    // e inicia o timer a partir deste momento
     if (!entry.hwid) {
-      if (hwid) { entry.hwid = hwid; await store.set(key, JSON.stringify(entry)); }
-      return ok({ valid: true, type: entry.type, hwid_ok: true });
+      if (hwid) {
+        entry.hwid = hwid;
+
+        // Se for key FREE sem expiry definido ainda, define agora (1 dia a partir do 1º uso)
+        if (entry.type === 'free' && !entry.expiry) {
+          entry.expiry = new Date(Date.now() + 86400000).toISOString(); // 24h a partir do 1º uso
+        }
+
+        await store.set(key, JSON.stringify(entry));
+      }
+      return ok({ valid: true, type: entry.type, hwid_ok: true, expiry: entry.expiry || null });
     }
 
     if (entry.hwid !== hwid) return err({ error: 'HWID_MISMATCH' });
 
-    return ok({ valid: true, type: entry.type, hwid_ok: true });
+    // Retorna expiry para o executor exibir o timer
+    return ok({ valid: true, type: entry.type, hwid_ok: true, expiry: entry.expiry || null });
 
   } catch (e) {
     console.error('validate error:', e.message);
