@@ -1,5 +1,6 @@
 // netlify/functions/generate.js
 const { getStore } = require('@netlify/blobs');
+const { logAudit } = require('./audit');
 
 const CORS = {
   'Content-Type': 'application/json',
@@ -17,10 +18,7 @@ function res(body, code = 200) {
 function getConfiguredStore() {
   const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
   const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
-  if (siteID && token) {
-    return getStore({ name: 'redux-keys', siteID, token });
-  }
-  // Tenta sem config (funciona quando Netlify injeta automaticamente)
+  if (siteID && token) return getStore({ name: 'redux-keys', siteID, token });
   return getStore('redux-keys');
 }
 
@@ -33,12 +31,22 @@ function genKey(type) {
   return (type === 'premium' ? 'KEYP_' : 'KEYF_') + key;
 }
 
+function getIP(event) {
+  return event.headers['x-forwarded-for']?.split(',')[0]?.trim()
+    || event.headers['client-ip']
+    || null;
+}
+
 exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') return res({}, 204);
 
   const auth  = (event.headers['authorization'] || '').replace('Bearer ', '');
   const token = (event.queryStringParameters || {}).token || auth;
-  if (token !== ADMIN_TOKEN) return res({ error: 'UNAUTHORIZED' }, 401);
+
+  if (token !== ADMIN_TOKEN) {
+    await logAudit({ action: 'generate', ip: getIP(event), result: 'unauthorized', detail: 'Token inválido' });
+    return res({ error: 'UNAUTHORIZED' }, 401);
+  }
 
   const p    = event.queryStringParameters || {};
   const type = (p.type || 'free').toLowerCase();
@@ -61,15 +69,24 @@ exports.handler = async (event, context) => {
     const store = getConfiguredStore();
     await store.set(key, JSON.stringify(entry));
 
-    // Atualiza índice
     let idx = [];
     try { const raw = await store.get('__index__'); if (raw) idx = JSON.parse(raw); } catch {}
     if (!idx.includes(key)) idx.push(key);
     await store.set('__index__', JSON.stringify(idx));
 
+    await logAudit({
+      action: 'generate',
+      key,
+      user,
+      ip: getIP(event),
+      result: 'success',
+      detail: `type=${type}, days=${days}`
+    });
+
     return res({ success: true, key, type, user, expiry: entry.expiry });
   } catch (e) {
     console.error('generate error:', e.message);
+    await logAudit({ action: 'generate', user, ip: getIP(event), result: 'error', detail: e.message });
     return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
   }
 };
