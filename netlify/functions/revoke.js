@@ -22,10 +22,33 @@ function getConfiguredStore() {
   return getStore('redux-keys');
 }
 
+function getUserStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
+  if (siteID && token) return getStore({ name: 'redux-users', siteID, token });
+  return getStore('redux-users');
+}
+
 function getIP(event) {
   return event.headers['x-forwarded-for']?.split(',')[0]?.trim()
     || event.headers['client-ip']
     || null;
+}
+
+async function notifyUser(key, reason, msg) {
+  try {
+    const userStore  = getUserStore();
+    const ownerEmail = await userStore.get('key-owner:' + key).catch(() => null);
+    if (!ownerEmail) return;
+    const raw = await userStore.get('user:' + ownerEmail).catch(() => null);
+    if (!raw) return;
+    const user = JSON.parse(raw);
+    user.notifications = user.notifications || [];
+    user.notifications.push({ id: Date.now().toString(36), reason, msg, ts: new Date().toISOString(), read: false });
+    await userStore.set('user:' + ownerEmail, JSON.stringify(user));
+  } catch (e) {
+    console.error('[notify] erro:', e.message);
+  }
 }
 
 exports.handler = async (event, context) => {
@@ -39,13 +62,15 @@ exports.handler = async (event, context) => {
     return res({ error: 'UNAUTHORIZED' }, 401);
   }
 
-  const key = ((event.queryStringParameters || {}).key || '').trim();
+  const p      = event.queryStringParameters || {};
+  const key    = (p.key    || '').trim();
+  const reason = (p.reason || 'removed-key').trim(); // removed-key | reset-key
+
   if (!key) return res({ error: 'KEY_REQUIRED' });
 
   try {
     const store = getConfiguredStore();
     const raw   = await store.get(key);
-
     if (!raw) {
       await logAudit({ action: 'revoke', key, ip: getIP(event), result: 'error', detail: 'Key não encontrada' });
       return res({ error: 'KEY_NOT_FOUND' });
@@ -55,14 +80,13 @@ exports.handler = async (event, context) => {
     entry.active = false;
     await store.set(key, JSON.stringify(entry));
 
-    await logAudit({
-      action: 'revoke',
-      key,
-      user: entry.user || null,
-      ip: getIP(event),
-      result: 'success',
-      detail: `type=${entry.type}`
-    });
+    const msgMap = {
+      'removed-key': 'Sua key foi removida pelo administrador. Insira uma nova key para continuar usando o RBX.',
+      'reset-key':   'Sua key foi resetada pelo administrador. Insira uma nova key para continuar usando o RBX.',
+    };
+    await notifyUser(key, reason, msgMap[reason] || msgMap['removed-key']);
+
+    await logAudit({ action: 'revoke', key, user: entry.user || null, ip: getIP(event), result: 'success', detail: 'type=' + entry.type + ', reason=' + reason });
 
     return res({ success: true, key, revoked: true });
   } catch (e) {

@@ -51,7 +51,12 @@ exports.handler = async (event, context) => {
   const p    = event.queryStringParameters || {};
   const type = (p.type || 'free').toLowerCase();
   const user = p.user || 'Anonymous';
-  const days = parseInt(p.days || '1', 10);
+  const days = parseInt(p.days ?? '1', 10);
+
+  // days=0 OU premium → sem expiração (infinito)
+  const expiry = (type === 'premium' || days === 0)
+    ? null
+    : new Date(Date.now() + days * 86400000).toISOString();
 
   const key   = genKey(type);
   const entry = {
@@ -60,9 +65,7 @@ exports.handler = async (event, context) => {
     hwid: null,
     user,
     created: new Date().toISOString(),
-    expiry: type === 'free'
-      ? new Date(Date.now() + days * 86400000).toISOString()
-      : null
+    expiry
   };
 
   try {
@@ -80,10 +83,10 @@ exports.handler = async (event, context) => {
       user,
       ip: getIP(event),
       result: 'success',
-      detail: `type=${type}, days=${days}`
+      detail: `type=${type}, days=${days === 0 ? 'infinito' : days}`
     });
 
-    return res({ success: true, key, type, user, expiry: entry.expiry });
+    return res({ success: true, key, type, user, expiry: expiry || 'unlimited' });
   } catch (e) {
     console.error('generate error:', e.message);
     await logAudit({ action: 'generate', user, ip: getIP(event), result: 'error', detail: e.message });

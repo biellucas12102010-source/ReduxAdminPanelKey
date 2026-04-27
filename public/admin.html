@@ -8,26 +8,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-  --bg0: #000000;
-  --bg1: #0a0a0a;
-  --bg2: #111111;
-  --bg3: #1a1a1a;
-  --red: #CC2233;
-  --red2: #FF2244;
-  --red3: #FF4466;
-  --gold: #DDAA33;
-  --gold2: #FFCC55;
-  --green: #22BB66;
-  --green2: #44FF88;
-  --blue: #2233CC;
-  --blue2: #4455FF;
+  --bg0: #000000; --bg1: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
+  --red: #CC2233; --red2: #FF2244; --red3: #FF4466;
+  --gold: #DDAA33; --gold2: #FFCC55;
+  --green: #22BB66; --green2: #44FF88;
+  --blue: #2233CC; --blue2: #4455FF;
   --purple: #9944FF;
-  --border: #1a1a1a;
-  --border2: #2a2a2a;
-  --border3: #3a1020;
-  --text: #E0D0D5;
-  --text2: #886677;
-  --text3: #3a2530;
+  --border: #1a1a1a; --border2: #2a2a2a; --border3: #3a1020;
+  --text: #E0D0D5; --text2: #886677; --text3: #3a2530;
   --mono: 'Share Tech Mono', monospace;
   --head: 'Orbitron', sans-serif;
   --body: 'Rajdhani', sans-serif;
@@ -36,14 +24,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100vh;background:var(--bg0);color:var(--text);font-family:var(--body);font-size:15px;overflow-x:hidden}
 
-/* GRID BACKGROUND */
 body::before{
   content:'';position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(204,34,51,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(204,34,51,0.03) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(204,34,51,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(204,34,51,0.03) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;
 }
 body::after{
   content:'';position:fixed;inset:0;
@@ -51,141 +35,62 @@ body::after{
   pointer-events:none;z-index:0;
 }
 
-/* ── LOGIN SCREEN ── */
-#loginScreen{
-  position:fixed;inset:0;z-index:9999;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,0.97);
-}
-.login-card{
-  width:400px;border:1px solid #2a0a10;border-radius:16px;
-  background:linear-gradient(160deg,#0f0505,#080202);
-  padding:40px 36px;position:relative;overflow:hidden;
-}
-.login-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--red2),var(--red3),transparent);
-}
-.login-logo{
-  text-align:center;margin-bottom:28px;
-}
-.login-logo h1{
-  font-family:var(--head);font-size:32px;font-weight:900;
-  background:linear-gradient(90deg,var(--red2),var(--red3));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  letter-spacing:5px;
-}
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.97)}
+.login-card{width:400px;border:1px solid #2a0a10;border-radius:16px;background:linear-gradient(160deg,#0f0505,#080202);padding:40px 36px;position:relative;overflow:hidden}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red2),var(--red3),transparent)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo h1{font-family:var(--head);font-size:32px;font-weight:900;background:linear-gradient(90deg,var(--red2),var(--red3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px}
 .login-logo p{font-size:12px;color:var(--text2);margin-top:4px;letter-spacing:2px;font-family:var(--mono)}
-
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;font-family:var(--mono)}
-.form-group input{
-  width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:8px;
-  color:white;padding:11px 14px;font-size:14px;font-family:var(--mono);outline:none;
-  transition:border-color .2s;
-}
+.form-group input{width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:8px;color:white;padding:11px 14px;font-size:14px;font-family:var(--mono);outline:none;transition:border-color .2s}
 .form-group input:focus{border-color:var(--red2)}
-
-.btn-login{
-  width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;
-  font-family:var(--head);font-size:14px;font-weight:700;letter-spacing:2px;
-  background:linear-gradient(135deg,var(--red),var(--red2));color:white;
-  transition:opacity .2s,transform .1s;margin-top:6px;
-}
+.btn-login{width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;font-family:var(--head);font-size:14px;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--red),var(--red2));color:white;transition:opacity .2s,transform .1s;margin-top:6px}
 .btn-login:hover{opacity:.88}
 .btn-login:active{transform:scale(.98)}
 .login-err{color:var(--red3);font-size:12px;font-family:var(--mono);margin-top:10px;text-align:center;min-height:18px}
 
-/* ── MAIN APP ── */
+/* APP */
 #app{display:none;min-height:100vh;position:relative;z-index:1}
 
-/* TOPBAR */
-.topbar{
-  height:56px;background:linear-gradient(180deg,#0f0404,#080101);
-  border-bottom:1px solid #1a0508;
-  display:flex;align-items:center;padding:0 24px;gap:16px;
-  position:sticky;top:0;z-index:100;
-}
-.topbar-logo{
-  font-family:var(--head);font-size:20px;font-weight:900;letter-spacing:3px;
-  background:linear-gradient(90deg,var(--red2),var(--red3));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
+.topbar{height:56px;background:linear-gradient(180deg,#0f0404,#080101);border-bottom:1px solid #1a0508;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100}
+.topbar-logo{font-family:var(--head);font-size:20px;font-weight:900;letter-spacing:3px;background:linear-gradient(90deg,var(--red2),var(--red3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .topbar-sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:1px}
 .topbar-spacer{flex:1}
-.topbar-badge{
-  font-size:10px;padding:4px 10px;border-radius:4px;font-family:var(--mono);
-  background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);color:var(--red3);
-}
-.btn-logout{
-  background:rgba(20,20,20,.8);border:1px solid #2a0a10;
-  color:var(--text2);padding:6px 14px;border-radius:6px;cursor:pointer;
-  font-family:var(--mono);font-size:11px;transition:all .2s;
-}
+.topbar-badge{font-size:10px;padding:4px 10px;border-radius:4px;font-family:var(--mono);background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
+.btn-logout{background:rgba(20,20,20,.8);border:1px solid #2a0a10;color:var(--text2);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:11px;transition:all .2s}
 .btn-logout:hover{background:rgba(204,34,51,.2);color:var(--red3)}
 
-/* TABS */
-.tabs{
-  display:flex;gap:0;border-bottom:1px solid #1a0508;
-  padding:0 24px;background:var(--bg1);
-}
-.tab{
-  padding:14px 22px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;
-  cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;
-  transition:all .2s;text-transform:uppercase;
-}
+.tabs{display:flex;gap:0;border-bottom:1px solid #1a0508;padding:0 24px;background:var(--bg1);overflow-x:auto}
+.tab{padding:14px 22px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;white-space:nowrap}
 .tab:hover{color:var(--text2)}
 .tab.active{color:var(--red3);border-bottom-color:var(--red2)}
 
-/* CONTENT */
-.content{padding:28px 24px;max-width:1100px;margin:0 auto}
+.content{padding:28px 24px;max-width:1200px;margin:0 auto}
 
-/* CARDS */
-.card{
-  background:linear-gradient(160deg,#0d0505,#080202);
-  border:1px solid #1a0508;border-radius:12px;padding:24px;
-  margin-bottom:20px;position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,#2a0a10,transparent);
-}
-.card-title{
-  font-family:var(--mono);font-size:11px;color:var(--text2);
-  letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;
-  display:flex;align-items:center;gap:8px;
-}
+.card{background:linear-gradient(160deg,#0d0505,#080202);border:1px solid #1a0508;border-radius:12px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#2a0a10,transparent)}
+.card-title{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px}
 .card-title::before{content:'//';color:var(--red2)}
 
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
 
-/* STATS */
-.stat{
-  background:#050000;border:1px solid #1a0508;border-radius:10px;
-  padding:16px;text-align:center;
-}
+.stat{background:#050000;border:1px solid #1a0508;border-radius:10px;padding:16px;text-align:center}
 .stat-num{font-family:var(--head);font-size:28px;font-weight:900;color:var(--red2)}
 .stat-num.green{color:var(--green2)}
 .stat-num.gold{color:var(--gold)}
 .stat-num.red{color:var(--red3)}
 .stat-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:4px;letter-spacing:1px}
 
-/* FORM */
 .fg{margin-bottom:14px}
 .fg label{display:block;font-size:10px;color:var(--text2);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
-.fg input,.fg select{
-  width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:7px;
-  color:white;padding:9px 13px;font-size:13px;font-family:var(--mono);outline:none;
-  transition:border-color .2s;
-}
+.fg input,.fg select{width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:9px 13px;font-size:13px;font-family:var(--mono);outline:none;transition:border-color .2s}
 .fg input:focus,.fg select:focus{border-color:var(--red2)}
 .fg select option{background:#0d0404}
 
-.btn{
-  padding:10px 20px;border:none;border-radius:7px;cursor:pointer;
-  font-family:var(--mono);font-size:12px;letter-spacing:1px;transition:all .2s;
-}
+.btn{padding:10px 20px;border:none;border-radius:7px;cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:1px;transition:all .2s}
 .btn-primary{background:linear-gradient(135deg,var(--red),var(--red2));color:white}
 .btn-primary:hover{opacity:.85}
 .btn-danger{background:linear-gradient(135deg,#7A0010,#AA0020);color:white}
@@ -194,86 +99,69 @@ body::after{
 .btn-success:hover{opacity:.85}
 .btn-gold{background:linear-gradient(135deg,#5A3A00,#886010);color:white}
 .btn-gold:hover{opacity:.85}
+.btn-purple{background:linear-gradient(135deg,#4A1A8A,#7733CC);color:white}
+.btn-purple:hover{opacity:.85}
 .btn-sm{padding:5px 12px;font-size:10px}
 .btn-full{width:100%;padding:11px}
 
-/* KEY RESULT BOX */
-.key-box{
-  background:#050000;border:1px solid #2a0a10;border-radius:8px;
-  padding:12px 16px;font-family:var(--mono);font-size:13px;
-  display:none;margin-top:12px;
-}
+.key-box{background:#050000;border:1px solid #2a0a10;border-radius:8px;padding:12px 16px;font-family:var(--mono);font-size:13px;display:none;margin-top:12px;position:relative;overflow:hidden}
 .key-box.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .key-box .key-text{flex:1;word-break:break-all}
 .key-box .key-text.premium{color:var(--gold)}
 .key-box .key-text.free{color:var(--green2)}
+.key-box::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red2),transparent);animation:scanline 2s linear infinite;pointer-events:none}
+@keyframes scanline{0%{top:-10%}100%{top:110%}}
 
-/* ALERT */
-.alert{
-  padding:10px 14px;border-radius:7px;font-family:var(--mono);font-size:12px;
-  margin-top:10px;display:none;
-}
+.alert{padding:10px 14px;border-radius:7px;font-family:var(--mono);font-size:12px;margin-top:10px;display:none}
 .alert.show{display:block}
 .alert-ok{background:rgba(34,187,102,.1);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
 .alert-err{background:rgba(204,34,51,.1);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
 .alert-info{background:rgba(180,20,40,.1);border:1px solid rgba(180,20,40,.3);color:var(--red3)}
 
-/* TABLE */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;padding:10px 12px;color:var(--text3);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;border-bottom:1px solid #1a0508;text-transform:uppercase}
 td{padding:9px 12px;border-bottom:1px solid rgba(26,5,8,.8);color:var(--text);vertical-align:middle;font-family:var(--mono);font-size:11px}
 tr:hover td{background:rgba(204,34,51,.04)}
 
-/* PILLS */
 .pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:9px;font-family:var(--mono);font-weight:700;letter-spacing:1px}
 .pill-premium{background:rgba(221,170,51,.15);border:1px solid rgba(221,170,51,.3);color:var(--gold)}
 .pill-free{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
 .pill-valid{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
 .pill-invalid{background:rgba(204,34,51,.12);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
 .pill-used{background:rgba(153,68,255,.12);border:1px solid rgba(153,68,255,.3);color:var(--purple)}
+.pill-active{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
+.pill-suspended{background:rgba(204,34,51,.12);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
 
-/* HWID */
 .hwid-tag{font-family:var(--mono);font-size:10px;color:var(--text3);background:#050000;border:1px solid #1a0508;border-radius:4px;padding:2px 6px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
 
-/* API DOCS */
-.api-block{background:#050000;border:1px solid #1a0508;border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:11px;line-height:1.8;margin-bottom:14px}
-.c-comment{color:var(--text3)}
-.c-key{color:var(--red3)}
-.c-val{color:var(--green2)}
-.c-str{color:var(--gold)}
-.c-url{color:var(--red2)}
-
 .sep{height:1px;background:linear-gradient(90deg,transparent,#2a0a10,transparent);margin:20px 0}
-
-/* COPY BTN */
 .copy-btn{background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);color:var(--red3);padding:5px 10px;border-radius:5px;cursor:pointer;font-family:var(--mono);font-size:10px;white-space:nowrap;transition:all .2s}
 .copy-btn:hover{background:rgba(204,34,51,.35)}
 
-/* TAB PANELS */
 .panel{display:none}
 .panel.active{display:block}
 
-/* SCAN ANIMATION */
-@keyframes scanline{0%{top:-10%}100%{top:110%}}
-.key-box::after{
-  content:'';position:absolute;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--red2),transparent);
-  animation:scanline 2s linear infinite;pointer-events:none;
-}
-.key-box{position:relative;overflow:hidden}
+.api-block{background:#050000;border:1px solid #1a0508;border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:11px;line-height:1.8;margin-bottom:14px}
+.c-comment{color:var(--text3)}.c-key{color:var(--red3)}.c-val{color:var(--green2)}.c-str{color:var(--gold)}.c-url{color:var(--red2)}
 
-/* GLOW */
 .glow-red{box-shadow:0 0 20px rgba(204,34,51,.2)}
-.glow-gold{box-shadow:0 0 20px rgba(221,170,51,.2)}
 
-/* RESPONSIVE */
+/* Keys Login user card */
+.user-card{background:#050000;border:1px solid #2a0a10;border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:16px;font-weight:900;color:white;flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-family:var(--head);font-size:13px;color:var(--text);letter-spacing:1px}
+.user-email{font-family:var(--mono);font-size:10px;color:var(--text2);margin-top:2px}
+.user-key{font-family:var(--mono);font-size:10px;color:var(--gold);margin-top:3px;word-break:break-all}
+.user-actions{display:flex;gap:6px;flex-wrap:wrap}
+
 @media(max-width:700px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">
@@ -282,7 +170,7 @@ tr:hover td{background:rgba(204,34,51,.04)}
     </div>
     <div class="form-group">
       <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="admin@rbxexploit.com" autocomplete="off"/>
+      <input type="email" id="loginEmail" placeholder="admin@rbx.com" autocomplete="off"/>
     </div>
     <div class="form-group">
       <label>Senha</label>
@@ -293,32 +181,31 @@ tr:hover td{background:rgba(204,34,51,.04)}
   </div>
 </div>
 
-<!-- ═══════════════════════ APP ═══════════════════════ -->
+<!-- APP -->
 <div id="app">
-
   <div class="topbar">
     <div>
       <div class="topbar-logo">RBX KEY</div>
-      <div class="topbar-sub">// KEY MANAGEMENT PANEL V3</div>
+      <div class="topbar-sub">// KEY MANAGEMENT PANEL V4</div>
     </div>
     <div class="topbar-spacer"></div>
     <span class="topbar-badge">ADMIN</span>
-    <span id="apiKeyDisplay" style="font-family:var(--mono);font-size:10px;color:var(--text3);cursor:pointer" title="Clique para copiar" onclick="copyText(adminApiKey)"></span>
     <button class="btn-logout" onclick="doLogout()">SAIR</button>
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('dashboard')">Dashboard</div>
-    <div class="tab" onclick="switchTab('generate')">Gerar Key</div>
-    <div class="tab" onclick="switchTab('validate')">Validar Key</div>
-    <div class="tab" onclick="switchTab('keys')">Todas as Keys</div>
-    <div class="tab" onclick="switchTab('hwid')">HWID</div>
-    <div class="tab" onclick="switchTab('api')">API / Bot</div>
+    <div class="tab active"  onclick="switchTab('dashboard')">Dashboard</div>
+    <div class="tab"         onclick="switchTab('generate')">Gerar Key</div>
+    <div class="tab"         onclick="switchTab('validate')">Validar Key</div>
+    <div class="tab"         onclick="switchTab('keys')">Todas as Keys</div>
+    <div class="tab"         onclick="switchTab('userkeys')">Keys Login</div>
+    <div class="tab"         onclick="switchTab('hwid')">HWID</div>
+    <div class="tab"         onclick="switchTab('api')">API / Bot</div>
   </div>
 
   <div class="content">
 
-    <!-- ── DASHBOARD ── -->
+    <!-- DASHBOARD -->
     <div class="panel active" id="panel-dashboard">
       <div class="grid3">
         <div class="stat"><div class="stat-num" id="s-total">0</div><div class="stat-lbl">// KEYS GERADAS</div></div>
@@ -339,29 +226,29 @@ tr:hover td{background:rgba(204,34,51,.04)}
       </div>
     </div>
 
-    <!-- ── GERAR KEY ── -->
+    <!-- GERAR KEY -->
     <div class="panel" id="panel-generate">
       <div class="grid2">
         <div class="card glow-red">
           <div class="card-title">Gerar Nova Key</div>
           <div class="fg">
             <label>Tipo de Key</label>
-            <select id="genType">
-              <option value="premium">Premium — KEYP_ (20 chars)</option>
-              <option value="free">Free — KEYF_ (15 chars)</option>
+            <select id="genType" onchange="document.getElementById('genDurGroup').style.display=this.value==='free'?'block':'none'">
+              <option value="premium">Premium — KEYP_ (sem expiração)</option>
+              <option value="free">Free — KEYF_</option>
             </select>
           </div>
           <div class="fg">
             <label>Usuário / Discord ID (opcional)</label>
             <input type="text" id="genUser" placeholder="Ex: RBXUser#1234"/>
           </div>
-          <div class="fg" id="genDurGroup">
+          <div class="fg" id="genDurGroup" style="display:none">
             <label>Duração (Free)</label>
             <select id="genDur">
-              <option value="24h">24 horas</option>
-              <option value="7d">7 dias</option>
-              <option value="30d">30 dias</option>
-              <option value="inf">Ilimitado</option>
+              <option value="1">24 horas</option>
+              <option value="7">7 dias</option>
+              <option value="30">30 dias</option>
+              <option value="0">Ilimitado</option>
             </select>
           </div>
           <button class="btn btn-primary btn-full" onclick="generateKey()">// GERAR KEY</button>
@@ -371,26 +258,23 @@ tr:hover td{background:rgba(204,34,51,.04)}
           </div>
           <div class="alert" id="genAlert"></div>
         </div>
-
         <div class="card">
           <div class="card-title">Informações do Formato</div>
           <div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2)">
             <div style="margin-bottom:12px">
               <span class="pill pill-premium">PREMIUM</span>
               <span style="margin-left:8px;color:var(--gold)">KEYP_</span>
-              <span style="color:var(--text3)"> + 20 chars [A-Z, 0-9]</span><br>
-              <span style="color:var(--text3);font-size:10px;padding-left:4px">Ex: KEYP_A3FX9KZMQR7BWPL2TYH</span>
+              <span style="color:var(--text3)"> + 20 chars — SEM expiração</span>
             </div>
             <div class="sep"></div>
             <div>
               <span class="pill pill-free">FREE</span>
               <span style="margin-left:8px;color:var(--green2)">KEYF_</span>
-              <span style="color:var(--text3)"> + 15 chars [A-Z, 0-9]</span><br>
-              <span style="color:var(--text3);font-size:10px;padding-left:4px">Ex: KEYF_9KWZMRXB3PLTY</span>
+              <span style="color:var(--text3)"> + 15 chars — duração configurável</span><br>
+              <span style="color:var(--text3);font-size:10px;padding-left:4px">Selecione "Ilimitado" para key free sem expiração</span>
             </div>
             <div class="sep"></div>
             <div style="color:var(--text3);font-size:10px;line-height:1.8">
-              <div>// Cada key é única e gerada com crypto-random</div>
               <div>// Keys são vinculadas ao HWID no primeiro uso</div>
               <div>// O executor valida via API antes de aceitar</div>
               <div>// Keys revogadas são rejeitadas imediatamente</div>
@@ -400,7 +284,7 @@ tr:hover td{background:rgba(204,34,51,.04)}
       </div>
     </div>
 
-    <!-- ── VALIDAR KEY ── -->
+    <!-- VALIDAR KEY -->
     <div class="panel" id="panel-validate">
       <div class="grid2">
         <div class="card">
@@ -411,7 +295,7 @@ tr:hover td{background:rgba(204,34,51,.04)}
           </div>
           <div style="display:flex;gap:10px">
             <button class="btn btn-primary" style="flex:1" onclick="checkKey()">VERIFICAR</button>
-            <button class="btn btn-danger" style="flex:1" onclick="revokeKey()">REVOGAR</button>
+            <button class="btn btn-danger" style="flex:1" onclick="revokeKey('removed-key')">REVOGAR</button>
           </div>
           <div class="alert" id="checkAlert"></div>
           <div id="keyDetailBox" style="display:none;margin-top:14px">
@@ -426,7 +310,6 @@ tr:hover td{background:rgba(204,34,51,.04)}
             </div>
           </div>
         </div>
-
         <div class="card">
           <div class="card-title">Resetar HWID de uma Key</div>
           <div class="fg">
@@ -438,20 +321,20 @@ tr:hover td{background:rgba(204,34,51,.04)}
           <div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8">
             <div>// O HWID é vinculado no primeiro uso da key</div>
             <div>// Resetar permite trocar de máquina</div>
-            <div>// O executor envia o HWID automaticamente</div>
+            <div>// O usuário será notificado automaticamente</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── TODAS AS KEYS ── -->
+    <!-- TODAS AS KEYS -->
     <div class="panel" id="panel-keys">
       <div class="card">
         <div class="card-title">Todas as Keys Geradas</div>
         <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
           <input type="text" id="filterInput" placeholder="Buscar key ou usuário..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderAllKeys()"/>
           <select id="filterType" style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
-            <option value="all">Todos</option>
+            <option value="all">Todos os tipos</option>
             <option value="premium">Premium</option>
             <option value="free">Free</option>
           </select>
@@ -470,44 +353,79 @@ tr:hover td{background:rgba(204,34,51,.04)}
       </div>
     </div>
 
-    <!-- ── HWID ── -->
-    <div class="panel" id="panel-hwid">
+    <!-- KEYS LOGIN -->
+    <div class="panel" id="panel-userkeys">
       <div class="card">
-        <div class="card-title">Gerenciamento de HWID</div>
+        <div class="card-title">Contas Registradas no Executor</div>
         <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
-          // O sistema HWID vincula cada key à máquina do usuário.<br>
-          // No primeiro uso, o executor envia o HWID do PC.<br>
-          // A partir daí, a key só funciona naquele hardware.<br>
-          // Você pode resetar o HWID para permitir troca de máquina.
+          // Usuários que fizeram login no executor com email + senha + key.<br>
+          // Você pode resetar o HWID, remover ou resetar a key de qualquer conta.<br>
+          // O usuário será notificado automaticamente no executor.
         </p>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário</th><th>HWID Vinculado</th><th>Vinculado em</th><th>Ações</th></tr></thead>
-            <tbody id="hwidTable"><tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Nenhum HWID vinculado ainda</td></tr></tbody>
-          </table>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input type="text" id="userFilter" placeholder="Buscar por email ou nome..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderUsers()"/>
+          <button class="btn btn-primary" onclick="loadUsers()">// ATUALIZAR</button>
+        </div>
+        <div id="usersContainer">
+          <div style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">
+            Clique em ATUALIZAR para carregar as contas
+          </div>
         </div>
       </div>
 
+      <!-- Modal de notificação manual -->
       <div class="card">
-        <div class="card-title">Como o HWID funciona no Executor</div>
-        <div class="api-block">
-<span class="c-comment">// No MainWindow.xaml.cs — gerar HWID da máquina</span>
-<br><span class="c-key">private static string</span> <span class="c-val">GetHWID</span>()
-<br>{
-<br>&nbsp;&nbsp;<span class="c-key">var</span> cpu = <span class="c-key">new</span> ManagementObjectSearcher(<span class="c-str">"SELECT ProcessorId FROM Win32_Processor"</span>);
-<br>&nbsp;&nbsp;<span class="c-key">var</span> disk = <span class="c-key">new</span> ManagementObjectSearcher(<span class="c-str">"SELECT SerialNumber FROM Win32_DiskDrive"</span>);
-<br>&nbsp;&nbsp;<span class="c-key">string</span> raw = cpu.Get().Cast&lt;ManagementObject&gt;().First()[<span class="c-str">"ProcessorId"</span>].ToString()
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ disk.Get().Cast&lt;ManagementObject&gt;().First()[<span class="c-str">"SerialNumber"</span>].ToString();
-<br>&nbsp;&nbsp;<span class="c-key">using var</span> sha = SHA256.Create();
-<br>&nbsp;&nbsp;<span class="c-key">return</span> Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(raw)))[..<span class="c-val">16</span>];
-<br>}
-<br><br><span class="c-comment">// Chamar API de validação com HWID</span>
-<br><span class="c-key">var</span> url = <span class="c-str">$"<span class="c-url">https://SEU-SITE.netlify.app</span>/api/validate?key={key}&hwid={GetHWID()}"</span>;
+        <div class="card-title">Enviar Notificação Manual</div>
+        <div class="grid2">
+          <div>
+            <div class="fg">
+              <label>Email do usuário</label>
+              <input type="email" id="notifEmail" placeholder="usuario@email.com"/>
+            </div>
+            <div class="fg">
+              <label>Motivo</label>
+              <select id="notifReason">
+                <option value="reset-hwid">Reseted HWID</option>
+                <option value="removed-key">Removed Key</option>
+                <option value="reset-key">Reseted Key</option>
+                <option value="generic">Aviso Geral</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Mensagem</label>
+              <input type="text" id="notifMsg" placeholder="Mensagem para o usuário..."/>
+            </div>
+            <button class="btn btn-purple btn-full" onclick="sendNotification()">// ENVIAR NOTIFICAÇÃO</button>
+            <div class="alert" id="notifAlert"></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);line-height:2">
+            <div>// A notificação aparece no executor do usuário</div>
+            <div>// Em um card substituindo a tela principal</div>
+            <div>// Com opção de inserir nova key (quando aplicável)</div>
+            <div style="margin-top:12px;color:var(--text2)">Motivos disponíveis:</div>
+            <div>→ <span style="color:var(--purple)">Reseted HWID</span> — HWID foi resetado</div>
+            <div>→ <span style="color:var(--red3)">Removed Key</span> — key foi removida</div>
+            <div>→ <span style="color:var(--gold)">Reseted Key</span> — key foi resetada</div>
+            <div>→ <span style="color:var(--text2)">Aviso Geral</span> — mensagem livre</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ── API / BOT ── -->
+    <!-- HWID -->
+    <div class="panel" id="panel-hwid">
+      <div class="card">
+        <div class="card-title">Gerenciamento de HWID</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário</th><th>HWID Vinculado</th><th>Ações</th></tr></thead>
+            <tbody id="hwidTable"><tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhum HWID vinculado ainda</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- API / BOT -->
     <div class="panel" id="panel-api">
       <div class="grid2">
         <div class="card">
@@ -519,500 +437,356 @@ tr:hover td{background:rgba(204,34,51,.04)}
               <button class="copy-btn" onclick="copyText(adminApiKey)">COPIAR</button>
             </div>
           </div>
-
           <div class="sep"></div>
-
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text2);margin-bottom:6px">// GET — Gerar key</div>
           <div class="api-block">
-<span class="c-comment">GET /api/generate</span>
-<br>?<span class="c-key">type</span>=<span class="c-val">premium</span>|<span class="c-val">free</span>
-<br>&amp;<span class="c-key">user</span>=<span class="c-str">"DiscordUser#1234"</span>
-<br>&amp;<span class="c-key">token</span>=<span class="c-str">ADMIN_KEY</span>
-<br><br><span class="c-comment">// Resposta:</span>
-<br>{ <span class="c-key">"success"</span>: <span class="c-val">true</span>,
-<br>&nbsp;&nbsp;<span class="c-key">"key"</span>: <span class="c-str">"KEYP_..."</span>,
-<br>&nbsp;&nbsp;<span class="c-key">"type"</span>: <span class="c-str">"premium"</span>,
-<br>&nbsp;&nbsp;<span class="c-key">"expiry"</span>: <span class="c-str">"unlimited"</span> }
-          </div>
-
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text2);margin-bottom:6px;margin-top:12px">// GET — Validar key + HWID</div>
-          <div class="api-block">
-<span class="c-comment">GET /api/validate</span>
-<br>?<span class="c-key">key</span>=<span class="c-str">"KEYP_..."</span>
-<br>&amp;<span class="c-key">hwid</span>=<span class="c-str">"A3F9B2C1D4E5F6G7"</span>
-<br><br><span class="c-comment">// Resposta OK:</span>
-<br>{ <span class="c-key">"valid"</span>: <span class="c-val">true</span>,
-<br>&nbsp;&nbsp;<span class="c-key">"type"</span>: <span class="c-str">"premium"</span>,
-<br>&nbsp;&nbsp;<span class="c-key">"hwid_ok"</span>: <span class="c-val">true</span> }
-<br><br><span class="c-comment">// Resposta HWID errado:</span>
-<br>{ <span class="c-key">"valid"</span>: <span class="c-val">false</span>,
-<br>&nbsp;&nbsp;<span class="c-key">"error"</span>: <span class="c-str">"HWID_MISMATCH"</span> }
+<span class="c-comment">// Endpoints principais</span>
+<br>GET <span class="c-url">/api/validate</span>?key=&hwid=
+<br>GET <span class="c-url">/api/generate</span>?token=&type=&user=&days=
+<br>GET <span class="c-url">/api/revoke</span>?token=&key=&reason=
+<br>GET <span class="c-url">/api/reset-hwid</span>?token=&key=
+<br>GET <span class="c-url">/api/list</span>?token=
+<br>GET <span class="c-url">/api/audit</span>?token=&limit=50
+<br><br><span class="c-comment">// Sistema de usuários</span>
+<br>POST <span class="c-url">/api/register</span>  <span class="c-comment">body:{email,password,key,name}</span>
+<br>GET  <span class="c-url">/api/register</span>?action=login&email=&password=
+<br>GET  <span class="c-url">/api/register</span>?action=list&token=
+<br>GET  <span class="c-url">/api/register</span>?action=notify&token=&email=&msg=&reason=
           </div>
         </div>
-
         <div class="card">
-          <div class="card-title">Código do Bot Discord</div>
-
-          <div style="display:flex;gap:8px;margin-bottom:14px">
-            <button id="btnLangPy" onclick="switchBotLang('py')"
-              style="flex:1;padding:8px;border:1px solid #DDAA33;border-radius:6px;background:rgba(221,170,51,.15);color:#DDAA33;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s">
-              🐍 Python
-            </button>
-            <button id="btnLangJs" onclick="switchBotLang('js')"
-              style="flex:1;padding:8px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--text2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s">
-              ⚡ JavaScript
-            </button>
-          </div>
-
-          <!-- PYTHON -->
-          <div id="botBlockPy">
-            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:8px">
-              // pip install discord.py requests
-            </div>
-            <div class="api-block" style="font-size:10px;line-height:1.9">
-<span class="c-comment"># rbx_bot.py</span>
-<br><span class="c-key">import</span> discord, requests
-<br><span class="c-key">from</span> discord.ext <span class="c-key">import</span> commands
-<br><br>bot = commands.Bot(command_prefix=<span class="c-str">'!'</span>)
-<br>API = <span class="c-str">"https://SEU-SITE.netlify.app/api"</span>
-<br>ADMIN = <span class="c-str" id="botAdminKeyPy">"ADMIN_KEY_GERADA_NO_PAINEL"</span>
-<br><br>@bot.command()
-<br><span class="c-key">async def</span> <span class="c-val">getkey</span>(ctx, tipo=<span class="c-str">"premium"</span>):
-<br>&nbsp;&nbsp;r = requests.get(f<span class="c-str">"{API}/generate"</span>,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;params={<span class="c-str">"type"</span>: tipo,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"user"</span>: str(ctx.author),
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"token"</span>: ADMIN})
-<br>&nbsp;&nbsp;data = r.json()
-<br>&nbsp;&nbsp;<span class="c-key">if</span> data[<span class="c-str">"success"</span>]:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> ctx.author.send(
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f<span class="c-str">"✅ Sua key:\n`{data['key']}`"</span>)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> ctx.send(<span class="c-str">"Key enviada no DM!"</span>)
-<br>&nbsp;&nbsp;<span class="c-key">else</span>:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> ctx.send(<span class="c-str">"Erro ao gerar key."</span>)
-<br><br>bot.run(<span class="c-str">"SEU_TOKEN_DISCORD"</span>)
-            </div>
-            <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="copyBotCode('py')">// COPIAR CÓDIGO PYTHON</button>
-          </div>
-
-          <!-- JAVASCRIPT -->
-          <div id="botBlockJs" style="display:none">
-            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:8px">
-              // npm install discord.js axios
-            </div>
-            <div class="api-block" style="font-size:10px;line-height:1.9">
-<span class="c-comment">// rbx_bot.js</span>
-<br><span class="c-key">const</span> { Client, GatewayIntentBits } = <span class="c-val">require</span>(<span class="c-str">'discord.js'</span>)
-<br><span class="c-key">const</span> axios = <span class="c-val">require</span>(<span class="c-str">'axios'</span>)
-<br><br><span class="c-key">const</span> API   = <span class="c-str">"https://SEU-SITE.netlify.app/api"</span>
-<br><span class="c-key">const</span> ADMIN = <span class="c-str" id="botAdminKeyJs">"ADMIN_KEY_GERADA_NO_PAINEL"</span>
-<br><span class="c-key">const</span> TOKEN = <span class="c-str">"SEU_TOKEN_DISCORD"</span>
-<br><br><span class="c-key">const</span> client = <span class="c-key">new</span> Client({
-<br>&nbsp;&nbsp;intents: [GatewayIntentBits.Guilds,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;GatewayIntentBits.GuildMessages,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;GatewayIntentBits.MessageContent]
-<br>})
-<br><br>client.on(<span class="c-str">'messageCreate'</span>, <span class="c-key">async</span> msg => {
-<br>&nbsp;&nbsp;<span class="c-key">if</span> (!msg.content.startsWith(<span class="c-str">'!'</span>)) <span class="c-key">return</span>
-<br>&nbsp;&nbsp;<span class="c-key">const</span> [cmd, tipo = <span class="c-str">'premium'</span>] = msg.content.slice(<span class="c-val">1</span>).split(<span class="c-str">' '</span>)
-<br>&nbsp;&nbsp;<span class="c-key">if</span> (cmd !== <span class="c-str">'getkey'</span>) <span class="c-key">return</span>
-<br>&nbsp;&nbsp;<span class="c-key">const</span> { data } = <span class="c-key">await</span> axios.get(<span class="c-str">`${API}/generate`</span>, {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;params: { type: tipo, user: msg.author.tag, token: ADMIN }
-<br>&nbsp;&nbsp;})
-<br>&nbsp;&nbsp;<span class="c-key">if</span> (data.success) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> msg.author.send(<span class="c-str">`✅ Sua key:\n\`${data.key}\``</span>)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> msg.reply(<span class="c-str">'Key enviada no DM!'</span>)
-<br>&nbsp;&nbsp;} <span class="c-key">else</span> {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> msg.reply(<span class="c-str">'Erro ao gerar key.'</span>)
-<br>&nbsp;&nbsp;}
-<br>})
-<br><br>client.login(TOKEN)
-            </div>
-            <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="copyBotCode('js')">// COPIAR CÓDIGO JAVASCRIPT</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Integração no Executor C# (MainWindow.xaml.cs)</div>
-        <div class="api-block" style="font-size:10px;line-height:1.9">
-<span class="c-comment">// Substitui o ValidateKey local por validação via API</span>
-<br><span class="c-key">private async</span> Task&lt;<span class="c-val">bool</span>&gt; <span class="c-val">ValidateKeyOnline</span>(<span class="c-key">string</span> key)
-<br>{
-<br>&nbsp;&nbsp;<span class="c-key">string</span> hwid = GetHWID(); <span class="c-comment">// função acima</span>
-<br>&nbsp;&nbsp;<span class="c-key">using var</span> http = <span class="c-key">new</span> HttpClient();
-<br>&nbsp;&nbsp;<span class="c-key">var</span> url = <span class="c-str">$"https://SEU-SITE.netlify.app/api/validate?key={key}&hwid={hwid}"</span>;
-<br>&nbsp;&nbsp;<span class="c-key">var</span> res = <span class="c-key">await</span> http.GetStringAsync(url);
-<br>&nbsp;&nbsp;<span class="c-key">var</span> json = System.Text.Json.JsonDocument.Parse(res);
-<br>&nbsp;&nbsp;<span class="c-key">return</span> json.RootElement.GetProperty(<span class="c-str">"valid"</span>).GetBoolean();
+          <div class="card-title">Fluxo do Executor</div>
+          <div class="api-block" style="font-size:10px;line-height:1.9">
+<span class="c-comment">// 1. Usuário abre o executor</span>
+<br><span class="c-comment">// 2. Checa notificações pendentes via login</span>
+<br><span class="c-comment">// 3. Se houver notificação → mostra card de aviso</span>
+<br><span class="c-comment">// 4. Caso contrário → tela normal</span>
+<br><br><span class="c-key">var</span> loginUrl = <span class="c-str">$"{API}/register?action=login&email={email}&password={pass}"</span>;
+<br><span class="c-key">var</span> res = <span class="c-key">await</span> http.GetStringAsync(loginUrl);
+<br><span class="c-key">var</span> data = JsonDocument.Parse(res);
+<br><br><span class="c-comment">// Se tiver notificações pendentes:</span>
+<br><span class="c-key">var</span> notifs = data.RootElement.GetProperty(<span class="c-str">"notifications"</span>);
+<br><span class="c-key">if</span> (notifs.GetArrayLength() > 0) {
+<br>&nbsp;&nbsp;ShowNotificationCard(notifs[0]); <span class="c-comment">// mostra o card</span>
 <br>}
-<br><br><span class="c-comment">// Chamar no TryValidateInputKey() antes de HideKeyOverlay</span>
-<br><span class="c-key">var</span> online = <span class="c-key">await</span> ValidateKeyOnline(key);
-<br><span class="c-key">if</span> (!online) { ShowError(<span class="c-str">"Key inválida ou HWID incompatível."</span>); <span class="c-key">return</span>; }
+          </div>
         </div>
       </div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /app -->
+  </div>
+</div>
 
 <script>
-// ══════════════════════════════════════════
-//  DADOS
-// ══════════════════════════════════════════
-const ADMIN_EMAIL = 'RBXexploit@gmail.com';
-const ADMIN_PASS  = 'RBX1#';
-
-// Token de admin — deve bater com a env var REDUX_ADMIN_TOKEN no Netlify
+const ADMIN_EMAIL    = 'RBXexploit@gmail.com';
+const ADMIN_PASS     = 'RBX1#';
 const ADMIN_API_TOKEN = 'redux-admin-secret';
 
-let keys = [];
+let keys    = [];
+let users   = [];
 let lastKey = '';
 let adminApiKey = ADMIN_API_TOKEN;
-
-// API base — auto-detecta o domínio atual
 const API = window.location.origin + '/api';
 
-// ══════════════════════════════════════════
-//  LOGIN
-// ══════════════════════════════════════════
-function doLogin(){
-  const e = document.getElementById('loginEmail').value.trim();
-  const p = document.getElementById('loginPass').value;
+// ── LOGIN ──────────────────────────────────────────────
+function doLogin() {
+  const e   = document.getElementById('loginEmail').value.trim();
+  const p   = document.getElementById('loginPass').value;
   const err = document.getElementById('loginErr');
-  if(e === ADMIN_EMAIL && p === ADMIN_PASS){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('app').style.display='block';
-    document.getElementById('apiKeyDisplay').textContent = adminApiKey;
+  if (e === ADMIN_EMAIL && p === ADMIN_PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
     document.getElementById('adminKeyShow').textContent = adminApiKey;
     loadAllKeys().then(() => { updateStats(); renderRecent(); });
   } else {
     err.textContent = '// CREDENCIAIS INVÁLIDAS';
-    setTimeout(()=>err.textContent='',2500);
+    setTimeout(() => err.textContent = '', 2500);
   }
 }
 
-function doLogout(){
-  document.getElementById('app').style.display='none';
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('loginEmail').value='';
-  document.getElementById('loginPass').value='';
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPass').value  = '';
 }
 
-// ══════════════════════════════════════════
-//  TABS
-// ══════════════════════════════════════════
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    const tabs=['dashboard','generate','validate','keys','hwid','api'];
-    t.classList.toggle('active', tabs[i]===name);
-  });
-  document.querySelectorAll('.panel').forEach(p=>{
-    p.classList.toggle('active', p.id==='panel-'+name);
-  });
-  if(name==='keys') renderAllKeys();
-  if(name==='hwid') renderHWID();
-  if(name==='dashboard') updateStats();
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+// ── TABS ───────────────────────────────────────────────
+const TAB_IDS = ['dashboard','generate','validate','keys','userkeys','hwid','api'];
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', TAB_IDS[i] === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+  if (name === 'keys')     renderAllKeys();
+  if (name === 'hwid')     renderHWID();
+  if (name === 'dashboard') updateStats();
+  if (name === 'userkeys') loadUsers();
 }
 
-// ══════════════════════════════════════════
-//  GERAR KEY
-// ══════════════════════════════════════════
-const CHARS_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-function randStr(n, set){
-  let r='';
-  const arr = new Uint32Array(n);
-  crypto.getRandomValues(arr);
-  for(let i=0;i<n;i++) r+=set[arr[i]%set.length];
-  return r;
-}
-
-async function generateKey(){
+// ── GERAR KEY ──────────────────────────────────────────
+async function generateKey() {
   const type = document.getElementById('genType').value;
   const user = document.getElementById('genUser').value.trim() || 'Anonymous';
-  const dur  = document.getElementById('genDur').value;
-  const daysMap = {'24h':1,'7d':7,'30d':30,'inf':36500};
-  const days = daysMap[dur] || 1;
+  const days = type === 'premium' ? 0 : parseInt(document.getElementById('genDur').value);
 
-  showAlert('genAlert','ok','Gerando key...');
+  showAlert('genAlert', 'ok', 'Gerando key...');
   try {
-    const r = await fetch(`${API}/generate?token=${adminApiKey}&type=${type}&user=${encodeURIComponent(user)}&days=${days}`);
+    const r    = await fetch(`${API}/generate?token=${adminApiKey}&type=${type}&user=${encodeURIComponent(user)}&days=${days}`);
     const data = await r.json();
-    if(!data.success) { showAlert('genAlert','err','Erro ao gerar: ' + (data.error||'desconhecido')); return; }
+    if (!data.success) { showAlert('genAlert', 'err', 'Erro: ' + (data.error || 'desconhecido')); return; }
 
     lastKey = data.key;
     const kt = document.getElementById('genKeyText');
     kt.textContent = data.key;
-    kt.className = 'key-text ' + type;
+    kt.className   = 'key-text ' + type;
     document.getElementById('genResult').classList.add('show');
-    showAlert('genAlert','ok',`Key ${type.toUpperCase()} gerada para ${user}`);
-
-    await loadAllKeys();
-    updateStats(); renderRecent();
-  } catch(e) {
-    showAlert('genAlert','err','Erro de rede: ' + e.message);
-  }
+    showAlert('genAlert', 'ok', `Key ${type.toUpperCase()} gerada para ${user}`);
+    await loadAllKeys(); updateStats(); renderRecent();
+  } catch (e) { showAlert('genAlert', 'err', 'Erro de rede: ' + e.message); }
 }
 
-// ══════════════════════════════════════════
-//  VERIFICAR / REVOGAR KEY
-// ══════════════════════════════════════════
-async function checkKey(){
+// ── VERIFICAR / REVOGAR ────────────────────────────────
+async function checkKey() {
   const val = document.getElementById('checkKeyInput').value.trim();
   const box = document.getElementById('keyDetailBox');
-  if(!val){ showAlert('checkAlert','err','Digite uma key.'); return; }
-
-  const k = keys.find(x=>x.key===val);
-  if(!k){ showAlert('checkAlert','err','Key não encontrada. Recarregue a lista.'); box.style.display='none'; return; }
-
+  if (!val) { showAlert('checkAlert', 'err', 'Digite uma key.'); return; }
+  const k = keys.find(x => x.key === val);
+  if (!k) { showAlert('checkAlert', 'err', 'Key não encontrada.'); box.style.display = 'none'; return; }
   document.getElementById('di-key').textContent  = k.key;
-  document.getElementById('di-type').innerHTML   = `<span class="pill ${k.type==='premium'?'pill-premium':'pill-free'}">${k.type.toUpperCase()}</span>`;
+  document.getElementById('di-type').innerHTML   = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
   document.getElementById('di-user').textContent = k.user || '-';
   document.getElementById('di-exp').textContent  = k.expiry || 'Ilimitado';
-  document.getElementById('di-hwid').textContent = k.hwid || '(não vinculado)';
+  document.getElementById('di-hwid').textContent = k.hwid  || '(não vinculado)';
   document.getElementById('di-status').innerHTML = k.valid
     ? '<span class="pill pill-valid">VÁLIDA</span>'
     : '<span class="pill pill-invalid">REVOGADA</span>';
-  box.style.display='block';
-  showAlert('checkAlert','ok','Key encontrada — detalhes abaixo.');
+  box.style.display = 'block';
+  showAlert('checkAlert', 'ok', 'Key encontrada — detalhes abaixo.');
 }
 
-async function revokeKey(){
+async function revokeKey(reason = 'removed-key') {
   const val = document.getElementById('checkKeyInput').value.trim();
-  if(!val){ showAlert('checkAlert','err','Digite uma key.'); return; }
+  if (!val) { showAlert('checkAlert', 'err', 'Digite uma key.'); return; }
   try {
-    const r = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(val)}`);
+    const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(val)}&reason=${reason}`);
     const data = await r.json();
-    if(data.success){
-      showAlert('checkAlert','ok','Key revogada com sucesso.');
-      document.getElementById('keyDetailBox').style.display='none';
+    if (data.success) {
+      showAlert('checkAlert', 'ok', 'Key revogada. Usuário notificado.');
+      document.getElementById('keyDetailBox').style.display = 'none';
       await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID();
-    } else {
-      showAlert('checkAlert','err','Erro: ' + (data.error||'desconhecido'));
-    }
-  } catch(e) { showAlert('checkAlert','err','Erro de rede: '+e.message); }
+    } else { showAlert('checkAlert', 'err', 'Erro: ' + (data.error || '')); }
+  } catch (e) { showAlert('checkAlert', 'err', 'Erro de rede: ' + e.message); }
 }
 
-async function resetHWID(){
+async function resetHWID() {
   const val = document.getElementById('hwidResetInput').value.trim();
-  if(!val){ showAlert('hwidAlert','err','Digite uma key.'); return; }
+  if (!val) { showAlert('hwidAlert', 'err', 'Digite uma key.'); return; }
   try {
-    const r = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(val)}`);
+    const r    = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(val)}`);
     const data = await r.json();
-    if(data.success){
-      showAlert('hwidAlert','ok','HWID resetado. O usuário pode usar em outro PC.');
+    if (data.success) {
+      showAlert('hwidAlert', 'ok', 'HWID resetado. Usuário notificado.');
       await loadAllKeys(); renderHWID(); renderAllKeys(); updateStats();
-    } else {
-      showAlert('hwidAlert','err','Erro: ' + (data.error||'desconhecido'));
-    }
-  } catch(e) { showAlert('hwidAlert','err','Erro de rede: '+e.message); }
+    } else { showAlert('hwidAlert', 'err', 'Erro: ' + (data.error || '')); }
+  } catch (e) { showAlert('hwidAlert', 'err', 'Erro de rede: ' + e.message); }
 }
 
-// ══════════════════════════════════════════
-//  SIMULAR USO
-// ══════════════════════════════════════════
-function simulateUse(keyStr){
-  showAlert('checkAlert','ok','HWID é vinculado automaticamente quando o executor valida a key.');
+async function resetHWIDDirect(keyStr) {
+  document.getElementById('hwidResetInput').value = keyStr;
+  await resetHWID();
 }
 
-// ══════════════════════════════════════════
-//  RENDER TABLES
-// ══════════════════════════════════════════
-function renderRecent(){
-  const tb = document.getElementById('recentTable');
-  const slice = keys.slice(0,8);
-  if(!slice.length){
-    tb.innerHTML='<tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key ainda</td></tr>';
+async function quickRevoke(keyStr, reason = 'removed-key') {
+  try {
+    const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}&reason=${reason}`);
+    const data = await r.json();
+    if (data.success) { await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID(); renderUsers(); }
+    else showAlert('checkAlert', 'err', 'Erro: ' + (data.error || ''));
+  } catch (e) { console.error(e); }
+}
+
+// ── KEYS LOGIN ─────────────────────────────────────────
+async function loadUsers() {
+  const container = document.getElementById('usersContainer');
+  container.innerHTML = '<div style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Carregando...</div>';
+  try {
+    const r    = await fetch(`${API}/register?action=list&token=${adminApiKey}`);
+    const data = await r.json();
+    if (!data.success) { container.innerHTML = '<div style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro ao carregar: ' + (data.error || '') + '</div>'; return; }
+    users = data.users || [];
+    renderUsers();
+  } catch (e) {
+    container.innerHTML = '<div style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro de rede: ' + e.message + '</div>';
+  }
+}
+
+function renderUsers() {
+  const container = document.getElementById('usersContainer');
+  const q = (document.getElementById('userFilter')?.value || '').toLowerCase();
+  let list = users.filter(u => !q || u.email.includes(q) || (u.name || '').toLowerCase().includes(q));
+
+  if (!list.length) {
+    container.innerHTML = '<div style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhuma conta registrada ainda</div>';
     return;
   }
-  tb.innerHTML = slice.map(k=>rowHtml(k,6)).join('');
+
+  container.innerHTML = list.map(u => {
+    const initials = (u.name || u.email).substring(0, 2).toUpperCase();
+    const keyData  = keys.find(k => k.key === u.key);
+    const keyValid = keyData ? keyData.valid : false;
+    const keyType  = u.keyType || 'free';
+    return `
+      <div class="user-card">
+        <div class="user-avatar">${initials}</div>
+        <div class="user-info">
+          <div class="user-name">${u.name || '—'}</div>
+          <div class="user-email">${u.email}</div>
+          <div class="user-key">${shortKey(u.key)} &nbsp;<span class="pill ${keyType === 'premium' ? 'pill-premium' : 'pill-free'}">${keyType.toUpperCase()}</span> &nbsp;<span class="pill ${keyValid ? 'pill-valid' : 'pill-invalid'}">${keyValid ? 'VÁLIDA' : 'REVOGADA'}</span></div>
+        </div>
+        <div class="user-actions">
+          <button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${u.key}')">RESET HWID</button>
+          <button class="btn btn-danger btn-sm" onclick="quickRevoke('${u.key}', 'removed-key')">REMOVE KEY</button>
+          <button class="btn btn-sm" style="background:rgba(153,68,255,.2);border:1px solid rgba(153,68,255,.3);color:var(--purple)" onclick="quickRevoke('${u.key}', 'reset-key')">RESET KEY</button>
+          <button class="copy-btn" onclick="copyText('${u.key}')">COPIAR KEY</button>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-function renderAllKeys(){
+async function resetHWIDFromUser(keyStr) {
+  document.getElementById('hwidResetInput').value = keyStr;
+  try {
+    const r    = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}`);
+    const data = await r.json();
+    if (data.success) { showAlert('notifAlert', 'ok', 'HWID resetado. Usuário notificado.'); await loadAllKeys(); renderUsers(); }
+    else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
+  } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
+}
+
+async function sendNotification() {
+  const email  = document.getElementById('notifEmail').value.trim();
+  const reason = document.getElementById('notifReason').value;
+  const msg    = document.getElementById('notifMsg').value.trim();
+  if (!email || !msg) { showAlert('notifAlert', 'err', 'Preencha email e mensagem.'); return; }
+  try {
+    const r    = await fetch(`${API}/register?action=notify&token=${adminApiKey}&email=${encodeURIComponent(email)}&msg=${encodeURIComponent(msg)}&reason=${reason}`);
+    const data = await r.json();
+    if (data.success) showAlert('notifAlert', 'ok', 'Notificação enviada para ' + email);
+    else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
+  } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
+}
+
+// ── RENDER TABLES ──────────────────────────────────────
+function renderRecent() {
+  const tb    = document.getElementById('recentTable');
+  const slice = keys.slice(0, 8);
+  if (!slice.length) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key ainda</td></tr>'; return; }
+  tb.innerHTML = slice.map(k => rowHtml(k, 6)).join('');
+}
+
+function renderAllKeys() {
   const tb = document.getElementById('allKeysTable');
-  const q  = (document.getElementById('filterInput')?.value||'').toLowerCase();
-  const ft = document.getElementById('filterType')?.value||'all';
-  const fs = document.getElementById('filterStatus')?.value||'all';
-  let list = keys.filter(k=>{
-    if(ft!=='all' && k.type!==ft) return false;
-    if(fs==='valid' && !k.valid) return false;
-    if(fs==='revoked' && k.valid) return false;
-    if(q && !k.key.toLowerCase().includes(q) && !k.user.toLowerCase().includes(q)) return false;
+  const q  = (document.getElementById('filterInput')?.value || '').toLowerCase();
+  const ft = document.getElementById('filterType')?.value || 'all';
+  const fs = document.getElementById('filterStatus')?.value || 'all';
+  let list = keys.filter(k => {
+    if (ft !== 'all' && k.type !== ft) return false;
+    if (fs === 'valid'   && !k.valid) return false;
+    if (fs === 'revoked' &&  k.valid) return false;
+    if (q && !k.key.toLowerCase().includes(q) && !(k.user || '').toLowerCase().includes(q)) return false;
     return true;
   });
-  if(!list.length){
-    tb.innerHTML='<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Nenhum resultado</td></tr>';
-    return;
-  }
-  tb.innerHTML = list.map(k=>rowHtml(k,7)).join('');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Nenhum resultado</td></tr>'; return; }
+  tb.innerHTML = list.map(k => rowHtml(k, 7)).join('');
 }
 
-function renderHWID(){
-  const tb = document.getElementById('hwidTable');
-  const list = keys.filter(k=>k.hwid);
-  if(!list.length){
-    tb.innerHTML='<tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Nenhum HWID vinculado ainda</td></tr>';
-    return;
-  }
-  tb.innerHTML = list.map(k=>`
+function renderHWID() {
+  const tb   = document.getElementById('hwidTable');
+  const list = keys.filter(k => k.hwid);
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhum HWID vinculado ainda</td></tr>'; return; }
+  tb.innerHTML = list.map(k => `
     <tr>
-      <td style="color:${k.type==='premium'?'var(--gold)':'var(--green2)'}">${shortKey(k.key)}</td>
-      <td><span class="pill ${k.type==='premium'?'pill-premium':'pill-free'}">${k.type.toUpperCase()}</span></td>
+      <td style="color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">${shortKey(k.key)}</td>
+      <td><span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span></td>
       <td style="color:var(--text2)">${k.user}</td>
       <td><span class="hwid-tag">${k.hwid}</span></td>
-      <td style="color:var(--text3)">${k.hwidDate||'-'}</td>
       <td><button class="btn btn-gold btn-sm" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button></td>
     </tr>
   `).join('');
 }
 
-async function resetHWIDDirect(keyStr){
-  document.getElementById('hwidResetInput').value = keyStr;
-  await resetHWID();
-}
-
-function rowHtml(k, cols){
-  const shortK = shortKey(k.key);
-  const typePill = `<span class="pill ${k.type==='premium'?'pill-premium':'pill-free'}">${k.type.toUpperCase()}</span>`;
-  const statusPill = k.valid
-    ? '<span class="pill pill-valid">VÁLIDA</span>'
-    : '<span class="pill pill-invalid">REVOGADA</span>';
-  const hwidCell = k.hwid
-    ? `<span class="pill pill-used">VINCULADO</span>`
-    : `<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>`;
-  if(cols===6){
-    return `<tr>
-      <td style="font-family:var(--mono);color:${k.type==='premium'?'var(--gold)':'var(--green2)'}">${shortK}</td>
-      <td>${typePill}</td>
-      <td style="color:var(--text2)">${k.user}</td>
-      <td>${statusPill}</td>
-      <td>${hwidCell}</td>
-      <td style="color:var(--text3)">${k.created}</td>
-    </tr>`;
-  }
+function rowHtml(k, cols) {
+  const shortK      = shortKey(k.key);
+  const typePill    = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
+  const statusPill  = k.valid ? '<span class="pill pill-valid">VÁLIDA</span>' : '<span class="pill pill-invalid">REVOGADA</span>';
+  const hwidCell    = k.hwid ? '<span class="pill pill-used">VINCULADO</span>' : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
+  if (cols === 6) return `<tr>
+    <td style="font-family:var(--mono);color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">${shortK}</td>
+    <td>${typePill}</td><td style="color:var(--text2)">${k.user}</td>
+    <td>${statusPill}</td><td>${hwidCell}</td><td style="color:var(--text3)">${k.created}</td>
+  </tr>`;
   return `<tr>
-    <td style="font-family:var(--mono);color:${k.type==='premium'?'var(--gold)':'var(--green2)'}">
-      <span title="${k.key}" style="cursor:help">${shortK}</span>
-    </td>
+    <td style="font-family:var(--mono);color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}"><span title="${k.key}" style="cursor:help">${shortK}</span></td>
     <td>${typePill}</td>
     <td style="color:var(--text2)">${k.user}</td>
     <td style="color:var(--text3);font-size:10px">${k.expiry}</td>
     <td>${hwidCell}</td>
     <td>${statusPill}</td>
     <td style="display:flex;gap:6px;flex-wrap:wrap">
-      ${k.valid?`<button class="btn btn-danger btn-sm" onclick="quickRevoke('${k.key}')">REVOGAR</button>`:''}
-      ${!k.hwid&&k.valid?`<button class="btn btn-gold btn-sm" onclick="simulateUse('${k.key}')">SIMULAR USO</button>`:''}
-      ${k.hwid?`<button class="btn btn-sm" style="background:rgba(153,68,255,.2);border:1px solid rgba(153,68,255,.3);color:var(--purple)" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button>`:''}
+      ${k.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${k.key}','removed-key')">REMOVE KEY</button>` : ''}
+      ${k.valid ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${k.key}','reset-key')">RESET KEY</button>` : ''}
+      ${k.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button>` : ''}
       <button class="copy-btn" onclick="copyText('${k.key}')">COPIAR</button>
     </td>
   </tr>`;
 }
 
-async function quickRevoke(keyStr){
+// ── STATS ──────────────────────────────────────────────
+async function loadAllKeys() {
   try {
-    const r = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}`);
+    const r    = await fetch(`${API}/list?token=${adminApiKey}`);
     const data = await r.json();
-    if(data.success){ await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID(); }
-    else showAlert('checkAlert','err','Erro ao revogar: '+(data.error||''));
-  } catch(e) { console.error(e); }
-}
-
-function shortKey(k){
-  return k.length>22 ? k.substring(0,22)+'…' : k;
-}
-
-// ══════════════════════════════════════════
-//  STATS
-// ══════════════════════════════════════════
-async function loadAllKeys(){
-  try {
-    const r = await fetch(`${API}/list?token=${adminApiKey}`);
-    const data = await r.json();
-    if(data.success){
+    if (data.success) {
       keys = data.keys.map(k => ({
-        key: k.key,
-        type: k.type || 'free',
-        user: k.user || 'Anonymous',
-        expiry: k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
-        expiryDate: k.expiry ? new Date(k.expiry) : null,
-        valid: k.active !== false,
-        hwid: k.hwid || null,
-        hwidDate: k.hwid ? (k.hwid_date || '-') : null,
-        created: k.created ? new Date(k.created).toLocaleString('pt-BR') : '-'
+        key:      k.key,
+        type:     k.type || 'free',
+        user:     k.user || 'Anonymous',
+        expiry:   k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
+        valid:    k.active !== false,
+        hwid:     k.hwid || null,
+        created:  k.created ? new Date(k.created).toLocaleString('pt-BR') : '-'
       }));
     }
-  } catch(e) { console.error('loadAllKeys error:', e); }
+  } catch (e) { console.error('loadAllKeys error:', e); }
 }
 
-function updateStats(){
+function updateStats() {
   document.getElementById('s-total').textContent   = keys.length;
-  document.getElementById('s-valid').textContent   = keys.filter(k=>k.valid).length;
-  document.getElementById('s-premium').textContent = keys.filter(k=>k.type==='premium').length;
-  document.getElementById('s-free').textContent    = keys.filter(k=>k.type==='free').length;
-  document.getElementById('s-revoked').textContent = keys.filter(k=>!k.valid).length;
-  document.getElementById('s-hwid').textContent    = keys.filter(k=>k.hwid).length;
+  document.getElementById('s-valid').textContent   = keys.filter(k => k.valid).length;
+  document.getElementById('s-premium').textContent = keys.filter(k => k.type === 'premium').length;
+  document.getElementById('s-free').textContent    = keys.filter(k => k.type === 'free').length;
+  document.getElementById('s-revoked').textContent = keys.filter(k => !k.valid).length;
+  document.getElementById('s-hwid').textContent    = keys.filter(k => k.hwid).length;
   renderRecent();
 }
 
-// ══════════════════════════════════════════
-//  UTILS
-// ══════════════════════════════════════════
-function showAlert(id, type, msg){
+// ── UTILS ──────────────────────────────────────────────
+function showAlert(id, type, msg) {
   const el = document.getElementById(id);
-  el.textContent = '// '+msg;
-  el.className = `alert alert-${type==='ok'?'ok':type==='err'?'err':'info'} show`;
-  setTimeout(()=>el.classList.remove('show'), 4000);
+  el.textContent = '// ' + msg;
+  el.className = `alert alert-${type === 'ok' ? 'ok' : type === 'err' ? 'err' : 'info'} show`;
+  setTimeout(() => el.classList.remove('show'), 4000);
 }
 
-function copyText(txt){
-  navigator.clipboard.writeText(txt).catch(()=>{});
+function copyText(txt) {
+  navigator.clipboard.writeText(txt).catch(() => {});
   const ev = window.event;
-  if(ev && ev.target){
-    const orig = ev.target.textContent;
-    ev.target.textContent='✓';
-    setTimeout(()=>{ ev.target.textContent=orig; },1000);
-  }
+  if (ev && ev.target) { const o = ev.target.textContent; ev.target.textContent = '✓'; setTimeout(() => ev.target.textContent = o, 1000); }
 }
 
-function switchBotLang(lang) {
-  const isPy = lang === 'py';
-  document.getElementById('botBlockPy').style.display = isPy ? 'block' : 'none';
-  document.getElementById('botBlockJs').style.display = isPy ? 'none'  : 'block';
-  const btnPy = document.getElementById('btnLangPy');
-  const btnJs = document.getElementById('btnLangJs');
-  if (isPy) {
-    btnPy.style.borderColor = '#DDAA33'; btnPy.style.background = 'rgba(221,170,51,.15)'; btnPy.style.color = '#DDAA33';
-    btnJs.style.borderColor = 'var(--border2)'; btnJs.style.background = 'transparent'; btnJs.style.color = 'var(--text2)';
-  } else {
-    btnJs.style.borderColor = '#44FF88'; btnJs.style.background = 'rgba(68,255,136,.1)'; btnJs.style.color = '#44FF88';
-    btnPy.style.borderColor = 'var(--border2)'; btnPy.style.background = 'transparent'; btnPy.style.color = 'var(--text2)';
-  }
-}
-
-function copyBotCode(lang) {
-  let code;
-  if (lang === 'py') {
-    code = `import discord, requests\nfrom discord.ext import commands\n\nbot = commands.Bot(command_prefix='!')\nAPI = "https://SEU-SITE.netlify.app/api"\nADMIN = "${adminApiKey}"\n\n@bot.command()\nasync def getkey(ctx, tipo="premium"):\n    r = requests.get(f"{API}/generate",\n        params={"type": tipo, "user": str(ctx.author), "token": ADMIN})\n    data = r.json()\n    if data["success"]:\n        await ctx.author.send(f"Sua key: {data['key']}")\n        await ctx.send("Key enviada no DM!")\n    else:\n        await ctx.send("Erro ao gerar key.")\n\nbot.run("SEU_TOKEN_DISCORD")`;
-  } else {
-    code = `const { Client, GatewayIntentBits } = require('discord.js')\nconst axios = require('axios')\n\nconst API   = "https://SEU-SITE.netlify.app/api"\nconst ADMIN = "${adminApiKey}"\nconst TOKEN = "SEU_TOKEN_DISCORD"\n\nconst client = new Client({\n  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]\n})\n\nclient.on('messageCreate', async msg => {\n  if (!msg.content.startsWith('!')) return\n  const [cmd, tipo = 'premium'] = msg.content.slice(1).split(' ')\n  if (cmd !== 'getkey') return\n  const { data } = await axios.get(API + '/generate', {\n    params: { type: tipo, user: msg.author.tag, token: ADMIN }\n  })\n  if (data.success) {\n    await msg.author.send('Sua key: ' + data.key)\n    await msg.reply('Key enviada no DM!')\n  } else {\n    await msg.reply('Erro ao gerar key.')\n  }\n})\n\nclient.login(TOKEN)`;
-  }
-  navigator.clipboard.writeText(code).catch(()=>{});
-}
-
-// Atualizar select de duração conforme tipo
-document.getElementById('genType').addEventListener('change',function(){
-  document.getElementById('genDurGroup').style.display = this.value==='free' ? 'block' : 'none';
-});
-document.getElementById('genDurGroup').style.display = 'none';
-
-// Login com Enter
-document.getElementById('loginPass').addEventListener('keydown', e=>{
-  if(e.key==='Enter') doLogin();
-});
-
-// Atualizar key admin no bot code
-document.getElementById('botAdminKeyPy').textContent = '"' + adminApiKey + '"';
-document.getElementById('botAdminKeyJs').textContent = '"' + adminApiKey + '"';
+function shortKey(k) { return k && k.length > 22 ? k.substring(0, 22) + '…' : (k || '—'); }
 </script>
 </body>
 </html>

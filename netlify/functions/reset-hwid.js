@@ -22,10 +22,33 @@ function getConfiguredStore() {
   return getStore('redux-keys');
 }
 
+function getUserStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
+  if (siteID && token) return getStore({ name: 'redux-users', siteID, token });
+  return getStore('redux-users');
+}
+
 function getIP(event) {
   return event.headers['x-forwarded-for']?.split(',')[0]?.trim()
     || event.headers['client-ip']
     || null;
+}
+
+async function notifyUser(key, reason, msg) {
+  try {
+    const userStore  = getUserStore();
+    const ownerEmail = await userStore.get('key-owner:' + key).catch(() => null);
+    if (!ownerEmail) return;
+    const raw = await userStore.get('user:' + ownerEmail).catch(() => null);
+    if (!raw) return;
+    const user = JSON.parse(raw);
+    user.notifications = user.notifications || [];
+    user.notifications.push({ id: Date.now().toString(36), reason, msg, ts: new Date().toISOString(), read: false });
+    await userStore.set('user:' + ownerEmail, JSON.stringify(user));
+  } catch (e) {
+    console.error('[notify] erro:', e.message);
+  }
 }
 
 exports.handler = async (event, context) => {
@@ -45,25 +68,20 @@ exports.handler = async (event, context) => {
   try {
     const store = getConfiguredStore();
     const raw   = await store.get(key);
-
     if (!raw) {
       await logAudit({ action: 'reset-hwid', key, ip: getIP(event), result: 'error', detail: 'Key não encontrada' });
       return res({ error: 'KEY_NOT_FOUND' });
     }
 
-    const entry    = JSON.parse(raw);
-    const oldHwid  = entry.hwid;
-    entry.hwid     = null;
+    const entry   = JSON.parse(raw);
+    const oldHwid = entry.hwid;
+    entry.hwid    = null;
     await store.set(key, JSON.stringify(entry));
 
-    await logAudit({
-      action: 'reset-hwid',
-      key,
-      user: entry.user || null,
-      ip: getIP(event),
-      result: 'success',
-      detail: `hwid_anterior=${oldHwid || 'nenhum'}`
-    });
+    await notifyUser(key, 'reset-hwid',
+      'Seu HWID foi resetado pelo administrador. Insira sua key novamente para continuar usando o RBX.');
+
+    await logAudit({ action: 'reset-hwid', key, user: entry.user || null, ip: getIP(event), result: 'success', detail: 'hwid_anterior=' + (oldHwid || 'nenhum') });
 
     return res({ success: true, key, hwid_reset: true });
   } catch (e) {
