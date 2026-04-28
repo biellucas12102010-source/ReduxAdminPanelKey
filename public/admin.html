@@ -334,20 +334,23 @@ tr:hover td{background:rgba(204,34,51,.04)}
             <option value="revoked">Revogadas</option>
           </select>
           <button class="btn btn-primary" onclick="loadUsers()">// ATUALIZAR</button>
+          <button class="btn btn-danger" id="bulkDeleteBtn" onclick="bulkDeleteSelected()" style="display:none">🗑 REMOVER SELECIONADAS</button>
         </div>
         <div style="overflow-x:auto">
           <table id="userkeysTable" style="width:100%;border-collapse:collapse;font-size:12px">
             <thead><tr style="background:#0a0202">
+              <th style="padding:10px 12px;width:36px;border-bottom:1px solid #1a0508"><input type="checkbox" id="selectAllKeys" onchange="toggleSelectAll(this)" style="cursor:pointer;accent-color:var(--red2)"/></th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">KEY</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">TIPO</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">NOME</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EMAIL</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">CONTA</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">STATUS</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">HWID</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EXPIRA</th>
               <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">AÇÕES</th>
             </tr></thead>
-            <tbody id="userkeysBody"><tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Clique em ATUALIZAR para carregar</td></tr></tbody>
+            <tbody id="userkeysBody"><tr><td colspan="10" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Clique em ATUALIZAR para carregar</td></tr></tbody>
           </table>
         </div>
         <div id="userkeysCount" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px;text-align:right"></div>
@@ -604,7 +607,15 @@ async function quickRevoke(keyStr, reason = 'removed-key') {
     const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}&reason=${reason}`);
     const data = await r.json();
     if (data.success) {
-      await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID(); renderUsers();
+      if (reason === 'removed-key') {
+        // Remove imediatamente do array local — a key some da tela
+        keys = keys.filter(k => k.key !== keyStr);
+      } else {
+        // Suspensa: apenas marca como suspended
+        const k = keys.find(k => k.key === keyStr);
+        if (k) { k.suspended = true; }
+      }
+      updateStats(); renderAllKeys(); renderHWID(); renderUsers();
     } else showAlert('checkAlert', 'err', 'Erro: ' + (data.error || ''));
   } catch (e) { console.error(e); }
 }
@@ -612,15 +623,63 @@ async function quickRevoke(keyStr, reason = 'removed-key') {
 // ── KEYS LOGIN ─────────────────────────────────────────
 async function loadUsers() {
   const tbody = document.getElementById('userkeysBody');
-  if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Carregando...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="10" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Carregando...</td></tr>';
   try {
-    const r    = await fetch(`${API}/register?action=list&token=${adminApiKey}`);
-    const data = await r.json();
-    users = data.success ? (data.users || []) : [];
+    // Carrega accounts (acc.js) e users (register) em paralelo
+    const [rAcc, rReg] = await Promise.allSettled([
+      fetch(`${API}/acc?action=list&token=${adminApiKey}`).then(r=>r.json()),
+      fetch(`${API}/register?action=list&token=${adminApiKey}`).then(r=>r.json())
+    ]);
+    accounts = (rAcc.status === 'fulfilled' && rAcc.value.success) ? (rAcc.value.accounts || []) : accounts;
+    users    = (rReg.status === 'fulfilled' && rReg.value.success) ? (rReg.value.users    || []) : users;
     renderUsers();
   } catch (e) {
-    if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro: ${e.message}</td></tr>`;
+    if (tbody) tbody.innerHTML = `<tr><td colspan="10" style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro: ${e.message}</td></tr>`;
   }
+}
+
+// Checkbox select-all
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.key-row-check').forEach(c => c.checked = cb.checked);
+  updateBulkBtn();
+}
+
+function updateBulkBtn() {
+  const any = document.querySelectorAll('.key-row-check:checked').length > 0;
+  const btn = document.getElementById('bulkDeleteBtn');
+  if (btn) btn.style.display = any ? 'inline-block' : 'none';
+}
+
+async function bulkDeleteSelected() {
+  const checked = [...document.querySelectorAll('.key-row-check:checked')];
+  if (!checked.length) return;
+  const keyList = checked.map(c => c.dataset.key);
+  if (!confirm(`Remover permanentemente ${keyList.length} key(s) selecionada(s)? Isso não tem volta.`)) return;
+
+  document.getElementById('bulkDeleteBtn').textContent = `Removendo ${keyList.length}...`;
+  document.getElementById('bulkDeleteBtn').disabled = true;
+
+  let done = 0;
+  for (const k of keyList) {
+    try {
+      await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(k)}&reason=removed-key`);
+      done++;
+    } catch {}
+  }
+
+  // Remove do array local imediatamente (sem esperar reload)
+  keys = keys.filter(k => !keyList.includes(k.key));
+
+  document.getElementById('bulkDeleteBtn').textContent = `🗑 REMOVER SELECIONADAS`;
+  document.getElementById('bulkDeleteBtn').disabled = false;
+  document.getElementById('bulkDeleteBtn').style.display = 'none';
+
+  const sa = document.getElementById('selectAllKeys');
+  if (sa) sa.checked = false;
+
+  renderUsers();
+  updateStats();
+  showAlert('notifAlert', 'ok', `${done} key(s) removida(s) com sucesso.`);
 }
 
 function renderUsers() {
@@ -630,15 +689,16 @@ function renderUsers() {
   const q  = (document.getElementById('userFilter')?.value || '').toLowerCase();
   const fs = document.getElementById('userFilterStatus')?.value || 'all';
 
-  // Combina keys com dados de conta (de users E accounts)
+  // Combina keys com dados de conta — acc.js tem prioridade sobre register legado
   let combined = keys.map(k => {
-    // Primeiro tenta na lista de accounts (acc.js), depois em users (legado)
     const accAccount  = accounts.find(a => a.key === k.key);
     const userAccount = users.find(u => u.key === k.key);
-    const account = accAccount || (userAccount ? {
-      email: userAccount.email,
-      name:  userAccount.name || userAccount.email
-    } : null);
+    // acc.js também enriquece via list.js (campo email/name no próprio objeto key)
+    const account = accAccount
+      ? { email: accAccount.email, name: accAccount.name || accAccount.email }
+      : userAccount
+        ? { email: userAccount.email, name: userAccount.name || userAccount.email }
+        : (k.email ? { email: k.email, name: k.user || k.email } : null);
     return { ...k, account };
   });
 
@@ -650,54 +710,71 @@ function renderUsers() {
     if (q) {
       const keyMatch   = item.key.toLowerCase().includes(q);
       const emailMatch = (item.account?.email || '').toLowerCase().includes(q);
-      const nameMatch  = (item.account?.name  || '').toLowerCase().includes(q);
-      const userMatch  = (item.user || '').toLowerCase().includes(q);
-      if (!keyMatch && !emailMatch && !nameMatch && !userMatch) return false;
+      const nameMatch  = (item.account?.name  || item.user || '').toLowerCase().includes(q);
+      if (!keyMatch && !emailMatch && !nameMatch) return false;
     }
     return true;
   });
 
   const countEl = document.getElementById('userkeysCount');
-  if (countEl) countEl.textContent = `// ${combined.length} resultado(s) — ${accounts.length + users.length} conta(s) — ${keys.length} key(s) total`;
+  const withAcc = combined.filter(i => i.account).length;
+  const noAcc   = combined.filter(i => !i.account).length;
+  if (countEl) countEl.textContent = `// ${combined.length} resultado(s) — ${withAcc} com conta · ${noAcc} sem conta`;
 
   if (!combined.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhum resultado</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhum resultado</td></tr>';
     return;
   }
 
   tbody.innerHTML = combined.map(item => {
     const acc = item.account;
-    const typePill   = `<span class="pill ${item.type === 'premium' ? 'pill-premium' : 'pill-free'}">${item.type.toUpperCase()}</span>`;
+    const typePill = `<span class="pill ${item.type === 'premium' ? 'pill-premium' : 'pill-free'}">${item.type.toUpperCase()}</span>`;
+
     let statusPill;
-    if (!item.valid)       statusPill = '<span class="pill pill-invalid">REVOGADA</span>';
+    if (!item.valid)         statusPill = '<span class="pill pill-invalid">REVOGADA</span>';
     else if (item.suspended) statusPill = '<span class="pill pill-suspended">SUSPENSA</span>';
-    else                   statusPill = '<span class="pill pill-valid">VÁLIDA</span>';
+    else                     statusPill = '<span class="pill pill-valid">VÁLIDA</span>';
+
     const hwidCell = item.hwid
       ? `<span class="pill pill-used" title="${item.hwid}">VINCULADO</span>`
       : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
+
     const nameCell  = acc
       ? `<span style="color:white;font-weight:bold">${acc.name || '—'}</span>`
       : `<span style="color:var(--text3);font-family:var(--mono);font-size:10px">Sem conta</span>`;
+
     const emailCell = acc
       ? `<span style="color:var(--text2);font-size:11px">${acc.email}</span>`
       : `<span style="color:var(--text3);font-size:10px">—</span>`;
+
+    // Badge: tem conta ou não
+    const accBadge = acc
+      ? `<span class="pill pill-active" style="font-size:9px">✓ CONTA</span>`
+      : `<span class="pill" style="background:rgba(60,20,30,.4);border:1px solid #2a0a10;color:var(--text3);font-size:9px">SEM CONTA</span>`;
+
     const expiryCell = item.expiry && item.expiry !== 'Ilimitado'
       ? `<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">${item.expiry}</span>`
       : `<span style="color:var(--green2);font-size:10px;font-family:var(--mono)">Ilimitado</span>`;
-    const notifEmail = acc ? acc.email : '';
+
+    const safeKey = item.key.replace(/'/g, "\\'");
     const actions = `<div style="display:flex;gap:5px;flex-wrap:wrap">
-      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${item.key}')">RESET HWID</button>` : ''}
-      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${item.key}','reset-key')">RESET KEY</button>` : ''}
-      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${item.key}','removed-key')">REMOVE KEY</button>` : ''}
-      <button class="copy-btn" onclick="copyText('${item.key}')">COPIAR KEY</button>
+      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${safeKey}')">RESET HWID</button>` : ''}
+      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${safeKey}','reset-key')">RESET KEY</button>` : ''}
+      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${safeKey}','removed-key')">REMOVE KEY</button>` : ''}
+      <button class="copy-btn" onclick="copyText('${safeKey}')">COPIAR</button>
     </div>`;
+
     return `<tr style="border-bottom:1px solid #120305">
+      <td style="padding:10px 12px;width:36px">
+        <input type="checkbox" class="key-row-check" data-key="${item.key}" onchange="updateBulkBtn()" style="cursor:pointer;accent-color:var(--red2)"/>
+      </td>
       <td style="padding:10px 12px;font-family:var(--mono);font-size:11px;color:${item.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">
         <span title="${item.key}" style="cursor:help">${shortKey(item.key)}</span>
       </td>
       <td style="padding:10px 12px">${typePill}</td>
       <td style="padding:10px 12px">${nameCell}</td>
       <td style="padding:10px 12px">${emailCell}</td>
+      <td style="padding:10px 12px">${accBadge}</td>
       <td style="padding:10px 12px">${statusPill}</td>
       <td style="padding:10px 12px">${hwidCell}</td>
       <td style="padding:10px 12px">${expiryCell}</td>
