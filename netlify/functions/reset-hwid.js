@@ -22,6 +22,14 @@ function getConfiguredStore() {
   return getStore('redux-keys');
 }
 
+function getAccStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
+  if (siteID && token) return getStore({ name: 'redux-accounts', siteID, token });
+  return getStore('redux-accounts');
+}
+
+// Suporte legado para redux-users também
 function getUserStore() {
   const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
   const token  = process.env.NETLIFY_TOKEN   || process.env.TOKEN;
@@ -31,24 +39,43 @@ function getUserStore() {
 
 function getIP(event) {
   return event.headers['x-forwarded-for']?.split(',')[0]?.trim()
-    || event.headers['client-ip']
-    || null;
+    || event.headers['client-ip'] || null;
 }
 
-async function notifyUser(key, reason, msg) {
+// Notifica nas duas stores (accounts e users legado)
+async function notifyUser(key) {
+  const msg = 'Seu HWID foi resetado pelo administrador. Insira sua key novamente para continuar usando o RBX.';
+  const notif = { id: Date.now().toString(36), reason: 'reset-hwid', msg, ts: new Date().toISOString(), read: false };
+
+  // redux-accounts (nova store)
+  try {
+    const accStore   = getAccStore();
+    const ownerEmail = await accStore.get('key-owner:' + key).catch(() => null);
+    if (ownerEmail) {
+      const raw = await accStore.get('acc:' + ownerEmail).catch(() => null);
+      if (raw) {
+        const account = JSON.parse(raw);
+        account.notifications = account.notifications || [];
+        account.notifications.push(notif);
+        await accStore.set('acc:' + ownerEmail, JSON.stringify(account));
+      }
+    }
+  } catch (e) { console.error('[notify-acc]', e.message); }
+
+  // redux-users (store legado)
   try {
     const userStore  = getUserStore();
     const ownerEmail = await userStore.get('key-owner:' + key).catch(() => null);
-    if (!ownerEmail) return;
-    const raw = await userStore.get('user:' + ownerEmail).catch(() => null);
-    if (!raw) return;
-    const user = JSON.parse(raw);
-    user.notifications = user.notifications || [];
-    user.notifications.push({ id: Date.now().toString(36), reason, msg, ts: new Date().toISOString(), read: false });
-    await userStore.set('user:' + ownerEmail, JSON.stringify(user));
-  } catch (e) {
-    console.error('[notify] erro:', e.message);
-  }
+    if (ownerEmail) {
+      const raw = await userStore.get('user:' + ownerEmail).catch(() => null);
+      if (raw) {
+        const user = JSON.parse(raw);
+        user.notifications = user.notifications || [];
+        user.notifications.push(notif);
+        await userStore.set('user:' + ownerEmail, JSON.stringify(user));
+      }
+    }
+  } catch (e) { console.error('[notify-users]', e.message); }
 }
 
 exports.handler = async (event, context) => {
@@ -78,10 +105,12 @@ exports.handler = async (event, context) => {
     entry.hwid    = null;
     await store.set(key, JSON.stringify(entry));
 
-    await notifyUser(key, 'reset-hwid',
-      'Seu HWID foi resetado pelo administrador. Insira sua key novamente para continuar usando o RBX.');
+    await notifyUser(key);
 
-    await logAudit({ action: 'reset-hwid', key, user: entry.user || null, ip: getIP(event), result: 'success', detail: 'hwid_anterior=' + (oldHwid || 'nenhum') });
+    await logAudit({
+      action: 'reset-hwid', key, user: entry.user || null, ip: getIP(event),
+      result: 'success', detail: 'hwid_anterior=' + (oldHwid || 'nenhum')
+    });
 
     return res({ success: true, key, hwid_reset: true });
   } catch (e) {

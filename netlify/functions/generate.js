@@ -24,11 +24,14 @@ function getConfiguredStore() {
 
 function genKey(type) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const len   = type === 'premium' ? 20 : 15;
+  let prefix, len;
+  if (type === 'premium') { prefix = 'KEYP_'; len = 20; }
+  else if (type === 'free7') { prefix = 'KEYF_'; len = 15; }
+  else if (type === 'free30') { prefix = 'KEYF_'; len = 15; }
+  else { prefix = 'KEYF_'; len = 15; }
   let key = '';
-  for (let i = 0; i < len; i++)
-    key += chars[Math.floor(Math.random() * chars.length)];
-  return (type === 'premium' ? 'KEYP_' : 'KEYF_') + key;
+  for (let i = 0; i < len; i++) key += chars[Math.floor(Math.random() * chars.length)];
+  return prefix + key;
 }
 
 function getIP(event) {
@@ -49,23 +52,52 @@ exports.handler = async (event, context) => {
   }
 
   const p    = event.queryStringParameters || {};
-  const type = (p.type || 'free').toLowerCase();
-  const user = p.user || 'Anonymous';
-  const days = parseInt(p.days ?? '1', 10);
+  // type pode ser: premium, premium7, premium30, free, free7, free30
+  // Para premium: sem expiração (exceto premium7/premium30)
+  // Para free: 24h padrão, free7=7d, free30=30d
+  const rawType = (p.type || 'free').toLowerCase();
+  const user    = p.user || 'Anonymous';
 
-  // premium ou days=0 → sem expiração
-  // free com days > 0 → daysOnFirstUse salvo; expiry calculado no primeiro uso (validate.js)
-  const daysOnFirstUse = (type === 'premium' || days === 0) ? 0 : days;
+  // Determina tipo real (premium ou free) e dias
+  let keyType = 'free';
+  let daysOnFirstUse = 1; // padrão: 1 dia (24h)
 
-  const key   = genKey(type);
+  if (rawType === 'premium') {
+    keyType = 'premium'; daysOnFirstUse = 0; // sem expiração
+  } else if (rawType === 'premium7') {
+    keyType = 'premium'; daysOnFirstUse = 7;
+  } else if (rawType === 'premium30') {
+    keyType = 'premium'; daysOnFirstUse = 30;
+  } else if (rawType === 'premiumunlimited' || rawType === 'premium_unlimited') {
+    keyType = 'premium'; daysOnFirstUse = 0;
+  } else if (rawType === 'free') {
+    // Checa parâmetro days
+    const days = parseInt(p.days ?? '1', 10);
+    keyType = 'free';
+    daysOnFirstUse = (days === 0) ? 0 : days; // 0 = unlimited
+  } else if (rawType === 'free7') {
+    keyType = 'free'; daysOnFirstUse = 7;
+  } else if (rawType === 'free30') {
+    keyType = 'free'; daysOnFirstUse = 30;
+  } else if (rawType === 'freeunlimited' || rawType === 'free_unlimited') {
+    keyType = 'free'; daysOnFirstUse = 0;
+  } else {
+    // fallback: lê o parâmetro days
+    keyType = rawType.startsWith('premium') ? 'premium' : 'free';
+    const days = parseInt(p.days ?? '1', 10);
+    daysOnFirstUse = isNaN(days) ? 1 : days;
+  }
+
+  const key   = genKey(keyType);
   const entry = {
-    type,
+    type: keyType,
     active: true,
     hwid: null,
+    suspended: false, // resetado = key inativa até o dono reativar
     user,
     created: new Date().toISOString(),
-    expiry: null,          // sempre null aqui; validate.js seta no primeiro uso
-    daysOnFirstUse        // 0 = sem expiração; >0 = dias contados a partir do primeiro uso
+    expiry: null,
+    daysOnFirstUse // 0 = sem expiração; >0 = dias a partir do 1º uso
   };
 
   try {
@@ -77,16 +109,16 @@ exports.handler = async (event, context) => {
     if (!idx.includes(key)) idx.push(key);
     await store.set('__index__', JSON.stringify(idx));
 
+    const expiryLabel = daysOnFirstUse === 0 ? 'unlimited'
+      : daysOnFirstUse === 1 ? '1d on first use'
+      : `${daysOnFirstUse}d on first use`;
+
     await logAudit({
-      action: 'generate',
-      key,
-      user,
-      ip: getIP(event),
-      result: 'success',
-      detail: `type=${type}, daysOnFirstUse=${daysOnFirstUse === 0 ? 'infinito' : daysOnFirstUse}`
+      action: 'generate', key, user, ip: getIP(event), result: 'success',
+      detail: `type=${keyType}, rawType=${rawType}, daysOnFirstUse=${daysOnFirstUse === 0 ? 'infinito' : daysOnFirstUse}`
     });
 
-    return res({ success: true, key, type, user, expiry: daysOnFirstUse === 0 ? 'unlimited' : `${daysOnFirstUse}d on first use` });
+    return res({ success: true, key, type: keyType, user, expiry: expiryLabel, daysOnFirstUse });
   } catch (e) {
     console.error('generate error:', e.message);
     await logAudit({ action: 'generate', user, ip: getIP(event), result: 'error', detail: e.message });

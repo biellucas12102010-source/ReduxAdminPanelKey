@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
 
   if (!key) return err({ error: 'KEY_INVALID' });
 
-  // Dev key — sem expiração
+  // Dev key — sempre válida, sem expiração
   if (key === 'DEVK_REDUXSTUDIOS1#')
     return ok({ valid: true, type: 'dev', hwid_ok: true, expiry: null });
 
@@ -41,21 +41,32 @@ exports.handler = async (event, context) => {
 
     if (!entry.active) return err({ error: 'KEY_REVOKED' });
 
+    // Key suspensa (resetada pelo admin) — válida mas aguarda reativação pelo dono
+    if (entry.suspended) return err({ error: 'KEY_SUSPENDED' });
+
+    // Verifica expiração (só se já tiver expiry definido)
     if (entry.expiry && Date.now() > new Date(entry.expiry).getTime()) {
       entry.active = false;
       await store.set(key, JSON.stringify(entry));
-      return err({ error: 'KEY_REVOKED' });
+      return err({ error: 'KEY_EXPIRED' });
     }
 
-    // Primeiro uso: ainda sem HWID — vincula agora
-    // e inicia o timer a partir deste momento
+    // Primeiro uso: ainda sem HWID — vincula e inicia timer
     if (!entry.hwid) {
       if (hwid) {
         entry.hwid = hwid;
 
-        // Se for key FREE sem expiry definido ainda, define agora (1 dia a partir do 1º uso)
-        if (entry.type === 'free' && !entry.expiry) {
-          entry.expiry = new Date(Date.now() + 86400000).toISOString(); // 24h a partir do 1º uso
+        // Calcula expiry baseado em daysOnFirstUse
+        // 0 = sem expiração (unlimited)
+        // >0 = N dias a partir do 1º uso
+        const days = entry.daysOnFirstUse;
+        if (days === undefined || days === null) {
+          // fallback legado: 1 dia
+          entry.expiry = new Date(Date.now() + 86400000).toISOString();
+        } else if (days === 0) {
+          entry.expiry = null; // sem expiração
+        } else {
+          entry.expiry = new Date(Date.now() + days * 86400000).toISOString();
         }
 
         await store.set(key, JSON.stringify(entry));
@@ -65,7 +76,6 @@ exports.handler = async (event, context) => {
 
     if (entry.hwid !== hwid) return err({ error: 'HWID_MISMATCH' });
 
-    // Retorna expiry para o executor exibir o timer
     return ok({ valid: true, type: entry.type, hwid_ok: true, expiry: entry.expiry || null });
 
   } catch (e) {

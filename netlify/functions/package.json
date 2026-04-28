@@ -1,6 +1,7 @@
 {
   "name": "redux-functions",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "RBX Key System — Netlify Functions",
   "dependencies": {
     "@netlify/blobs": "^8.1.0"
   }

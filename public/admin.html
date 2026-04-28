@@ -8,34 +8,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-  --bg0: #000000; --bg1: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
-  --red: #CC2233; --red2: #FF2244; --red3: #FF4466;
-  --gold: #DDAA33; --gold2: #FFCC55;
-  --green: #22BB66; --green2: #44FF88;
-  --blue: #2233CC; --blue2: #4455FF;
-  --purple: #9944FF;
-  --border: #1a1a1a; --border2: #2a2a2a; --border3: #3a1020;
-  --text: #E0D0D5; --text2: #886677; --text3: #3a2530;
-  --mono: 'Share Tech Mono', monospace;
-  --head: 'Orbitron', sans-serif;
-  --body: 'Rajdhani', sans-serif;
+  --bg0:#000000;--bg1:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;
+  --red:#CC2233;--red2:#FF2244;--red3:#FF4466;
+  --gold:#DDAA33;--gold2:#FFCC55;
+  --green:#22BB66;--green2:#44FF88;
+  --blue:#2233CC;--blue2:#4455FF;
+  --purple:#9944FF;
+  --border:#1a1a1a;--border2:#2a2a2a;--border3:#3a1020;
+  --text:#E0D0D5;--text2:#886677;--text3:#3a2530;
+  --mono:'Share Tech Mono',monospace;
+  --head:'Orbitron',sans-serif;
+  --body:'Rajdhani',sans-serif;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100vh;background:var(--bg0);color:var(--text);font-family:var(--body);font-size:15px;overflow-x:hidden}
 
-body::before{
-  content:'';position:fixed;inset:0;
+body::before{content:'';position:fixed;inset:0;
   background-image:linear-gradient(rgba(204,34,51,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(204,34,51,0.03) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;z-index:0;
-}
-body::after{
-  content:'';position:fixed;inset:0;
+  background-size:40px 40px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;
   background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(180,20,40,0.08),transparent 70%);
-  pointer-events:none;z-index:0;
-}
+  pointer-events:none;z-index:0}
 
-/* LOGIN */
 #loginScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.97)}
 .login-card{width:400px;border:1px solid #2a0a10;border-radius:16px;background:linear-gradient(160deg,#0f0505,#080202);padding:40px 36px;position:relative;overflow:hidden}
 .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red2),var(--red3),transparent)}
@@ -47,11 +42,9 @@ body::after{
 .form-group input{width:100%;background:#0a0202;border:1px solid #2a0a10;border-radius:8px;color:white;padding:11px 14px;font-size:14px;font-family:var(--mono);outline:none;transition:border-color .2s}
 .form-group input:focus{border-color:var(--red2)}
 .btn-login{width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;font-family:var(--head);font-size:14px;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--red),var(--red2));color:white;transition:opacity .2s,transform .1s;margin-top:6px}
-.btn-login:hover{opacity:.88}
-.btn-login:active{transform:scale(.98)}
+.btn-login:hover{opacity:.88}.btn-login:active{transform:scale(.98)}
 .login-err{color:var(--red3);font-size:12px;font-family:var(--mono);margin-top:10px;text-align:center;min-height:18px}
 
-/* APP */
 #app{display:none;min-height:100vh;position:relative;z-index:1}
 
 .topbar{height:56px;background:linear-gradient(180deg,#0f0404,#080101);border-bottom:1px solid #1a0508;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100}
@@ -63,9 +56,8 @@ body::after{
 .btn-logout:hover{background:rgba(204,34,51,.2);color:var(--red3)}
 
 .tabs{display:flex;gap:0;border-bottom:1px solid #1a0508;padding:0 24px;background:var(--bg1);overflow-x:auto}
-.tab{padding:14px 22px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;white-space:nowrap}
-.tab:hover{color:var(--text2)}
-.tab.active{color:var(--red3);border-bottom-color:var(--red2)}
+.tab{padding:14px 20px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;white-space:nowrap}
+.tab:hover{color:var(--text2)}.tab.active{color:var(--red3);border-bottom-color:var(--red2)}
 
 .content{padding:28px 24px;max-width:1200px;margin:0 auto}
 
@@ -79,9 +71,7 @@ body::after{
 
 .stat{background:#050000;border:1px solid #1a0508;border-radius:10px;padding:16px;text-align:center}
 .stat-num{font-family:var(--head);font-size:28px;font-weight:900;color:var(--red2)}
-.stat-num.green{color:var(--green2)}
-.stat-num.gold{color:var(--gold)}
-.stat-num.red{color:var(--red3)}
+.stat-num.green{color:var(--green2)}.stat-num.gold{color:var(--gold)}.stat-num.red{color:var(--red3)}
 .stat-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:4px;letter-spacing:1px}
 
 .fg{margin-bottom:14px}
@@ -101,14 +91,12 @@ body::after{
 .btn-gold:hover{opacity:.85}
 .btn-purple{background:linear-gradient(135deg,#4A1A8A,#7733CC);color:white}
 .btn-purple:hover{opacity:.85}
-.btn-sm{padding:5px 12px;font-size:10px}
-.btn-full{width:100%;padding:11px}
+.btn-sm{padding:5px 12px;font-size:10px}.btn-full{width:100%;padding:11px}
 
 .key-box{background:#050000;border:1px solid #2a0a10;border-radius:8px;padding:12px 16px;font-family:var(--mono);font-size:13px;display:none;margin-top:12px;position:relative;overflow:hidden}
 .key-box.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .key-box .key-text{flex:1;word-break:break-all}
-.key-box .key-text.premium{color:var(--gold)}
-.key-box .key-text.free{color:var(--green2)}
+.key-box .key-text.premium{color:var(--gold)}.key-box .key-text.free{color:var(--green2)}
 .key-box::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red2),transparent);animation:scanline 2s linear infinite;pointer-events:none}
 @keyframes scanline{0%{top:-10%}100%{top:110%}}
 
@@ -129,9 +117,9 @@ tr:hover td{background:rgba(204,34,51,.04)}
 .pill-free{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
 .pill-valid{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
 .pill-invalid{background:rgba(204,34,51,.12);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
+.pill-suspended{background:rgba(221,170,51,.15);border:1px solid rgba(221,170,51,.4);color:var(--gold)}
 .pill-used{background:rgba(153,68,255,.12);border:1px solid rgba(153,68,255,.3);color:var(--purple)}
 .pill-active{background:rgba(34,187,102,.12);border:1px solid rgba(34,187,102,.3);color:var(--green2)}
-.pill-suspended{background:rgba(204,34,51,.12);border:1px solid rgba(204,34,51,.3);color:var(--red3)}
 
 .hwid-tag{font-family:var(--mono);font-size:10px;color:var(--text3);background:#050000;border:1px solid #1a0508;border-radius:4px;padding:2px 6px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
 
@@ -139,15 +127,12 @@ tr:hover td{background:rgba(204,34,51,.04)}
 .copy-btn{background:rgba(204,34,51,.15);border:1px solid rgba(204,34,51,.3);color:var(--red3);padding:5px 10px;border-radius:5px;cursor:pointer;font-family:var(--mono);font-size:10px;white-space:nowrap;transition:all .2s}
 .copy-btn:hover{background:rgba(204,34,51,.35)}
 
-.panel{display:none}
-.panel.active{display:block}
+.panel{display:none}.panel.active{display:block}
 
 .api-block{background:#050000;border:1px solid #1a0508;border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:11px;line-height:1.8;margin-bottom:14px}
 .c-comment{color:var(--text3)}.c-key{color:var(--red3)}.c-val{color:var(--green2)}.c-str{color:var(--gold)}.c-url{color:var(--red2)}
-
 .glow-red{box-shadow:0 0 20px rgba(204,34,51,.2)}
 
-/* Keys Login user card */
 .user-card{background:#050000;border:1px solid #2a0a10;border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:16px;font-weight:900;color:white;flex-shrink:0}
 .user-info{flex:1;min-width:0}
@@ -164,18 +149,9 @@ tr:hover td{background:rgba(204,34,51,.04)}
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="login-logo">
-      <h1>RBX KEY</h1>
-      <p>// KEY MANAGEMENT SYSTEM</p>
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="admin@rbx.com" autocomplete="off"/>
-    </div>
-    <div class="form-group">
-      <label>Senha</label>
-      <input type="password" id="loginPass" placeholder="••••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
+    <div class="login-logo"><h1>RBX KEY</h1><p>// KEY MANAGEMENT SYSTEM</p></div>
+    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="admin@rbx.com" autocomplete="off"/></div>
+    <div class="form-group"><label>Senha</label><input type="password" id="loginPass" placeholder="••••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <button class="btn-login" onclick="doLogin()">ACESSAR PAINEL</button>
     <div class="login-err" id="loginErr"></div>
   </div>
@@ -184,23 +160,21 @@ tr:hover td{background:rgba(204,34,51,.04)}
 <!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div>
-      <div class="topbar-logo">RBX KEY</div>
-      <div class="topbar-sub">// KEY MANAGEMENT PANEL V4</div>
-    </div>
+    <div><div class="topbar-logo">RBX KEY</div><div class="topbar-sub">// KEY MANAGEMENT PANEL V5</div></div>
     <div class="topbar-spacer"></div>
     <span class="topbar-badge">ADMIN</span>
     <button class="btn-logout" onclick="doLogout()">SAIR</button>
   </div>
 
   <div class="tabs">
-    <div class="tab active"  onclick="switchTab('dashboard')">Dashboard</div>
-    <div class="tab"         onclick="switchTab('generate')">Gerar Key</div>
-    <div class="tab"         onclick="switchTab('validate')">Validar Key</div>
-    <div class="tab"         onclick="switchTab('keys')">Todas as Keys</div>
-    <div class="tab"         onclick="switchTab('userkeys')">Keys Login</div>
-    <div class="tab"         onclick="switchTab('hwid')">HWID</div>
-    <div class="tab"         onclick="switchTab('api')">API / Bot</div>
+    <div class="tab active" onclick="switchTab('dashboard')">Dashboard</div>
+    <div class="tab"        onclick="switchTab('generate')">Gerar Key</div>
+    <div class="tab"        onclick="switchTab('validate')">Validar Key</div>
+    <div class="tab"        onclick="switchTab('keys')">Todas as Keys</div>
+    <div class="tab"        onclick="switchTab('userkeys')">Keys Login</div>
+    <div class="tab"        onclick="switchTab('accounts')">Contas</div>
+    <div class="tab"        onclick="switchTab('hwid')">HWID</div>
+    <div class="tab"        onclick="switchTab('api')">API</div>
   </div>
 
   <div class="content">
@@ -219,7 +193,7 @@ tr:hover td{background:rgba(204,34,51,.04)}
         <div class="card-title">Últimas Keys Geradas</div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário</th><th>Status</th><th>HWID</th><th>Gerada em</th></tr></thead>
+            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário/Email</th><th>Status</th><th>HWID</th><th>Gerada em</th></tr></thead>
             <tbody id="recentTable"><tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key ainda</td></tr></tbody>
           </table>
         </div>
@@ -232,24 +206,22 @@ tr:hover td{background:rgba(204,34,51,.04)}
         <div class="card glow-red">
           <div class="card-title">Gerar Nova Key</div>
           <div class="fg">
-            <label>Tipo de Key</label>
-            <select id="genType" onchange="document.getElementById('genDurGroup').style.display=this.value==='free'?'block':'none'">
-              <option value="premium">Premium — KEYP_ (sem expiração)</option>
-              <option value="free">Free — KEYF_</option>
+            <label>Tipo e Duração da Key</label>
+            <select id="genType">
+              <!-- FREE -->
+              <option value="free">Free — 24 horas</option>
+              <option value="free7">Free — 7 dias</option>
+              <option value="free30">Free — 30 dias</option>
+              <option value="free_unlimited">Free — Ilimitado</option>
+              <!-- PREMIUM -->
+              <option value="premium">Premium — Ilimitado (sem expiração)</option>
+              <option value="premium7">Premium — 7 dias</option>
+              <option value="premium30">Premium — 30 dias</option>
             </select>
           </div>
           <div class="fg">
             <label>Usuário / Discord ID (opcional)</label>
             <input type="text" id="genUser" placeholder="Ex: RBXUser#1234"/>
-          </div>
-          <div class="fg" id="genDurGroup" style="display:none">
-            <label>Duração (Free)</label>
-            <select id="genDur">
-              <option value="1">24 horas</option>
-              <option value="7">7 dias</option>
-              <option value="30">30 dias</option>
-              <option value="0">Ilimitado</option>
-            </select>
           </div>
           <button class="btn btn-primary btn-full" onclick="generateKey()">// GERAR KEY</button>
           <div class="key-box" id="genResult">
@@ -259,25 +231,19 @@ tr:hover td{background:rgba(204,34,51,.04)}
           <div class="alert" id="genAlert"></div>
         </div>
         <div class="card">
-          <div class="card-title">Informações do Formato</div>
+          <div class="card-title">Formatos de Key</div>
           <div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2)">
-            <div style="margin-bottom:12px">
-              <span class="pill pill-premium">PREMIUM</span>
-              <span style="margin-left:8px;color:var(--gold)">KEYP_</span>
-              <span style="color:var(--text3)"> + 20 chars — SEM expiração</span>
-            </div>
+            <div><span class="pill pill-free">FREE</span> <span style="color:var(--green2)">KEYF_</span> + 15 chars</div>
+            <div style="color:var(--text3);font-size:10px;padding-left:4px">→ 24h, 7d, 30d ou Ilimitado</div>
             <div class="sep"></div>
-            <div>
-              <span class="pill pill-free">FREE</span>
-              <span style="margin-left:8px;color:var(--green2)">KEYF_</span>
-              <span style="color:var(--text3)"> + 15 chars — duração configurável</span><br>
-              <span style="color:var(--text3);font-size:10px;padding-left:4px">Selecione "Ilimitado" para key free sem expiração</span>
-            </div>
+            <div><span class="pill pill-premium">PREMIUM</span> <span style="color:var(--gold)">KEYP_</span> + 20 chars</div>
+            <div style="color:var(--text3);font-size:10px;padding-left:4px">→ Ilimitado, 7d ou 30d</div>
             <div class="sep"></div>
             <div style="color:var(--text3);font-size:10px;line-height:1.8">
-              <div>// Keys são vinculadas ao HWID no primeiro uso</div>
-              <div>// O executor valida via API antes de aceitar</div>
-              <div>// Keys revogadas são rejeitadas imediatamente</div>
+              <div>// HWID vinculado no 1º uso</div>
+              <div>// Duração conta a partir do 1º uso</div>
+              <div>// RESET KEY = suspende (dono reativa)</div>
+              <div>// REMOVE KEY = revogação permanente</div>
             </div>
           </div>
         </div>
@@ -289,39 +255,34 @@ tr:hover td{background:rgba(204,34,51,.04)}
       <div class="grid2">
         <div class="card">
           <div class="card-title">Verificar / Revogar Key</div>
-          <div class="fg">
-            <label>Key</label>
-            <input type="text" id="checkKeyInput" placeholder="KEYP_... ou KEYF_..." style="font-family:var(--mono)"/>
-          </div>
+          <div class="fg"><label>Key</label><input type="text" id="checkKeyInput" placeholder="KEYP_... ou KEYF_..." style="font-family:var(--mono)"/></div>
           <div style="display:flex;gap:10px">
             <button class="btn btn-primary" style="flex:1" onclick="checkKey()">VERIFICAR</button>
-            <button class="btn btn-danger" style="flex:1" onclick="revokeKey('removed-key')">REVOGAR</button>
+            <button class="btn btn-danger"  style="flex:1" onclick="revokeKey('removed-key')">REVOGAR</button>
           </div>
           <div class="alert" id="checkAlert"></div>
           <div id="keyDetailBox" style="display:none;margin-top:14px">
             <div class="sep"></div>
-            <div style="font-family:var(--mono);font-size:11px;line-height:2.2">
-              <div><span style="color:var(--text3)">KEY &nbsp;&nbsp;&nbsp;</span> <span id="di-key" style="color:var(--gold)"></span></div>
-              <div><span style="color:var(--text3)">TIPO &nbsp;&nbsp;</span> <span id="di-type"></span></div>
-              <div><span style="color:var(--text3)">USER &nbsp;&nbsp;</span> <span id="di-user" style="color:var(--text2)"></span></div>
-              <div><span style="color:var(--text3)">EXPIRA</span> <span id="di-exp" style="color:var(--red3)"></span></div>
-              <div><span style="color:var(--text3)">HWID &nbsp;&nbsp;</span> <span id="di-hwid" style="color:var(--purple)"></span></div>
-              <div><span style="color:var(--text3)">STATUS</span> <span id="di-status"></span></div>
+            <div style="font-family:var(--mono);font-size:11px;line-height:2.4">
+              <div><span style="color:var(--text3)">KEY &nbsp;&nbsp;&nbsp;&nbsp;</span><span id="di-key" style="color:var(--gold)"></span></div>
+              <div><span style="color:var(--text3)">TIPO &nbsp;&nbsp;&nbsp;</span><span id="di-type"></span></div>
+              <div><span style="color:var(--text3)">USUÁRIO &nbsp;</span><span id="di-user" style="color:var(--text2)"></span></div>
+              <div><span style="color:var(--text3)">EMAIL &nbsp;&nbsp;&nbsp;</span><span id="di-email" style="color:var(--text2)"></span></div>
+              <div><span style="color:var(--text3)">EXPIRA &nbsp;&nbsp;</span><span id="di-exp" style="color:var(--red3)"></span></div>
+              <div><span style="color:var(--text3)">HWID &nbsp;&nbsp;&nbsp;&nbsp;</span><span id="di-hwid" style="color:var(--purple)"></span></div>
+              <div><span style="color:var(--text3)">STATUS &nbsp;&nbsp;</span><span id="di-status"></span></div>
             </div>
           </div>
         </div>
         <div class="card">
           <div class="card-title">Resetar HWID de uma Key</div>
-          <div class="fg">
-            <label>Key para resetar HWID</label>
-            <input type="text" id="hwidResetInput" placeholder="KEYP_... ou KEYF_..." style="font-family:var(--mono)"/>
-          </div>
+          <div class="fg"><label>Key para resetar HWID</label><input type="text" id="hwidResetInput" placeholder="KEYP_... ou KEYF_..." style="font-family:var(--mono)"/></div>
           <button class="btn btn-gold btn-full" onclick="resetHWID()">// RESETAR HWID</button>
           <div class="alert" id="hwidAlert"></div>
           <div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8">
-            <div>// O HWID é vinculado no primeiro uso da key</div>
+            <div>// HWID é vinculado no primeiro uso da key</div>
             <div>// Resetar permite trocar de máquina</div>
-            <div>// O usuário será notificado automaticamente</div>
+            <div>// Notificação automática enviada ao usuário</div>
           </div>
         </div>
       </div>
@@ -332,7 +293,7 @@ tr:hover td{background:rgba(204,34,51,.04)}
       <div class="card">
         <div class="card-title">Todas as Keys Geradas</div>
         <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-          <input type="text" id="filterInput" placeholder="Buscar key ou usuário..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderAllKeys()"/>
+          <input type="text" id="filterInput" placeholder="Buscar key, usuário ou email..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderAllKeys()"/>
           <select id="filterType" style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
             <option value="all">Todos os tipos</option>
             <option value="premium">Premium</option>
@@ -341,12 +302,13 @@ tr:hover td{background:rgba(204,34,51,.04)}
           <select id="filterStatus" style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderAllKeys()">
             <option value="all">Todos status</option>
             <option value="valid">Válidas</option>
+            <option value="suspended">Suspensas</option>
             <option value="revoked">Revogadas</option>
           </select>
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário</th><th>Expira</th><th>HWID</th><th>Status</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário/Email</th><th>Expira</th><th>HWID</th><th>Status</th><th>Ações</th></tr></thead>
             <tbody id="allKeysTable"><tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key gerada ainda</td></tr></tbody>
           </table>
         </div>
@@ -356,11 +318,11 @@ tr:hover td{background:rgba(204,34,51,.04)}
     <!-- KEYS LOGIN -->
     <div class="panel" id="panel-userkeys">
       <div class="card">
-        <div class="card-title">Keys Login — Todas as Keys e Contas Vinculadas</div>
+        <div class="card-title">Keys Login — Keys e Contas Vinculadas</div>
         <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
           // Todas as keys geradas aparecem aqui, com ou sem conta vinculada.<br>
-          // Keys com conta mostram email e nome do executor registrado.<br>
-          // Use os botões para gerenciar HWIDs, remover ou resetar keys.
+          // Keys com conta mostram email e nome real do executor.<br>
+          // RESET KEY suspende (dono reativa). REMOVE KEY revoga definitivamente.
         </p>
         <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
           <input type="text" id="userFilter" placeholder="Buscar por email, nome ou key..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderUsers()"/>
@@ -375,62 +337,72 @@ tr:hover td{background:rgba(204,34,51,.04)}
         </div>
         <div style="overflow-x:auto">
           <table id="userkeysTable" style="width:100%;border-collapse:collapse;font-size:12px">
-            <thead>
-              <tr style="background:#0a0202">
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">KEY</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">TIPO</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">CONTA VINCULADA</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EMAIL</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">STATUS</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">HWID</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EXPIRA</th>
-                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">AÇÕES</th>
-              </tr>
-            </thead>
-            <tbody id="userkeysBody">
-              <tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Clique em ATUALIZAR para carregar</td></tr>
-            </tbody>
+            <thead><tr style="background:#0a0202">
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">KEY</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">TIPO</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">NOME</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EMAIL</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">STATUS</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">HWID</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EXPIRA</th>
+              <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">AÇÕES</th>
+            </tr></thead>
+            <tbody id="userkeysBody"><tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Clique em ATUALIZAR para carregar</td></tr></tbody>
           </table>
         </div>
         <div id="userkeysCount" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px;text-align:right"></div>
       </div>
-
-      <!-- Modal de notificação manual -->
       <div class="card">
         <div class="card-title">Enviar Notificação Manual</div>
         <div class="grid2">
           <div>
-            <div class="fg">
-              <label>Email do usuário</label>
-              <input type="email" id="notifEmail" placeholder="usuario@email.com"/>
-            </div>
+            <div class="fg"><label>Email do usuário</label><input type="email" id="notifEmail" placeholder="usuario@email.com"/></div>
             <div class="fg">
               <label>Motivo</label>
               <select id="notifReason">
-                <option value="reset-hwid">Reseted HWID</option>
-                <option value="removed-key">Removed Key</option>
-                <option value="reset-key">Reseted Key</option>
+                <option value="reset-hwid">HWID Resetado</option>
+                <option value="removed-key">Key Removida</option>
+                <option value="reset-key">Key Resetada</option>
                 <option value="generic">Aviso Geral</option>
               </select>
             </div>
-            <div class="fg">
-              <label>Mensagem</label>
-              <input type="text" id="notifMsg" placeholder="Mensagem para o usuário..."/>
-            </div>
+            <div class="fg"><label>Mensagem</label><input type="text" id="notifMsg" placeholder="Mensagem para o usuário..."/></div>
             <button class="btn btn-purple btn-full" onclick="sendNotification()">// ENVIAR NOTIFICAÇÃO</button>
             <div class="alert" id="notifAlert"></div>
           </div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--text3);line-height:2">
             <div>// A notificação aparece no executor do usuário</div>
             <div>// Em um card substituindo a tela principal</div>
-            <div>// Com opção de inserir nova key (quando aplicável)</div>
-            <div style="margin-top:12px;color:var(--text2)">Motivos disponíveis:</div>
-            <div>→ <span style="color:var(--purple)">Reseted HWID</span> — HWID foi resetado</div>
-            <div>→ <span style="color:var(--red3)">Removed Key</span> — key foi removida</div>
-            <div>→ <span style="color:var(--gold)">Reseted Key</span> — key foi resetada</div>
+            <div style="margin-top:12px;color:var(--text2)">Motivos:</div>
+            <div>→ <span style="color:var(--purple)">HWID Resetado</span> — precisa reinserir key</div>
+            <div>→ <span style="color:var(--red3)">Key Removida</span> — precisa de nova key</div>
+            <div>→ <span style="color:var(--gold)">Key Resetada</span> — suspensa, precisa reativar</div>
             <div>→ <span style="color:var(--text2)">Aviso Geral</span> — mensagem livre</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- CONTAS (acc.js) -->
+    <div class="panel" id="panel-accounts">
+      <div class="card">
+        <div class="card-title">Contas do Executor (acc.js)</div>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
+          // Contas salvas pelo executor (email + senha + key).<br>
+          // Armazenadas na store redux-accounts.<br>
+          // Senha armazenada como hash SHA-256 — nunca em texto puro.
+        </p>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input type="text" id="accFilter" placeholder="Buscar por email, nome ou key..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderAccounts()"/>
+          <button class="btn btn-primary" onclick="loadAccounts()">// ATUALIZAR</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Email</th><th>Nome</th><th>Key</th><th>Tipo</th><th>HWID</th><th>Status</th><th>Registrado</th><th>Ações</th></tr></thead>
+            <tbody id="accTable"><tr><td colspan="8" style="color:var(--text3);text-align:center;padding:20px">Clique em ATUALIZAR para carregar</td></tr></tbody>
+          </table>
+        </div>
+        <div id="accCount" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px;text-align:right"></div>
       </div>
     </div>
 
@@ -440,14 +412,14 @@ tr:hover td{background:rgba(204,34,51,.04)}
         <div class="card-title">Gerenciamento de HWID</div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário</th><th>HWID Vinculado</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário/Email</th><th>HWID Vinculado</th><th>Ações</th></tr></thead>
             <tbody id="hwidTable"><tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhum HWID vinculado ainda</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- API / BOT -->
+    <!-- API -->
     <div class="panel" id="panel-api">
       <div class="grid2">
         <div class="card">
@@ -461,35 +433,41 @@ tr:hover td{background:rgba(204,34,51,.04)}
           </div>
           <div class="sep"></div>
           <div class="api-block">
-<span class="c-comment">// Endpoints principais</span>
+<span class="c-comment">// Key endpoints</span>
 <br>GET <span class="c-url">/api/validate</span>?key=&hwid=
-<br>GET <span class="c-url">/api/generate</span>?token=&type=&user=&days=
-<br>GET <span class="c-url">/api/revoke</span>?token=&key=&reason=
+<br>GET <span class="c-url">/api/generate</span>?token=&type=&user=
+<br>&nbsp;&nbsp;<span class="c-comment">// types: free, free7, free30, free_unlimited</span>
+<br>&nbsp;&nbsp;<span class="c-comment">//        premium, premium7, premium30</span>
+<br>GET <span class="c-url">/api/revoke</span>?token=&key=&reason=removed-key|reset-key
 <br>GET <span class="c-url">/api/reset-hwid</span>?token=&key=
 <br>GET <span class="c-url">/api/list</span>?token=
+<br><br><span class="c-comment">// Contas (acc.js)</span>
+<br>POST <span class="c-url">/api/acc</span> body:{email,password,key,name,hwid}
+<br>GET  <span class="c-url">/api/acc</span>?action=login&email=&password=
+<br>GET  <span class="c-url">/api/acc</span>?action=activate&email=&password=&key=
+<br>GET  <span class="c-url">/api/acc</span>?action=list&token=
+<br>GET  <span class="c-url">/api/acc</span>?action=notify&token=&email=&msg=&reason=
+<br>DELETE <span class="c-url">/api/acc</span>?token=&email=
+<br><br><span class="c-comment">// Audit / Chat</span>
 <br>GET <span class="c-url">/api/audit</span>?token=&limit=50
-<br><br><span class="c-comment">// Sistema de usuários</span>
-<br>POST <span class="c-url">/api/register</span>  <span class="c-comment">body:{email,password,key,name}</span>
-<br>GET  <span class="c-url">/api/register</span>?action=login&email=&password=
-<br>GET  <span class="c-url">/api/register</span>?action=list&token=
-<br>GET  <span class="c-url">/api/register</span>?action=notify&token=&email=&msg=&reason=
+<br>GET <span class="c-url">/api/chat</span>?action=history|send|react|unread|markread
           </div>
         </div>
         <div class="card">
-          <div class="card-title">Fluxo do Executor</div>
-          <div class="api-block" style="font-size:10px;line-height:1.9">
-<span class="c-comment">// 1. Usuário abre o executor</span>
-<br><span class="c-comment">// 2. Checa notificações pendentes via login</span>
-<br><span class="c-comment">// 3. Se houver notificação → mostra card de aviso</span>
-<br><span class="c-comment">// 4. Caso contrário → tela normal</span>
-<br><br><span class="c-key">var</span> loginUrl = <span class="c-str">$"{API}/register?action=login&email={email}&password={pass}"</span>;
-<br><span class="c-key">var</span> res = <span class="c-key">await</span> http.GetStringAsync(loginUrl);
-<br><span class="c-key">var</span> data = JsonDocument.Parse(res);
-<br><br><span class="c-comment">// Se tiver notificações pendentes:</span>
-<br><span class="c-key">var</span> notifs = data.RootElement.GetProperty(<span class="c-str">"notifications"</span>);
-<br><span class="c-key">if</span> (notifs.GetArrayLength() > 0) {
-<br>&nbsp;&nbsp;ShowNotificationCard(notifs[0]); <span class="c-comment">// mostra o card</span>
+          <div class="card-title">Fluxo no Executor (C#)</div>
+          <div class="api-block" style="font-size:10px;line-height:2">
+<span class="c-comment">// 1. Login / checar notificações</span>
+<br><span class="c-key">var</span> url = <span class="c-str">$"{API}/acc?action=login&email={email}&password={pass}"</span>;
+<br><span class="c-key">var</span> res = JsonDocument.Parse(<span class="c-key">await</span> Http.GetStringAsync(url));
+<br><br><span class="c-comment">// 2. Se houver notificação → mostrar card</span>
+<br><span class="c-key">if</span> (res.notifications.Length > 0) {
+<br>&nbsp;&nbsp;ShowNotificationCard(res.notifications[0]);
 <br>}
+<br><br><span class="c-comment">// 3. Notificação reset-hwid → card especial</span>
+<br><span class="c-comment">// "Seu HWID foi resetado. Insira sua key."</span>
+<br><span class="c-comment">// → TextBox + botão "CONTINUAR"</span>
+<br><br><span class="c-comment">// 4. Key suspensa (reset-key) → ativar</span>
+<br><span class="c-key">var</span> actUrl = <span class="c-str">$"{API}/acc?action=activate&email=...&key=..."</span>;
           </div>
         </div>
       </div>
@@ -499,20 +477,21 @@ tr:hover td{background:rgba(204,34,51,.04)}
 </div>
 
 <script>
-const ADMIN_EMAIL    = 'RBXexploit@gmail.com';
-const ADMIN_PASS     = 'RBX1#';
+const ADMIN_EMAIL     = 'RBXexploit@gmail.com';
+const ADMIN_PASS      = 'RBX1#';
 const ADMIN_API_TOKEN = 'redux-admin-secret';
 
-let keys    = [];
-let users   = [];
-let lastKey = '';
+let keys     = [];
+let users    = [];
+let accounts = [];
+let lastKey  = '';
 let adminApiKey = ADMIN_API_TOKEN;
 const API = window.location.origin + '/api';
 
 // ── LOGIN ──────────────────────────────────────────────
 function doLogin() {
-  const e   = document.getElementById('loginEmail').value.trim();
-  const p   = document.getElementById('loginPass').value;
+  const e = document.getElementById('loginEmail').value.trim();
+  const p = document.getElementById('loginPass').value;
   const err = document.getElementById('loginErr');
   if (e === ADMIN_EMAIL && p === ADMIN_PASS) {
     document.getElementById('loginScreen').style.display = 'none';
@@ -524,46 +503,43 @@ function doLogin() {
     setTimeout(() => err.textContent = '', 2500);
   }
 }
-
 function doLogout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginEmail').value = '';
   document.getElementById('loginPass').value  = '';
 }
-
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 // ── TABS ───────────────────────────────────────────────
-const TAB_IDS = ['dashboard','generate','validate','keys','userkeys','hwid','api'];
-
+const TAB_IDS = ['dashboard','generate','validate','keys','userkeys','accounts','hwid','api'];
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', TAB_IDS[i] === name));
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
-  if (name === 'keys')     renderAllKeys();
-  if (name === 'hwid')     renderHWID();
+  if (name === 'keys')      renderAllKeys();
+  if (name === 'hwid')      renderHWID();
   if (name === 'dashboard') updateStats();
-  if (name === 'userkeys') loadUsers();
+  if (name === 'userkeys')  loadUsers();
+  if (name === 'accounts')  loadAccounts();
 }
 
 // ── GERAR KEY ──────────────────────────────────────────
 async function generateKey() {
   const type = document.getElementById('genType').value;
   const user = document.getElementById('genUser').value.trim() || 'Anonymous';
-  const days = type === 'premium' ? 0 : parseInt(document.getElementById('genDur').value);
 
-  showAlert('genAlert', 'ok', 'Gerando key...');
+  showAlert('genAlert', 'info', 'Gerando key...');
   try {
-    const r    = await fetch(`${API}/generate?token=${adminApiKey}&type=${type}&user=${encodeURIComponent(user)}&days=${days}`);
+    const r    = await fetch(`${API}/generate?token=${adminApiKey}&type=${type}&user=${encodeURIComponent(user)}`);
     const data = await r.json();
     if (!data.success) { showAlert('genAlert', 'err', 'Erro: ' + (data.error || 'desconhecido')); return; }
 
     lastKey = data.key;
     const kt = document.getElementById('genKeyText');
     kt.textContent = data.key;
-    kt.className   = 'key-text ' + type;
+    kt.className   = 'key-text ' + (type.startsWith('premium') ? 'premium' : 'free');
     document.getElementById('genResult').classList.add('show');
-    showAlert('genAlert', 'ok', `Key ${type.toUpperCase()} gerada para ${user}`);
+    showAlert('genAlert', 'ok', `Key gerada! Expira: ${data.expiry} | Tipo: ${data.type.toUpperCase()}`);
     await loadAllKeys(); updateStats(); renderRecent();
   } catch (e) { showAlert('genAlert', 'err', 'Erro de rede: ' + e.message); }
 }
@@ -578,11 +554,15 @@ async function checkKey() {
   document.getElementById('di-key').textContent  = k.key;
   document.getElementById('di-type').innerHTML   = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
   document.getElementById('di-user').textContent = k.user || '-';
+  document.getElementById('di-email').textContent = k.email || '-';
   document.getElementById('di-exp').textContent  = k.expiry || 'Ilimitado';
   document.getElementById('di-hwid').textContent = k.hwid  || '(não vinculado)';
-  document.getElementById('di-status').innerHTML = k.valid
-    ? '<span class="pill pill-valid">VÁLIDA</span>'
-    : '<span class="pill pill-invalid">REVOGADA</span>';
+
+  let statusHtml = '';
+  if (!k.valid) statusHtml = '<span class="pill pill-invalid">REVOGADA</span>';
+  else if (k.suspended) statusHtml = '<span class="pill pill-suspended">SUSPENSA (aguarda reativação)</span>';
+  else statusHtml = '<span class="pill pill-valid">VÁLIDA</span>';
+  document.getElementById('di-status').innerHTML = statusHtml;
   box.style.display = 'block';
   showAlert('checkAlert', 'ok', 'Key encontrada — detalhes abaixo.');
 }
@@ -594,7 +574,7 @@ async function revokeKey(reason = 'removed-key') {
     const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(val)}&reason=${reason}`);
     const data = await r.json();
     if (data.success) {
-      showAlert('checkAlert', 'ok', 'Key revogada. Usuário notificado.');
+      showAlert('checkAlert', 'ok', reason === 'removed-key' ? 'Key revogada. Usuário notificado.' : 'Key suspensa. Usuário notificado.');
       document.getElementById('keyDetailBox').style.display = 'none';
       await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID();
     } else { showAlert('checkAlert', 'err', 'Erro: ' + (data.error || '')); }
@@ -608,14 +588,14 @@ async function resetHWID() {
     const r    = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(val)}`);
     const data = await r.json();
     if (data.success) {
-      showAlert('hwidAlert', 'ok', 'HWID resetado. Usuário notificado.');
+      showAlert('hwidAlert', 'ok', 'HWID resetado! Notificação enviada ao usuário.');
       await loadAllKeys(); renderHWID(); renderAllKeys(); updateStats();
     } else { showAlert('hwidAlert', 'err', 'Erro: ' + (data.error || '')); }
   } catch (e) { showAlert('hwidAlert', 'err', 'Erro de rede: ' + e.message); }
 }
-
 async function resetHWIDDirect(keyStr) {
   document.getElementById('hwidResetInput').value = keyStr;
+  switchTab('validate');
   await resetHWID();
 }
 
@@ -623,8 +603,9 @@ async function quickRevoke(keyStr, reason = 'removed-key') {
   try {
     const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}&reason=${reason}`);
     const data = await r.json();
-    if (data.success) { await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID(); renderUsers(); }
-    else showAlert('checkAlert', 'err', 'Erro: ' + (data.error || ''));
+    if (data.success) {
+      await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID(); renderUsers();
+    } else showAlert('checkAlert', 'err', 'Erro: ' + (data.error || ''));
   } catch (e) { console.error(e); }
 }
 
@@ -646,69 +627,70 @@ function renderUsers() {
   const tbody = document.getElementById('userkeysBody');
   if (!tbody) return;
 
-  const q    = (document.getElementById('userFilter')?.value || '').toLowerCase();
-  const fs   = document.getElementById('userFilterStatus')?.value || 'all';
+  const q  = (document.getElementById('userFilter')?.value || '').toLowerCase();
+  const fs = document.getElementById('userFilterStatus')?.value || 'all';
 
-  // Combina todas as keys com dados de conta (se vinculada)
+  // Combina keys com dados de conta (de users E accounts)
   let combined = keys.map(k => {
-    const account = users.find(u => u.key === k.key);
-    return { ...k, account: account || null };
+    // Primeiro tenta na lista de accounts (acc.js), depois em users (legado)
+    const accAccount  = accounts.find(a => a.key === k.key);
+    const userAccount = users.find(u => u.key === k.key);
+    const account = accAccount || (userAccount ? {
+      email: userAccount.email,
+      name:  userAccount.name || userAccount.email
+    } : null);
+    return { ...k, account };
   });
 
-  // Filtros
   combined = combined.filter(item => {
     if (fs === 'linked'   && !item.account) return false;
     if (fs === 'unlinked' &&  item.account) return false;
-    if (fs === 'valid'    && !item.valid)   return false;
-    if (fs === 'revoked'  &&  item.valid)   return false;
+    if (fs === 'valid'    && (!item.valid || item.suspended)) return false;
+    if (fs === 'revoked'  &&  item.valid) return false;
     if (q) {
-      const keyMatch     = item.key.toLowerCase().includes(q);
-      const emailMatch   = (item.account?.email || '').toLowerCase().includes(q);
-      const nameMatch    = (item.account?.name  || '').toLowerCase().includes(q);
-      const userMatch    = (item.user || '').toLowerCase().includes(q);
+      const keyMatch   = item.key.toLowerCase().includes(q);
+      const emailMatch = (item.account?.email || '').toLowerCase().includes(q);
+      const nameMatch  = (item.account?.name  || '').toLowerCase().includes(q);
+      const userMatch  = (item.user || '').toLowerCase().includes(q);
       if (!keyMatch && !emailMatch && !nameMatch && !userMatch) return false;
     }
     return true;
   });
 
   const countEl = document.getElementById('userkeysCount');
-  if (countEl) countEl.textContent = `// ${combined.length} resultado(s) — ${users.length} conta(s) registrada(s) de ${keys.length} key(s) total`;
+  if (countEl) countEl.textContent = `// ${combined.length} resultado(s) — ${accounts.length + users.length} conta(s) — ${keys.length} key(s) total`;
 
   if (!combined.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhum resultado encontrado</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhum resultado</td></tr>';
     return;
   }
 
   tbody.innerHTML = combined.map(item => {
-    const acc     = item.account;
-    const typePill = `<span class="pill ${item.type === 'premium' ? 'pill-premium' : 'pill-free'}">${item.type.toUpperCase()}</span>`;
-    const statusPill = item.valid
-      ? '<span class="pill pill-valid">VÁLIDA</span>'
-      : '<span class="pill pill-invalid">REVOGADA</span>';
+    const acc = item.account;
+    const typePill   = `<span class="pill ${item.type === 'premium' ? 'pill-premium' : 'pill-free'}">${item.type.toUpperCase()}</span>`;
+    let statusPill;
+    if (!item.valid)       statusPill = '<span class="pill pill-invalid">REVOGADA</span>';
+    else if (item.suspended) statusPill = '<span class="pill pill-suspended">SUSPENSA</span>';
+    else                   statusPill = '<span class="pill pill-valid">VÁLIDA</span>';
     const hwidCell = item.hwid
-      ? '<span class="pill pill-used" title="' + item.hwid + '">VINCULADO</span>'
+      ? `<span class="pill pill-used" title="${item.hwid}">VINCULADO</span>`
       : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
-
-    const nameCell = acc
+    const nameCell  = acc
       ? `<span style="color:white;font-weight:bold">${acc.name || '—'}</span>`
       : `<span style="color:var(--text3);font-family:var(--mono);font-size:10px">Sem conta</span>`;
     const emailCell = acc
       ? `<span style="color:var(--text2);font-size:11px">${acc.email}</span>`
       : `<span style="color:var(--text3);font-size:10px">—</span>`;
-
     const expiryCell = item.expiry && item.expiry !== 'Ilimitado'
       ? `<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">${item.expiry}</span>`
       : `<span style="color:var(--green2);font-size:10px;font-family:var(--mono)">Ilimitado</span>`;
-
     const notifEmail = acc ? acc.email : '';
-    const actions = `
-      <div style="display:flex;gap:5px;flex-wrap:wrap">
-        ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${item.key}','${notifEmail}')">RESET HWID</button>` : ''}
-        ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevokeUser('${item.key}','removed-key','${notifEmail}')">REMOVE KEY</button>` : ''}
-        ${item.valid ? `<button class="btn btn-sm" style="background:rgba(153,68,255,.2);border:1px solid rgba(153,68,255,.3);color:var(--purple)" onclick="quickRevokeUser('${item.key}','reset-key','${notifEmail}')">RESET KEY</button>` : ''}
-        <button class="copy-btn" onclick="copyText('${item.key}')">COPIAR KEY</button>
-      </div>`;
-
+    const actions = `<div style="display:flex;gap:5px;flex-wrap:wrap">
+      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${item.key}')">RESET HWID</button>` : ''}
+      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${item.key}','reset-key')">RESET KEY</button>` : ''}
+      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${item.key}','removed-key')">REMOVE KEY</button>` : ''}
+      <button class="copy-btn" onclick="copyText('${item.key}')">COPIAR KEY</button>
+    </div>`;
     return `<tr style="border-bottom:1px solid #120305">
       <td style="padding:10px 12px;font-family:var(--mono);font-size:11px;color:${item.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">
         <span title="${item.key}" style="cursor:help">${shortKey(item.key)}</span>
@@ -724,26 +706,13 @@ function renderUsers() {
   }).join('');
 }
 
-async function resetHWIDFromUser(keyStr, email) {
+async function resetHWIDFromUser(keyStr) {
   try {
     const r    = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}`);
     const data = await r.json();
     if (data.success) {
-      showAlert('notifAlert', 'ok', 'HWID resetado.' + (email ? ' Usuário notificado.' : ''));
-      await loadAllKeys();
-      renderUsers();
-    } else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
-  } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
-}
-
-async function quickRevokeUser(keyStr, reason, email) {
-  try {
-    const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}&reason=${reason}`);
-    const data = await r.json();
-    if (data.success) {
-      showAlert('notifAlert', 'ok', 'Key ' + (reason === 'removed-key' ? 'removida' : 'resetada') + '.' + (email ? ' Usuário notificado.' : ''));
-      await loadAllKeys();
-      renderUsers();
+      showAlert('notifAlert', 'ok', 'HWID resetado! Usuário notificado.');
+      await loadAllKeys(); renderUsers();
     } else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
   } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
 }
@@ -754,11 +723,83 @@ async function sendNotification() {
   const msg    = document.getElementById('notifMsg').value.trim();
   if (!email || !msg) { showAlert('notifAlert', 'err', 'Preencha email e mensagem.'); return; }
   try {
-    const r    = await fetch(`${API}/register?action=notify&token=${adminApiKey}&email=${encodeURIComponent(email)}&msg=${encodeURIComponent(msg)}&reason=${reason}`);
+    // Tenta nas duas APIs (acc e register)
+    const r    = await fetch(`${API}/acc?action=notify&token=${adminApiKey}&email=${encodeURIComponent(email)}&msg=${encodeURIComponent(msg)}&reason=${reason}`);
     const data = await r.json();
     if (data.success) showAlert('notifAlert', 'ok', 'Notificação enviada para ' + email);
-    else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
+    else {
+      // fallback para register legado
+      const r2    = await fetch(`${API}/register?action=notify&token=${adminApiKey}&email=${encodeURIComponent(email)}&msg=${encodeURIComponent(msg)}&reason=${reason}`);
+      const data2 = await r2.json();
+      if (data2.success) showAlert('notifAlert', 'ok', 'Notificação enviada para ' + email);
+      else showAlert('notifAlert', 'err', 'Erro: ' + (data2.error || 'Usuário não encontrado'));
+    }
   } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
+}
+
+// ── CONTAS (acc.js) ────────────────────────────────────
+async function loadAccounts() {
+  const tbody = document.getElementById('accTable');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Carregando...</td></tr>';
+  try {
+    const r    = await fetch(`${API}/acc?action=list&token=${adminApiKey}`);
+    const data = await r.json();
+    accounts = data.success ? (data.accounts || []) : [];
+    renderAccounts();
+  } catch (e) {
+    if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro: ${e.message}</td></tr>`;
+  }
+}
+
+function renderAccounts() {
+  const tbody = document.getElementById('accTable');
+  if (!tbody) return;
+  const q = (document.getElementById('accFilter')?.value || '').toLowerCase();
+  let list = accounts.filter(a => {
+    if (!q) return true;
+    return (a.email || '').toLowerCase().includes(q)
+      || (a.name  || '').toLowerCase().includes(q)
+      || (a.key   || '').toLowerCase().includes(q);
+  });
+  const countEl = document.getElementById('accCount');
+  if (countEl) countEl.textContent = `// ${list.length} conta(s) registrada(s)`;
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);text-align:center;padding:20px">Nenhuma conta encontrada</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(a => {
+    const typePill = `<span class="pill ${a.keyType === 'premium' ? 'pill-premium' : 'pill-free'}">${(a.keyType || 'free').toUpperCase()}</span>`;
+    const statusPill = a.status === 'active'
+      ? '<span class="pill pill-valid">ATIVA</span>'
+      : '<span class="pill pill-invalid">SUSPENSA</span>';
+    const hwidCell = a.hwid
+      ? `<span class="hwid-tag" title="${a.hwid}">${a.hwid.substring(0,20)}…</span>`
+      : '<span style="color:var(--text3);font-size:10px">—</span>';
+    return `<tr>
+      <td style="color:var(--text2)">${a.email}</td>
+      <td style="color:white;font-weight:bold">${a.name || '—'}</td>
+      <td style="color:${a.keyType === 'premium' ? 'var(--gold)' : 'var(--green2)'}"><span title="${a.key}" style="cursor:help">${shortKey(a.key)}</span></td>
+      <td>${typePill}</td>
+      <td>${hwidCell}</td>
+      <td>${statusPill}</td>
+      <td style="color:var(--text3);font-size:10px">${a.registeredAt ? new Date(a.registeredAt).toLocaleString('pt-BR') : '—'}</td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="copy-btn" onclick="copyText('${a.email}')">EMAIL</button>
+        <button class="copy-btn" onclick="copyText('${a.key}')">KEY</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAccount('${a.email}')">DELETAR</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function deleteAccount(email) {
+  if (!confirm(`Deletar conta de ${email}?`)) return;
+  try {
+    const r    = await fetch(`${API}/acc?token=${adminApiKey}&email=${encodeURIComponent(email)}`, { method: 'DELETE' });
+    const data = await r.json();
+    if (data.success) { await loadAccounts(); }
+    else alert('Erro: ' + data.error);
+  } catch (e) { alert('Erro de rede: ' + e.message); }
 }
 
 // ── RENDER TABLES ──────────────────────────────────────
@@ -776,9 +817,10 @@ function renderAllKeys() {
   const fs = document.getElementById('filterStatus')?.value || 'all';
   let list = keys.filter(k => {
     if (ft !== 'all' && k.type !== ft) return false;
-    if (fs === 'valid'   && !k.valid) return false;
-    if (fs === 'revoked' &&  k.valid) return false;
-    if (q && !k.key.toLowerCase().includes(q) && !(k.user || '').toLowerCase().includes(q)) return false;
+    if (fs === 'valid'     && (!k.valid || k.suspended)) return false;
+    if (fs === 'suspended' && (!k.suspended || !k.valid)) return false;
+    if (fs === 'revoked'   &&  k.valid) return false;
+    if (q && !k.key.toLowerCase().includes(q) && !(k.user || '').toLowerCase().includes(q) && !(k.email || '').toLowerCase().includes(q)) return false;
     return true;
   });
   if (!list.length) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Nenhum resultado</td></tr>'; return; }
@@ -793,7 +835,7 @@ function renderHWID() {
     <tr>
       <td style="color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">${shortKey(k.key)}</td>
       <td><span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span></td>
-      <td style="color:var(--text2)">${k.user}</td>
+      <td style="color:var(--text2)">${k.email ? k.email : k.user}</td>
       <td><span class="hwid-tag">${k.hwid}</span></td>
       <td><button class="btn btn-gold btn-sm" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button></td>
     </tr>
@@ -801,25 +843,29 @@ function renderHWID() {
 }
 
 function rowHtml(k, cols) {
-  const shortK      = shortKey(k.key);
-  const typePill    = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
-  const statusPill  = k.valid ? '<span class="pill pill-valid">VÁLIDA</span>' : '<span class="pill pill-invalid">REVOGADA</span>';
-  const hwidCell    = k.hwid ? '<span class="pill pill-used">VINCULADO</span>' : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
+  const shortK     = shortKey(k.key);
+  const typePill   = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
+  let statusPill;
+  if (!k.valid)        statusPill = '<span class="pill pill-invalid">REVOGADA</span>';
+  else if (k.suspended) statusPill = '<span class="pill pill-suspended">SUSPENSA</span>';
+  else                  statusPill = '<span class="pill pill-valid">VÁLIDA</span>';
+  const hwidCell = k.hwid ? '<span class="pill pill-used">VINCULADO</span>' : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
+  const userLabel = k.email ? `${k.email}` : (k.user || 'Anonymous');
   if (cols === 6) return `<tr>
     <td style="font-family:var(--mono);color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">${shortK}</td>
-    <td>${typePill}</td><td style="color:var(--text2)">${k.user}</td>
+    <td>${typePill}</td><td style="color:var(--text2)">${userLabel}</td>
     <td>${statusPill}</td><td>${hwidCell}</td><td style="color:var(--text3)">${k.created}</td>
   </tr>`;
   return `<tr>
     <td style="font-family:var(--mono);color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}"><span title="${k.key}" style="cursor:help">${shortK}</span></td>
     <td>${typePill}</td>
-    <td style="color:var(--text2)">${k.user}</td>
+    <td style="color:var(--text2)">${userLabel}</td>
     <td style="color:var(--text3);font-size:10px">${k.expiry}</td>
     <td>${hwidCell}</td>
     <td>${statusPill}</td>
-    <td style="display:flex;gap:6px;flex-wrap:wrap">
+    <td style="display:flex;gap:6px;flex-wrap:wrap;padding:6px 12px">
+      ${k.valid && !k.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${k.key}','reset-key')">RESET KEY</button>` : ''}
       ${k.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${k.key}','removed-key')">REMOVE KEY</button>` : ''}
-      ${k.valid ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${k.key}','reset-key')">RESET KEY</button>` : ''}
       ${k.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button>` : ''}
       <button class="copy-btn" onclick="copyText('${k.key}')">COPIAR</button>
     </td>
@@ -833,13 +879,15 @@ async function loadAllKeys() {
     const data = await r.json();
     if (data.success) {
       keys = data.keys.map(k => ({
-        key:      k.key,
-        type:     k.type || 'free',
-        user:     k.user || 'Anonymous',
-        expiry:   k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
-        valid:    k.active !== false,
-        hwid:     k.hwid || null,
-        created:  k.created ? new Date(k.created).toLocaleString('pt-BR') : '-'
+        key:       k.key,
+        type:      k.type || 'free',
+        user:      k.user || 'Anonymous',
+        email:     k.email || null,
+        expiry:    k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
+        valid:     k.active !== false,
+        suspended: k.suspended || false,
+        hwid:      k.hwid || null,
+        created:   k.created ? new Date(k.created).toLocaleString('pt-BR') : '-'
       }));
     }
   } catch (e) { console.error('loadAllKeys error:', e); }
@@ -847,7 +895,7 @@ async function loadAllKeys() {
 
 function updateStats() {
   document.getElementById('s-total').textContent   = keys.length;
-  document.getElementById('s-valid').textContent   = keys.filter(k => k.valid).length;
+  document.getElementById('s-valid').textContent   = keys.filter(k => k.valid && !k.suspended).length;
   document.getElementById('s-premium').textContent = keys.filter(k => k.type === 'premium').length;
   document.getElementById('s-free').textContent    = keys.filter(k => k.type === 'free').length;
   document.getElementById('s-revoked').textContent = keys.filter(k => !k.valid).length;
@@ -858,9 +906,10 @@ function updateStats() {
 // ── UTILS ──────────────────────────────────────────────
 function showAlert(id, type, msg) {
   const el = document.getElementById(id);
+  if (!el) return;
   el.textContent = '// ' + msg;
   el.className = `alert alert-${type === 'ok' ? 'ok' : type === 'err' ? 'err' : 'info'} show`;
-  setTimeout(() => el.classList.remove('show'), 4000);
+  setTimeout(() => el.classList.remove('show'), 4500);
 }
 
 function copyText(txt) {

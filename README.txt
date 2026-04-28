@@ -1,61 +1,129 @@
-# Redux Key System — Netlify Deploy
+# RBX Key System V2 — Changelog & Deploy Guide
 
-## Estrutura
+## ✅ Correções e Novidades
+
+### 🔑 Duração de Keys (generate.js + validate.js) — CORRIGIDO
+Antes: todas as keys free ficavam com 24h independente do valor.
+Agora: duração correta baseada no tipo selecionado, contada a partir do 1º uso.
+
+Tipos disponíveis no admin:
+- `free`              → KEYF_ — 24 horas
+- `free7`             → KEYF_ — 7 dias
+- `free30`            → KEYF_ — 30 dias
+- `free_unlimited`    → KEYF_ — Sem expiração
+- `premium`           → KEYP_ — Sem expiração (padrão)
+- `premium7`          → KEYP_ — 7 dias
+- `premium30`         → KEYP_ — 30 dias
+
+### ⏸️ RESET KEY vs REMOVE KEY (revoke.js) — CORRIGIDO
+- **RESET KEY** = suspende a key (`suspended=true`). Key continua `active=true` mas é rejeitada pelo validador. O dono precisa inserir a key novamente para reativá-la (via /api/acc?action=activate).
+- **REMOVE KEY** = revogação permanente (`active=false`). Não tem volta.
+
+### 🖥️ Card de HWID Resetado no Executor
+Quando o admin reseta o HWID, o executor deve mostrar:
 ```
-redux-deploy/
-├── netlify.toml               ← configuração do Netlify
+"Seu HWID foi resetado pelo administrador.
+ Insira sua key novamente para continuar usando o RBX."
+[TextBox — Key]
+[Botão: CONTINUAR]
+[Botão: SAIR DA CONTA]
+```
+A notificação chega via `reason: "reset-hwid"` no campo `notifications[]` do login/acc.
+
+### 👤 Nome/Email real no painel (list.js) — CORRIGIDO
+O list.js agora busca nas stores `redux-accounts` e `redux-users` para enriquecer
+cada key com o email e nome real do dono. O admin vê o email em vez de "Anonymous".
+
+### 📁 acc.js — NOVO ARQUIVO
+Salva e gerencia contas do executor (email + senha hasheada + key).
+Store separada: `redux-accounts`.
+
+Endpoints:
+- `POST /api/acc` — cria/atualiza conta (email, password, key, name, hwid)
+- `GET  /api/acc?action=login&email=&password=` — autentica
+- `GET  /api/acc?action=activate&email=&password=&key=` — reativa key suspensa
+- `GET  /api/acc?action=notifications&email=&password=` — notificações pendentes
+- `GET  /api/acc?action=list&token=` — lista contas (admin)
+- `GET  /api/acc?action=get&token=&email=` — detalhes de uma conta (admin)
+- `GET  /api/acc?action=notify&token=&email=&msg=&reason=` — envia notificação
+- `DELETE /api/acc?token=&email=` — remove conta (admin)
+
+## 📂 Estrutura
+
+```
+rbx-system/
+├── netlify.toml
 ├── netlify/
 │   └── functions/
-│       ├── package.json       ← dependência: @netlify/blobs
-│       ├── validate.js        ← GET /api/validate?key=...&hwid=...
-│       ├── generate.js        ← GET /api/generate?token=...&type=...
-│       ├── revoke.js          ← GET /api/revoke?token=...&key=...
-│       ├── reset-hwid.js      ← GET /api/reset-hwid?token=...&key=...
-│       └── list.js            ← GET /api/list?token=...
+│       ├── package.json
+│       ├── acc.js          ← NOVO — contas do executor
+│       ├── audit.js
+│       ├── chat.js
+│       ├── generate.js     ← CORRIGIDO — duração correta
+│       ├── list.js         ← CORRIGIDO — mostra email/nome real
+│       ├── register.js
+│       ├── reset-hwid.js   ← CORRIGIDO — notifica nas duas stores
+│       ├── revoke.js       ← CORRIGIDO — reset vs remove separados
+│       └── validate.js     ← CORRIGIDO — respeita daysOnFirstUse
 └── public/
-    ├── index.html             ← página pública
-    └── admin.html             ← painel admin (reduxadminkey.netlify.app/admin)
+    ├── index.html
+    └── admin.html          ← CORRIGIDO — tipos de key, reset/remove, aba Contas
 ```
 
-## Como fazer o deploy no Netlify
+## 🚀 Deploy Netlify
 
-### 1. Configurações de build (Site configuration → Build & deploy → Build settings)
-- **Base directory:** (vazio — deixe em branco)
-- **Publish directory:** `public`
-- **Functions directory:** `netlify/functions`
-
-### 2. Variável de ambiente OBRIGATÓRIA (Site configuration → Environment variables)
+### Variável obrigatória
 ```
-REDUX_ADMIN_TOKEN = redux-admin-secret
+REDUX_ADMIN_TOKEN = seu-token-secreto
 ```
-⚠️ Mude para um token seguro de sua escolha! Deve ser igual ao `ADMIN_API_TOKEN` no admin.html.
 
-### 3. Habilitar Netlify Blobs
-O Netlify Blobs é ativado automaticamente quando você usa `getStore()` nas functions.
-Não precisa configurar nada extra — funciona naticamente com o deploy.
-
-### 4. Depois do deploy, teste:
+### Credenciais do painel admin (admin.html)
 ```
-https://SEU-SITE.netlify.app/api/validate?key=DEVK_REDUXSTUDIOS1%23&hwid=teste
+Email: RBXexploit@gmail.com
+Senha: RBX1#
 ```
-Deve retornar: `{"valid":true,"type":"dev","hwid_ok":true}`
 
-## Endpoints da API
-
-| Endpoint | Params | Auth | Descrição |
-|---|---|---|---|
-| `GET /api/validate` | `key`, `hwid` | — | Valida key + vincula HWID |
-| `GET /api/generate` | `token`, `type`, `user`, `days` | Admin | Gera nova key |
-| `GET /api/revoke` | `token`, `key` | Admin | Revoga key |
-| `GET /api/reset-hwid` | `token`, `key` | Admin | Reseta HWID vinculado |
-| `GET /api/list` | `token` | Admin | Lista todas as keys |
-
-## Credenciais do painel admin
-- Email: `ReduxStudiosLtd@gmail.com`
-- Senha: `goham200@@`
-- URL: `https://SEU-SITE.netlify.app/admin`
-
-## Chave Dev (sempre válida, sem HWID)
+### Keys de teste
 ```
-DEVK_REDUXSTUDIOS1#
+DEVK_REDUXSTUDIOS1#   ← sempre válida, sem HWID, tipo dev
+```
+
+## 🔄 Fluxo de Notificações no Executor (C#)
+
+```csharp
+// 1. Login
+var url = $"{API}/acc?action=login&email={email}&password={pass}";
+var json = await Http.GetStringAsync(url);
+var res = JsonDocument.Parse(json);
+
+// 2. Checa notificações
+var notifs = res.RootElement.GetProperty("notifications");
+if (notifs.GetArrayLength() > 0) {
+    var notif = notifs[0];
+    var reason = notif.GetProperty("reason").GetString();
+    var msg    = notif.GetProperty("msg").GetString();
+
+    if (reason == "reset-hwid") {
+        // Mostra card especial:
+        // "Seu HWID foi resetado pelo administrador."
+        // "Insira sua key novamente para continuar."
+        // [TextBox: key] [CONTINUAR] [SAIR]
+        ShowHwidResetCard(msg);
+    }
+    else if (reason == "reset-key") {
+        // Key suspensa — dono precisa reativar
+        // "Sua key foi resetada. Insira a key para reativá-la."
+        // [TextBox: key] [REATIVAR] [SAIR]
+        ShowKeyResetCard(msg);
+    }
+    else if (reason == "removed-key") {
+        // Key removida permanentemente
+        ShowKeyRemovedCard(msg);
+    }
+}
+
+// 3. Verificar se key está suspensa (keySuspended=true) e reativar
+if (res.RootElement.GetProperty("keySuspended").GetBoolean()) {
+    // POST: /api/acc?action=activate&email=...&password=...&key=...
+}
 ```
