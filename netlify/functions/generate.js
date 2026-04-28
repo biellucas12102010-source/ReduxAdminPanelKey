@@ -53,10 +53,9 @@ exports.handler = async (event, context) => {
   const user = p.user || 'Anonymous';
   const days = parseInt(p.days ?? '1', 10);
 
-  // days=0 OU premium → sem expiração (infinito)
-  const expiry = (type === 'premium' || days === 0)
-    ? null
-    : new Date(Date.now() + days * 86400000).toISOString();
+  // premium ou days=0 → sem expiração
+  // free com days > 0 → daysOnFirstUse salvo; expiry calculado no primeiro uso (validate.js)
+  const daysOnFirstUse = (type === 'premium' || days === 0) ? 0 : days;
 
   const key   = genKey(type);
   const entry = {
@@ -65,7 +64,8 @@ exports.handler = async (event, context) => {
     hwid: null,
     user,
     created: new Date().toISOString(),
-    expiry
+    expiry: null,          // sempre null aqui; validate.js seta no primeiro uso
+    daysOnFirstUse        // 0 = sem expiração; >0 = dias contados a partir do primeiro uso
   };
 
   try {
@@ -83,10 +83,10 @@ exports.handler = async (event, context) => {
       user,
       ip: getIP(event),
       result: 'success',
-      detail: `type=${type}, days=${days === 0 ? 'infinito' : days}`
+      detail: `type=${type}, daysOnFirstUse=${daysOnFirstUse === 0 ? 'infinito' : daysOnFirstUse}`
     });
 
-    return res({ success: true, key, type, user, expiry: expiry || 'unlimited' });
+    return res({ success: true, key, type, user, expiry: daysOnFirstUse === 0 ? 'unlimited' : `${daysOnFirstUse}d on first use` });
   } catch (e) {
     console.error('generate error:', e.message);
     await logAudit({ action: 'generate', user, ip: getIP(event), result: 'error', detail: e.message });

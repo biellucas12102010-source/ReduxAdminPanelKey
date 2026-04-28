@@ -356,21 +356,43 @@ tr:hover td{background:rgba(204,34,51,.04)}
     <!-- KEYS LOGIN -->
     <div class="panel" id="panel-userkeys">
       <div class="card">
-        <div class="card-title">Contas Registradas no Executor</div>
+        <div class="card-title">Keys Login — Todas as Keys e Contas Vinculadas</div>
         <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
-          // Usuários que fizeram login no executor com email + senha + key.<br>
-          // Você pode resetar o HWID, remover ou resetar a key de qualquer conta.<br>
-          // O usuário será notificado automaticamente no executor.
+          // Todas as keys geradas aparecem aqui, com ou sem conta vinculada.<br>
+          // Keys com conta mostram email e nome do executor registrado.<br>
+          // Use os botões para gerenciar HWIDs, remover ou resetar keys.
         </p>
-        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-          <input type="text" id="userFilter" placeholder="Buscar por email ou nome..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderUsers()"/>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="userFilter" placeholder="Buscar por email, nome ou key..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderUsers()"/>
+          <select id="userFilterStatus" style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none" onchange="renderUsers()">
+            <option value="all">Todas</option>
+            <option value="linked">Com conta</option>
+            <option value="unlinked">Sem conta</option>
+            <option value="valid">Válidas</option>
+            <option value="revoked">Revogadas</option>
+          </select>
           <button class="btn btn-primary" onclick="loadUsers()">// ATUALIZAR</button>
         </div>
-        <div id="usersContainer">
-          <div style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">
-            Clique em ATUALIZAR para carregar as contas
-          </div>
+        <div style="overflow-x:auto">
+          <table id="userkeysTable" style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead>
+              <tr style="background:#0a0202">
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">KEY</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">TIPO</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">CONTA VINCULADA</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EMAIL</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">STATUS</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">HWID</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">EXPIRA</th>
+                <th style="padding:10px 12px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text2);border-bottom:1px solid #1a0508">AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody id="userkeysBody">
+              <tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Clique em ATUALIZAR para carregar</td></tr>
+            </tbody>
+          </table>
         </div>
+        <div id="userkeysCount" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px;text-align:right"></div>
       </div>
 
       <!-- Modal de notificação manual -->
@@ -608,60 +630,121 @@ async function quickRevoke(keyStr, reason = 'removed-key') {
 
 // ── KEYS LOGIN ─────────────────────────────────────────
 async function loadUsers() {
-  const container = document.getElementById('usersContainer');
-  container.innerHTML = '<div style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Carregando...</div>';
+  const tbody = document.getElementById('userkeysBody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Carregando...</td></tr>';
   try {
     const r    = await fetch(`${API}/register?action=list&token=${adminApiKey}`);
     const data = await r.json();
-    if (!data.success) { container.innerHTML = '<div style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro ao carregar: ' + (data.error || '') + '</div>'; return; }
-    users = data.users || [];
+    users = data.success ? (data.users || []) : [];
     renderUsers();
   } catch (e) {
-    container.innerHTML = '<div style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro de rede: ' + e.message + '</div>';
+    if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="color:var(--red3);font-family:var(--mono);font-size:11px;text-align:center;padding:20px">Erro: ${e.message}</td></tr>`;
   }
 }
 
 function renderUsers() {
-  const container = document.getElementById('usersContainer');
-  const q = (document.getElementById('userFilter')?.value || '').toLowerCase();
-  let list = users.filter(u => !q || u.email.includes(q) || (u.name || '').toLowerCase().includes(q));
+  const tbody = document.getElementById('userkeysBody');
+  if (!tbody) return;
 
-  if (!list.length) {
-    container.innerHTML = '<div style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhuma conta registrada ainda</div>';
+  const q    = (document.getElementById('userFilter')?.value || '').toLowerCase();
+  const fs   = document.getElementById('userFilterStatus')?.value || 'all';
+
+  // Combina todas as keys com dados de conta (se vinculada)
+  let combined = keys.map(k => {
+    const account = users.find(u => u.key === k.key);
+    return { ...k, account: account || null };
+  });
+
+  // Filtros
+  combined = combined.filter(item => {
+    if (fs === 'linked'   && !item.account) return false;
+    if (fs === 'unlinked' &&  item.account) return false;
+    if (fs === 'valid'    && !item.valid)   return false;
+    if (fs === 'revoked'  &&  item.valid)   return false;
+    if (q) {
+      const keyMatch     = item.key.toLowerCase().includes(q);
+      const emailMatch   = (item.account?.email || '').toLowerCase().includes(q);
+      const nameMatch    = (item.account?.name  || '').toLowerCase().includes(q);
+      const userMatch    = (item.user || '').toLowerCase().includes(q);
+      if (!keyMatch && !emailMatch && !nameMatch && !userMatch) return false;
+    }
+    return true;
+  });
+
+  const countEl = document.getElementById('userkeysCount');
+  if (countEl) countEl.textContent = `// ${combined.length} resultado(s) — ${users.length} conta(s) registrada(s) de ${keys.length} key(s) total`;
+
+  if (!combined.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:30px">Nenhum resultado encontrado</td></tr>';
     return;
   }
 
-  container.innerHTML = list.map(u => {
-    const initials = (u.name || u.email).substring(0, 2).toUpperCase();
-    const keyData  = keys.find(k => k.key === u.key);
-    const keyValid = keyData ? keyData.valid : false;
-    const keyType  = u.keyType || 'free';
-    return `
-      <div class="user-card">
-        <div class="user-avatar">${initials}</div>
-        <div class="user-info">
-          <div class="user-name">${u.name || '—'}</div>
-          <div class="user-email">${u.email}</div>
-          <div class="user-key">${shortKey(u.key)} &nbsp;<span class="pill ${keyType === 'premium' ? 'pill-premium' : 'pill-free'}">${keyType.toUpperCase()}</span> &nbsp;<span class="pill ${keyValid ? 'pill-valid' : 'pill-invalid'}">${keyValid ? 'VÁLIDA' : 'REVOGADA'}</span></div>
-        </div>
-        <div class="user-actions">
-          <button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${u.key}')">RESET HWID</button>
-          <button class="btn btn-danger btn-sm" onclick="quickRevoke('${u.key}', 'removed-key')">REMOVE KEY</button>
-          <button class="btn btn-sm" style="background:rgba(153,68,255,.2);border:1px solid rgba(153,68,255,.3);color:var(--purple)" onclick="quickRevoke('${u.key}', 'reset-key')">RESET KEY</button>
-          <button class="copy-btn" onclick="copyText('${u.key}')">COPIAR KEY</button>
-        </div>
-      </div>
-    `;
+  tbody.innerHTML = combined.map(item => {
+    const acc     = item.account;
+    const typePill = `<span class="pill ${item.type === 'premium' ? 'pill-premium' : 'pill-free'}">${item.type.toUpperCase()}</span>`;
+    const statusPill = item.valid
+      ? '<span class="pill pill-valid">VÁLIDA</span>'
+      : '<span class="pill pill-invalid">REVOGADA</span>';
+    const hwidCell = item.hwid
+      ? '<span class="pill pill-used" title="' + item.hwid + '">VINCULADO</span>'
+      : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
+
+    const nameCell = acc
+      ? `<span style="color:white;font-weight:bold">${acc.name || '—'}</span>`
+      : `<span style="color:var(--text3);font-family:var(--mono);font-size:10px">Sem conta</span>`;
+    const emailCell = acc
+      ? `<span style="color:var(--text2);font-size:11px">${acc.email}</span>`
+      : `<span style="color:var(--text3);font-size:10px">—</span>`;
+
+    const expiryCell = item.expiry && item.expiry !== 'Ilimitado'
+      ? `<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">${item.expiry}</span>`
+      : `<span style="color:var(--green2);font-size:10px;font-family:var(--mono)">Ilimitado</span>`;
+
+    const notifEmail = acc ? acc.email : '';
+    const actions = `
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${item.key}','${notifEmail}')">RESET HWID</button>` : ''}
+        ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevokeUser('${item.key}','removed-key','${notifEmail}')">REMOVE KEY</button>` : ''}
+        ${item.valid ? `<button class="btn btn-sm" style="background:rgba(153,68,255,.2);border:1px solid rgba(153,68,255,.3);color:var(--purple)" onclick="quickRevokeUser('${item.key}','reset-key','${notifEmail}')">RESET KEY</button>` : ''}
+        <button class="copy-btn" onclick="copyText('${item.key}')">COPIAR KEY</button>
+      </div>`;
+
+    return `<tr style="border-bottom:1px solid #120305">
+      <td style="padding:10px 12px;font-family:var(--mono);font-size:11px;color:${item.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">
+        <span title="${item.key}" style="cursor:help">${shortKey(item.key)}</span>
+      </td>
+      <td style="padding:10px 12px">${typePill}</td>
+      <td style="padding:10px 12px">${nameCell}</td>
+      <td style="padding:10px 12px">${emailCell}</td>
+      <td style="padding:10px 12px">${statusPill}</td>
+      <td style="padding:10px 12px">${hwidCell}</td>
+      <td style="padding:10px 12px">${expiryCell}</td>
+      <td style="padding:10px 12px">${actions}</td>
+    </tr>`;
   }).join('');
 }
 
-async function resetHWIDFromUser(keyStr) {
-  document.getElementById('hwidResetInput').value = keyStr;
+async function resetHWIDFromUser(keyStr, email) {
   try {
     const r    = await fetch(`${API}/reset-hwid?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}`);
     const data = await r.json();
-    if (data.success) { showAlert('notifAlert', 'ok', 'HWID resetado. Usuário notificado.'); await loadAllKeys(); renderUsers(); }
-    else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
+    if (data.success) {
+      showAlert('notifAlert', 'ok', 'HWID resetado.' + (email ? ' Usuário notificado.' : ''));
+      await loadAllKeys();
+      renderUsers();
+    } else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
+  } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
+}
+
+async function quickRevokeUser(keyStr, reason, email) {
+  try {
+    const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}&reason=${reason}`);
+    const data = await r.json();
+    if (data.success) {
+      showAlert('notifAlert', 'ok', 'Key ' + (reason === 'removed-key' ? 'removida' : 'resetada') + '.' + (email ? ' Usuário notificado.' : ''));
+      await loadAllKeys();
+      renderUsers();
+    } else showAlert('notifAlert', 'err', 'Erro: ' + (data.error || ''));
   } catch (e) { showAlert('notifAlert', 'err', 'Erro de rede: ' + e.message); }
 }
 
