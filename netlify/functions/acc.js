@@ -405,5 +405,64 @@ exports.handler = async (event, context) => {
     }
   }
 
+  // ── GET ?action=search&q=... — busca pública de contas (por email ou nome) ─
+  // Retorna apenas dados PÚBLICOS (sem hash, sem hwid, sem key real, sem notifs).
+  // Usado pelo app para encontrar amigos que estão registrados na API.
+  if (action === 'search' && event.httpMethod === 'GET') {
+    const q = (p.q || '').toLowerCase().trim();
+    if (!q || q.length < 2) return res({ error: 'QUERY_TOO_SHORT' }, 400);
+
+    try {
+      const accStore = getAccStore();
+      const idxRaw   = await accStore.get('__index__').catch(() => null);
+      const idx      = idxRaw ? JSON.parse(idxRaw) : [];
+      const matches  = [];
+
+      for (const email of idx) {
+        const raw = await accStore.get('acc:' + email).catch(() => null);
+        if (!raw) continue;
+        const a = JSON.parse(raw);
+        const nameLow  = (a.name  || '').toLowerCase();
+        const emailLow = (a.email || '').toLowerCase();
+
+        if (emailLow === q || nameLow === q
+            || emailLow.includes(q) || nameLow.includes(q)) {
+          matches.push({
+            email: a.email,
+            name:  a.name,
+            keyType: a.keyType || null
+            // NUNCA expor passwordHash, key, hwid, notifications
+          });
+        }
+        if (matches.length >= 25) break;
+      }
+
+      return res({ success: true, count: matches.length, results: matches });
+    } catch (e) {
+      return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
+    }
+  }
+
+  // ── GET ?action=lookup&email=... — busca direta de UMA conta (público) ──
+  // Igual a "get" mas sem precisar de admin token. Retorna só dados públicos.
+  if (action === 'lookup' && event.httpMethod === 'GET') {
+    const email = (p.email || '').toLowerCase().trim();
+    if (!email) return res({ error: 'EMAIL_REQUIRED' }, 400);
+    try {
+      const accStore = getAccStore();
+      const raw = await accStore.get('acc:' + email).catch(() => null);
+      if (!raw) return res({ error: 'ACCOUNT_NOT_FOUND' }, 404);
+      const a = JSON.parse(raw);
+      return res({
+        success: true,
+        email:   a.email,
+        name:    a.name,
+        keyType: a.keyType || null
+      });
+    } catch (e) {
+      return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
+    }
+  }
+
   return res({ error: 'UNKNOWN_ACTION' }, 400);
 };
