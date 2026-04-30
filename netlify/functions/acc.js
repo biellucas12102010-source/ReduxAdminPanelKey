@@ -354,5 +354,56 @@ exports.handler = async (event, context) => {
     }
   }
 
+  // ── POST ?action=session — salva sessão de login (por máquina/HWID) ───
+  if (action === 'session' && event.httpMethod === 'POST') {
+    const email    = (p.email || '').toLowerCase().trim();
+    const hwid     = (p.hwid || '').trim();
+    const sessionData = (p.data || '');  // JSON string com dados da sessão
+    if (!email || !hwid || !sessionData) return res({ error: 'FIELDS_REQUIRED: email, hwid, data' }, 400);
+
+    try {
+      const accStore = getAccStore();
+      // Salva sessão associada ao HWID
+      await accStore.set('session:' + hwid, JSON.stringify({
+        email,
+        data: JSON.parse(sessionData),
+        savedAt: new Date().toISOString()
+      }));
+      return res({ success: true, message: 'Session saved' });
+    } catch (e) {
+      return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
+    }
+  }
+
+  // ── GET ?action=session — recupera sessão por HWID ────────────────────
+  if (action === 'session' && event.httpMethod === 'GET') {
+    const hwid = (p.hwid || '').trim();
+    if (!hwid) return res({ error: 'HWID_REQUIRED' }, 400);
+
+    try {
+      const accStore = getAccStore();
+      const raw = await accStore.get('session:' + hwid).catch(() => null);
+      if (!raw) return res({ success: false, message: 'No session found' });
+      const session = JSON.parse(raw);
+      return res({ success: true, session });
+    } catch (e) {
+      return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
+    }
+  }
+
+  // ── DELETE ?action=session — remove sessão por HWID ───────────────────
+  if (action === 'session' && event.httpMethod === 'DELETE') {
+    const hwid = (p.hwid || '').trim();
+    if (!hwid) return res({ error: 'HWID_REQUIRED' }, 400);
+
+    try {
+      const accStore = getAccStore();
+      await accStore.delete('session:' + hwid).catch(() => {});
+      return res({ success: true, message: 'Session deleted' });
+    } catch (e) {
+      return res({ error: 'SERVER_ERROR', detail: e.message }, 500);
+    }
+  }
+
   return res({ error: 'UNKNOWN_ACTION' }, 400);
 };

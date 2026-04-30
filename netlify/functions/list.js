@@ -97,10 +97,14 @@ exports.handler = async (event, context) => {
             hwid:         entry.hwid || null,
             user:         acc ? (acc.name || acc.email) : (entry.user || 'Anonymous'),
             email:        acc ? acc.email : null,
+            accountName:  acc ? (acc.name || null) : null,
             created:      entry.created,
             expiry:       entry.expiry,
             daysOnFirstUse: entry.daysOnFirstUse ?? null,
-            hasAccount:   !!acc
+            hasAccount:   !!acc,
+            deletedVia:   entry.deletedVia || null,
+            revokedAt:    entry.revokedAt  || null,
+            deletedAt:    entry.deletedAt  || null
           });
         }
       } catch {}

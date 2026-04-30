@@ -171,7 +171,9 @@ tr:hover td{background:rgba(204,34,51,.04)}
     <div class="tab"        onclick="switchTab('generate')">Gerar Key</div>
     <div class="tab"        onclick="switchTab('validate')">Validar Key</div>
     <div class="tab"        onclick="switchTab('keys')">Todas as Keys</div>
-    <div class="tab"        onclick="switchTab('userkeys')">Keys Login</div>
+    <div class="tab"        onclick="switchTab('userkeys')">Keys Logadas</div>
+    <div class="tab"        onclick="switchTab('revoked')">Keys Revogadas</div>
+    <div class="tab"        onclick="switchTab('deleted')">Keys Excluídas</div>
     <div class="tab"        onclick="switchTab('accounts')">Contas</div>
     <div class="tab"        onclick="switchTab('hwid')">HWID</div>
     <div class="tab"        onclick="switchTab('api')">API</div>
@@ -312,6 +314,52 @@ tr:hover td{background:rgba(204,34,51,.04)}
             <tbody id="allKeysTable"><tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key gerada ainda</td></tr></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- KEYS REVOGADAS -->
+    <div class="panel" id="panel-revoked">
+      <div class="card">
+        <div class="card-title">Keys Revogadas Permanentemente</div>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
+          // Keys revogadas pelo admin através do botão REVOGAR.<br>
+          // Estas keys foram permanentemente desativadas (active=false).<br>
+          // Não podem ser reativadas — usuários precisam de novas keys.
+        </p>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input type="text" id="revokedFilter" placeholder="Buscar key revogada..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderRevokedKeys()"/>
+          <button class="btn btn-primary" onclick="renderRevokedKeys()">// ATUALIZAR</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário/Email</th><th>HWID</th><th>Revogada em</th></tr></thead>
+            <tbody id="revokedTable"><tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key revogada</td></tr></tbody>
+          </table>
+        </div>
+        <div id="revokedCount" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px;text-align:right"></div>
+      </div>
+    </div>
+
+    <!-- KEYS EXCLUÍDAS -->
+    <div class="panel" id="panel-deleted">
+      <div class="card">
+        <div class="card-title">Keys Excluídas (Exclusão em Massa)</div>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
+          // Keys excluídas através do botão "REMOVER SELECIONADAS" em Keys Logadas.<br>
+          // Estas keys também foram permanentemente desativadas.<br>
+          // Diferente de "Revogadas" apenas para organização — ambas estão inativas.
+        </p>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input type="text" id="deletedFilter" placeholder="Buscar key excluída..." style="background:#0a0202;border:1px solid #2a0a10;border-radius:7px;color:white;padding:8px 12px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:180px" oninput="renderDeletedKeys()"/>
+          <button class="btn btn-primary" onclick="renderDeletedKeys()">// ATUALIZAR</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Tipo</th><th>Usuário/Email</th><th>HWID</th><th>Excluída em</th></tr></thead>
+            <tbody id="deletedTable"><tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key excluída</td></tr></tbody>
+          </table>
+        </div>
+        <div id="deletedCount" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px;text-align:right"></div>
       </div>
     </div>
 
@@ -484,10 +532,12 @@ const ADMIN_EMAIL     = 'RBXexploit@gmail.com';
 const ADMIN_PASS      = 'RBX1#';
 const ADMIN_API_TOKEN = 'redux-admin-secret';
 
-let keys     = [];
-let users    = [];
-let accounts = [];
-let lastKey  = '';
+let keys        = [];
+let revokedKeys = [];  // Keys com active=false (revogadas permanentemente)
+let deletedKeys = [];  // Keys excluídas via exclusão em massa
+let users       = [];
+let accounts    = [];
+let lastKey     = '';
 let adminApiKey = ADMIN_API_TOKEN;
 const API = window.location.origin + '/api';
 
@@ -515,11 +565,13 @@ function doLogout() {
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 // ── TABS ───────────────────────────────────────────────
-const TAB_IDS = ['dashboard','generate','validate','keys','userkeys','accounts','hwid','api'];
+const TAB_IDS = ['dashboard','generate','validate','keys','userkeys','revoked','deleted','accounts','hwid','api'];
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', TAB_IDS[i] === name));
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
   if (name === 'keys')      renderAllKeys();
+  if (name === 'revoked')   renderRevokedKeys();
+  if (name === 'deleted')   renderDeletedKeys();
   if (name === 'hwid')      renderHWID();
   if (name === 'dashboard') updateStats();
   if (name === 'userkeys')  loadUsers();
@@ -577,9 +629,15 @@ async function revokeKey(reason = 'removed-key') {
     const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(val)}&reason=${reason}`);
     const data = await r.json();
     if (data.success) {
-      showAlert('checkAlert', 'ok', reason === 'removed-key' ? 'Key revogada. Usuário notificado.' : 'Key suspensa. Usuário notificado.');
+      showAlert('checkAlert', 'ok', reason === 'removed-key' ? 'Key revogada e movida para "Keys Revogadas". Usuário notificado.' : 'Key suspensa. Usuário notificado.');
       document.getElementById('keyDetailBox').style.display = 'none';
-      await loadAllKeys(); updateStats(); renderAllKeys(); renderHWID();
+      await loadAllKeys();
+      updateStats();
+      renderAllKeys();
+      renderHWID();
+      renderRevokedKeys();
+      renderDeletedKeys();
+      renderUsers();
     } else { showAlert('checkAlert', 'err', 'Erro: ' + (data.error || '')); }
   } catch (e) { showAlert('checkAlert', 'err', 'Erro de rede: ' + e.message); }
 }
@@ -607,15 +665,14 @@ async function quickRevoke(keyStr, reason = 'removed-key') {
     const r    = await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(keyStr)}&reason=${reason}`);
     const data = await r.json();
     if (data.success) {
-      if (reason === 'removed-key') {
-        // Remove imediatamente do array local — a key some da tela
-        keys = keys.filter(k => k.key !== keyStr);
-      } else {
-        // Suspensa: apenas marca como suspended
-        const k = keys.find(k => k.key === keyStr);
-        if (k) { k.suspended = true; }
-      }
-      updateStats(); renderAllKeys(); renderHWID(); renderUsers();
+      // Recarrega tudo do servidor para garantir consistência entre as abas
+      await loadAllKeys();
+      updateStats();
+      renderAllKeys();
+      renderHWID();
+      renderUsers();
+      renderRevokedKeys();
+      renderDeletedKeys();
     } else showAlert('checkAlert', 'err', 'Erro: ' + (data.error || ''));
   } catch (e) { console.error(e); }
 }
@@ -662,13 +719,14 @@ async function bulkDeleteSelected() {
   let done = 0;
   for (const k of keyList) {
     try {
-      await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(k)}&reason=removed-key`);
+      // reason=bulk-delete → vai para a tab "Keys Excluídas"
+      await fetch(`${API}/revoke?token=${adminApiKey}&key=${encodeURIComponent(k)}&reason=bulk-delete`);
       done++;
     } catch {}
   }
 
-  // Remove do array local imediatamente (sem esperar reload)
-  keys = keys.filter(k => !keyList.includes(k.key));
+  // Recarrega do servidor para refletir o estado correto (Keys Excluídas)
+  await loadAllKeys();
 
   document.getElementById('bulkDeleteBtn').textContent = `🗑 REMOVER SELECIONADAS`;
   document.getElementById('bulkDeleteBtn').disabled = false;
@@ -679,7 +737,10 @@ async function bulkDeleteSelected() {
 
   renderUsers();
   updateStats();
-  showAlert('notifAlert', 'ok', `${done} key(s) removida(s) com sucesso.`);
+  renderAllKeys();
+  renderRevokedKeys();
+  renderDeletedKeys();
+  showAlert('notifAlert', 'ok', `${done} key(s) excluída(s) com sucesso. Veja em "Keys Excluídas".`);
 }
 
 function renderUsers() {
@@ -884,7 +945,7 @@ function renderRecent() {
   const tb    = document.getElementById('recentTable');
   const slice = keys.slice(0, 8);
   if (!slice.length) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key ainda</td></tr>'; return; }
-  tb.innerHTML = slice.map(k => rowHtml(k, 6)).join('');
+  tb.innerHTML = slice.map(k => rowHtmlAllKeys(k, 6)).join('');
 }
 
 function renderAllKeys() {
@@ -897,26 +958,121 @@ function renderAllKeys() {
     if (fs === 'valid'     && (!k.valid || k.suspended)) return false;
     if (fs === 'suspended' && (!k.suspended || !k.valid)) return false;
     if (fs === 'revoked'   &&  k.valid) return false;
-    if (q && !k.key.toLowerCase().includes(q) && !(k.user || '').toLowerCase().includes(q) && !(k.email || '').toLowerCase().includes(q)) return false;
+    if (q && !k.key.toLowerCase().includes(q) && !(k.user || '').toLowerCase().includes(q) && !(k.email || '').toLowerCase().includes(q) && !(k.accountName || '').toLowerCase().includes(q)) return false;
     return true;
   });
   if (!list.length) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Nenhum resultado</td></tr>'; return; }
-  tb.innerHTML = list.map(k => rowHtml(k, 7)).join('');
+  tb.innerHTML = list.map(k => rowHtmlAllKeys(k, 7)).join('');
 }
 
 function renderHWID() {
   const tb   = document.getElementById('hwidTable');
   const list = keys.filter(k => k.hwid);
   if (!list.length) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhum HWID vinculado ainda</td></tr>'; return; }
-  tb.innerHTML = list.map(k => `
+  tb.innerHTML = list.map(k => {
+    const accountName = k.accountName || (k.email ? k.email.split('@')[0] : null);
+    const userLabel = accountName
+      ? `<span style="color:white;font-weight:600">${accountName}</span><br><span style="color:var(--text2);font-size:10px">${k.email || k.user || ''}</span>`
+      : `<span style="color:var(--text2)">${k.email || k.user || 'Anonymous'}</span>`;
+    return `
     <tr>
       <td style="color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">${shortKey(k.key)}</td>
       <td><span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span></td>
-      <td style="color:var(--text2)">${k.email ? k.email : k.user}</td>
+      <td>${userLabel}</td>
       <td><span class="hwid-tag">${k.hwid}</span></td>
       <td><button class="btn btn-gold btn-sm" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button></td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
+}
+
+// ── KEYS REVOGADAS ─────────────────────────────────────
+function renderRevokedKeys() {
+  const tb = document.getElementById('revokedTable');
+  const q  = (document.getElementById('revokedFilter')?.value || '').toLowerCase();
+  let list = revokedKeys.filter(k => {
+    if (!q) return true;
+    return k.key.toLowerCase().includes(q) || (k.user || '').toLowerCase().includes(q) || (k.email || '').toLowerCase().includes(q);
+  });
+  const countEl = document.getElementById('revokedCount');
+  if (countEl) countEl.textContent = `// ${list.length} key(s) revogada(s)`;
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key revogada</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(k => {
+    const typePill = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
+    const hwidCell = k.hwid ? `<span class="hwid-tag" title="${k.hwid}">${k.hwid.substring(0, 30)}...</span>` : '<span style="color:var(--text3);font-size:10px">—</span>';
+    const userLabel = k.accountName ? `<span style="color:white">${k.accountName}</span><br><span style="color:var(--text2);font-size:10px">${k.email || ''}</span>` : (k.email || k.user || 'Anonymous');
+    return `<tr>
+      <td style="font-family:var(--mono);color:var(--red3)"><span title="${k.key}" style="cursor:help">${shortKey(k.key)}</span></td>
+      <td>${typePill}</td>
+      <td style="color:var(--text2)">${userLabel}</td>
+      <td>${hwidCell}</td>
+      <td style="color:var(--text3)">${k.revokedAt || '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── KEYS EXCLUÍDAS ─────────────────────────────────────
+function renderDeletedKeys() {
+  const tb = document.getElementById('deletedTable');
+  const q  = (document.getElementById('deletedFilter')?.value || '').toLowerCase();
+  let list = deletedKeys.filter(k => {
+    if (!q) return true;
+    return k.key.toLowerCase().includes(q) || (k.user || '').toLowerCase().includes(q) || (k.email || '').toLowerCase().includes(q);
+  });
+  const countEl = document.getElementById('deletedCount');
+  if (countEl) countEl.textContent = `// ${list.length} key(s) excluída(s)`;
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px">Nenhuma key excluída</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(k => {
+    const typePill = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
+    const hwidCell = k.hwid ? `<span class="hwid-tag" title="${k.hwid}">${k.hwid.substring(0, 30)}...</span>` : '<span style="color:var(--text3);font-size:10px">—</span>';
+    const userLabel = k.accountName ? `<span style="color:white">${k.accountName}</span><br><span style="color:var(--text2);font-size:10px">${k.email || ''}</span>` : (k.email || k.user || 'Anonymous');
+    return `<tr>
+      <td style="font-family:var(--mono);color:var(--red3)"><span title="${k.key}" style="cursor:help">${shortKey(k.key)}</span></td>
+      <td>${typePill}</td>
+      <td style="color:var(--text2)">${userLabel}</td>
+      <td>${hwidCell}</td>
+      <td style="color:var(--text3)">${k.deletedAt || '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function rowHtmlAllKeys(k, cols) {
+  const shortK     = shortKey(k.key);
+  const typePill   = `<span class="pill ${k.type === 'premium' ? 'pill-premium' : 'pill-free'}">${k.type.toUpperCase()}</span>`;
+  let statusPill;
+  if (!k.valid)        statusPill = '<span class="pill pill-invalid">REVOGADA</span>';
+  else if (k.suspended) statusPill = '<span class="pill pill-suspended">SUSPENSA</span>';
+  else                  statusPill = '<span class="pill pill-valid">VÁLIDA</span>';
+  const hwidCell = k.hwid ? '<span class="pill pill-used">VINCULADO</span>' : '<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">livre</span>';
+  // Mostra nome da conta se vinculada, senão mostra usuário/email
+  const accountName = k.accountName || (k.email ? k.email.split('@')[0] : null);
+  const userLabel = accountName
+    ? `<span style="color:white;font-weight:600">${accountName}</span><br><span style="color:var(--text2);font-size:10px">${k.email || k.user || ''}</span>`
+    : `<span style="color:var(--text2)">${k.email || k.user || 'Anonymous'}</span>`;
+  if (cols === 6) return `<tr>
+    <td style="font-family:var(--mono);color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}">${shortK}</td>
+    <td>${typePill}</td><td>${userLabel}</td>
+    <td>${statusPill}</td><td>${hwidCell}</td><td style="color:var(--text3)">${k.created}</td>
+  </tr>`;
+  return `<tr>
+    <td style="font-family:var(--mono);color:${k.type === 'premium' ? 'var(--gold)' : 'var(--green2)'}"><span title="${k.key}" style="cursor:help">${shortK}</span></td>
+    <td>${typePill}</td>
+    <td>${userLabel}</td>
+    <td style="color:var(--text3);font-size:10px">${k.expiry}</td>
+    <td>${hwidCell}</td>
+    <td>${statusPill}</td>
+    <td style="display:flex;gap:6px;flex-wrap:wrap;padding:6px 12px">
+      ${k.valid && !k.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${k.key}','reset-key')">RESET KEY</button>` : ''}
+      ${k.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${k.key}','removed-key')">REMOVE KEY</button>` : ''}
+      ${k.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDDirect('${k.key}')">RESET HWID</button>` : ''}
+      <button class="copy-btn" onclick="copyText('${k.key}')">COPIAR</button>
+    </td>
+  </tr>`;
 }
 
 function rowHtml(k, cols) {
@@ -952,30 +1108,61 @@ function rowHtml(k, cols) {
 // ── STATS ──────────────────────────────────────────────
 async function loadAllKeys() {
   try {
-    const r    = await fetch(`${API}/list?token=${adminApiKey}`);
-    const data = await r.json();
-    if (data.success) {
-      keys = data.keys.map(k => ({
-        key:       k.key,
-        type:      k.type || 'free',
-        user:      k.user || 'Anonymous',
-        email:     k.email || null,
-        expiry:    k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
-        valid:     k.active !== false,
-        suspended: k.suspended || false,
-        hwid:      k.hwid || null,
-        created:   k.created ? new Date(k.created).toLocaleString('pt-BR') : '-'
-      }));
+    // Carrega keys + accounts em paralelo para enriquecer nomes
+    const [rKeys, rAcc] = await Promise.allSettled([
+      fetch(`${API}/list?token=${adminApiKey}`).then(r => r.json()),
+      fetch(`${API}/acc?action=list&token=${adminApiKey}`).then(r => r.json())
+    ]);
+
+    const data = (rKeys.status === 'fulfilled') ? rKeys.value : null;
+    if (rAcc.status === 'fulfilled' && rAcc.value.success) {
+      accounts = rAcc.value.accounts || [];
+    }
+
+    if (data && data.success) {
+      const allKeys = data.keys.map(k => {
+        // Procura conta vinculada por key (acc.js tem prioridade)
+        const acc = accounts.find(a => a.key === k.key);
+        const accountName = acc ? (acc.name || acc.email)
+                                : (k.accountName || (k.hasAccount ? k.user : null));
+        const accountEmail = acc ? acc.email : (k.email || null);
+
+        return {
+          key:         k.key,
+          type:        k.type || 'free',
+          user:        k.user || 'Anonymous',
+          email:       accountEmail,
+          accountName: accountName,
+          expiry:      k.expiry ? new Date(k.expiry).toLocaleString('pt-BR') : 'Ilimitado',
+          valid:       k.active !== false,
+          suspended:   k.suspended || false,
+          hwid:        k.hwid || null,
+          created:     k.created ? new Date(k.created).toLocaleString('pt-BR') : '-',
+          revokedAt:   k.revokedAt ? new Date(k.revokedAt).toLocaleString('pt-BR') : null,
+          deletedAt:   k.deletedAt ? new Date(k.deletedAt).toLocaleString('pt-BR') : null,
+          deletedVia:  k.deletedVia || null
+        };
+      });
+
+      // Separa baseado em deletedVia (campo persistido no servidor)
+      // - bulk-delete  → tab "Keys Excluídas"
+      // - revoke (ou keys antigas sem deletedVia) → tab "Keys Revogadas"
+      // - resto (active=true ou suspensa) → tab "Todas as Keys"
+      keys        = allKeys.filter(k => k.valid);
+      revokedKeys = allKeys.filter(k => !k.valid && k.deletedVia !== 'bulk-delete');
+      deletedKeys = allKeys.filter(k => !k.valid && k.deletedVia === 'bulk-delete');
     }
   } catch (e) { console.error('loadAllKeys error:', e); }
 }
 
 function updateStats() {
-  document.getElementById('s-total').textContent   = keys.length;
+  // keys = válidas (e suspensas), revokedKeys = revogadas, deletedKeys = excluídas
+  const totalGenerated = keys.length + revokedKeys.length + deletedKeys.length;
+  document.getElementById('s-total').textContent   = totalGenerated;
   document.getElementById('s-valid').textContent   = keys.filter(k => k.valid && !k.suspended).length;
   document.getElementById('s-premium').textContent = keys.filter(k => k.type === 'premium').length;
   document.getElementById('s-free').textContent    = keys.filter(k => k.type === 'free').length;
-  document.getElementById('s-revoked').textContent = keys.filter(k => !k.valid).length;
+  document.getElementById('s-revoked').textContent = revokedKeys.length + deletedKeys.length;
   document.getElementById('s-hwid').textContent    = keys.filter(k => k.hwid).length;
   renderRecent();
 }

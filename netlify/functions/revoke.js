@@ -96,10 +96,30 @@ exports.handler = async (event, context) => {
 
       return res({ success: true, key, reset: true, suspended: true });
 
-    } else {
-      // REMOVE = revogação permanente
+    } else if (reason === 'bulk-delete') {
+      // BULK DELETE = exclusão em massa (vai para a tab "Keys Excluídas")
       entry.active = false;
       entry.suspended = false;
+      entry.deletedAt = new Date().toISOString();
+      entry.deletedVia = 'bulk-delete';
+      await store.set(key, JSON.stringify(entry));
+
+      await notifyUser(key, 'removed-key',
+        'Sua key foi excluída pelo administrador. Adquira uma nova key para continuar usando o RBX.');
+
+      await logAudit({
+        action: 'revoke', key, user: entry.user || null, ip: getIP(event),
+        result: 'success', detail: 'BULK-DELETE, reason=' + reason
+      });
+
+      return res({ success: true, key, revoked: true, deletedVia: 'bulk-delete' });
+
+    } else {
+      // REMOVE = revogação permanente (vai para a tab "Keys Revogadas")
+      entry.active = false;
+      entry.suspended = false;
+      entry.revokedAt = new Date().toISOString();
+      entry.deletedVia = 'revoke';  // 'revoke' ou 'bulk-delete'
       await store.set(key, JSON.stringify(entry));
 
       await notifyUser(key, 'removed-key',
@@ -110,7 +130,7 @@ exports.handler = async (event, context) => {
         result: 'success', detail: 'REVOGADO, reason=' + reason
       });
 
-      return res({ success: true, key, revoked: true });
+      return res({ success: true, key, revoked: true, deletedVia: 'revoke' });
     }
 
   } catch (e) {
