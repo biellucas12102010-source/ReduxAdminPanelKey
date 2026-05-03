@@ -659,6 +659,12 @@ function switchTab(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
   if (name === 'keys')      renderAllKeys();
   if (name === 'revoked')   renderRevokedKeys();
+  // Fecha dropdowns de renovar ao clicar fora
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.renew-wrap')) {
+      document.querySelectorAll('.renew-wrap div[style*="block"]').forEach(d => d.style.display = 'none');
+    }
+  });
   if (name === 'deleted')   renderDeletedKeys();
   if (name === 'hwid')      renderHWID();
   if (name === 'dashboard') updateStats();
@@ -746,6 +752,37 @@ async function resetHWIDDirect(keyStr) {
   document.getElementById('hwidResetInput').value = keyStr;
   switchTab('validate');
   await resetHWID();
+}
+
+async function renewKey(keyStr, days) {
+  if (!confirm(`Renovar key ${keyStr} por mais ${days === 0 ? 'tempo ilimitado' : days + ' dia(s)'}?`)) return;
+  try {
+    const url = `/api/renew?token=${ADMIN_TOKEN}&key=${encodeURIComponent(keyStr)}&days=${days}`;
+    const r = await fetch(url);
+    const data = await r.json();
+    if (data.success) {
+      showGlobalAlert('ok', `✅ Key renovada! Nova expiração: ${data.expiry || 'Ilimitado'}`);
+      await loadKeys();
+      renderUserKeys();
+    } else {
+      showGlobalAlert('err', `❌ Erro: ${data.error || 'Falha ao renovar'}`);
+    }
+  } catch(e) {
+    showGlobalAlert('err', `❌ ${e.message}`);
+  }
+}
+
+function timeRemaining(expiryStr) {
+  if (!expiryStr || expiryStr === 'Ilimitado') return null;
+  const exp = new Date(expiryStr);
+  if (isNaN(exp)) return null;
+  const diff = exp - Date.now();
+  if (diff <= 0) return { label: 'EXPIRADA', color: 'var(--red2)', expired: true };
+  const days  = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  if (days > 0) return { label: `${days}d ${hours}h`, color: days <= 3 ? 'var(--gold)' : 'var(--green2)', expired: false };
+  const mins = Math.floor((diff % 3600000) / 60000);
+  return { label: `${hours}h ${mins}m`, color: 'var(--gold)', expired: false };
 }
 
 async function quickRevoke(keyStr, reason = 'removed-key') {
@@ -901,16 +938,31 @@ function renderUsers() {
       ? `<span class="pill pill-active" style="font-size:9px">✓ CONTA</span>`
       : `<span class="pill" style="background:rgba(60,20,30,.4);border:1px solid #2a0a10;color:var(--text3);font-size:9px">SEM CONTA</span>`;
 
+    const tr = timeRemaining(item.expiry);
     const expiryCell = item.expiry && item.expiry !== 'Ilimitado'
-      ? `<span style="color:var(--text3);font-size:10px;font-family:var(--mono)">${item.expiry}</span>`
+      ? `<div style="display:flex;flex-direction:column;gap:2px">
+           <span style="color:var(--text3);font-size:10px;font-family:var(--mono)">${new Date(item.expiry).toLocaleString('pt-BR')}</span>
+           ${tr ? `<span style="color:${tr.color};font-size:10px;font-weight:bold;font-family:var(--mono)">${tr.label}</span>` : ''}
+         </div>`
       : `<span style="color:var(--green2);font-size:10px;font-family:var(--mono)">Ilimitado</span>`;
 
-    const safeKey = item.key.replace(/'/g, "\\'");
+    const renewMenu = item.valid && !item.suspended ? `
+      <div style="position:relative;display:inline-block" class="renew-wrap">
+        <button class="btn btn-sm" style="background:rgba(0,180,100,.15);border:1px solid rgba(0,180,100,.3);color:#00b464" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">RENOVAR ▾</button>
+        <div style="display:none;position:absolute;z-index:99;background:#0f0404;border:1px solid #2a0a10;border-radius:8px;padding:6px;min-width:130px;top:110%;left:0;box-shadow:0 4px 20px rgba(0,0,0,.5)">
+          <div onclick="renewKey('${safeKey}',7)"  style="padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text2);border-radius:4px" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background=''">+7 dias</div>
+          <div onclick="renewKey('${safeKey}',30)" style="padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text2);border-radius:4px" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background=''">+30 dias</div>
+          <div onclick="renewKey('${safeKey}',0)"  style="padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--green2);border-radius:4px" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background=''">Ilimitado</div>
+        </div>
+      </div>` : '';
+
+    const safeKey2 = safeKey;
     const actions = `<div style="display:flex;gap:5px;flex-wrap:wrap">
-      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${safeKey}')">RESET HWID</button>` : ''}
-      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${safeKey}','reset-key')">RESET KEY</button>` : ''}
-      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${safeKey}','removed-key')">REMOVE KEY</button>` : ''}
-      <button class="copy-btn" onclick="copyText('${safeKey}')">COPIAR</button>
+      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${safeKey2}')">RESET HWID</button>` : ''}
+      ${renewMenu}
+      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${safeKey2}','reset-key')">RESET KEY</button>` : ''}
+      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${safeKey2}','removed-key')">REMOVE KEY</button>` : ''}
+      <button class="copy-btn" onclick="copyText('${safeKey2}')">COPIAR</button>
     </div>`;
 
     return `<tr style="border-bottom:1px solid #120305">
