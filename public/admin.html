@@ -522,6 +522,94 @@ tr:hover td{background:rgba(204,34,51,.04)}
           </div>
         </div>
       </div>
+
+      <!-- DISCORD BOT INTEGRATION -->
+      <div class="card" style="margin-top:20px">
+        <div class="card-title">Integração com Bot do Discord — Giveaway / Pagamento</div>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:18px">
+          // Use estes códigos no seu bot para gerar keys automaticamente<br>
+          // quando alguém ganhar no giveaway ou quitar o pagamento.
+        </p>
+
+        <!-- PYTHON EXAMPLE -->
+        <div style="margin-bottom:24px">
+          <div style="font-family:var(--head);font-size:13px;color:var(--gold2);margin-bottom:10px">// PYTHON (discord.py)</div>
+          <div class="api-block" style="font-size:10px;line-height:2">
+<span class="c-comment"># pip install aiohttp</span>
+<br><span class="c-key">import</span> aiohttp
+<br><span class="c-key">import</span> asyncio
+<br><br><span class="c-key">API_URL</span> = <span class="c-str">"https://seu-site.netlify.app/api"</span>
+<br><span class="c-key">ADMIN_TOKEN</span> = <span class="c-str">"redux-admin-secret"</span>
+<br><br><span class="c-key">async def</span> <span class="c-val">generate_key</span>(type: str, user: str) -> str:
+<br>&nbsp;&nbsp;<span class="c-comment">"""Gera key automaticamente via API"""</span>
+<br>&nbsp;&nbsp;url = <span class="c-str">f"{API_URL}/generate?token={ADMIN_TOKEN}&type={type}&user={user}"</span>
+<br>&nbsp;&nbsp;<span class="c-key">async with</span> aiohttp.ClientSession() <span class="c-key">as</span> session:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">async with</span> session.get(url) <span class="c-key">as</span> resp:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data = <span class="c-key">await</span> resp.json()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">return</span> data.get(<span class="c-str">"key"</span>, <span class="c-str">""</span>)
+<br><br><span class="c-comment"># No seu bot:</span>
+<br><span class="c-key">@client.event</span>
+<br><span class="c-key">async def</span> <span class="c-val">on_message</span>(message):
+<br>&nbsp;&nbsp;<span class="c-key">if</span> <span class="c-str">"!giveaway"</span> <span class="c-key">in</span> message.content:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;winner = message.author
+<br>&nbsp;&nbsp;&nbsp;&nbsp;key = <span class="c-key">await</span> generate_key(<span class="c-str">"premium"</span>, str(winner))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment"># Envia DM para o vencedor</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;dm = <span class="c-key">await</span> winner.create_dm()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> dm.send(<span class="c-str">f"Parabéns! Você ganhou uma key Premium:\\n\\n```{key}```\\n\\nCopie e use no executor!"</span>)
+<br><br><span class="c-comment"># Para pagamento confirmado:</span>
+<br><span class="c-key">async def</span> <span class="c-val">confirmar_pagamento</span>(user_id, discord_user):
+<br>&nbsp;&nbsp;key = <span class="c-key">await</span> generate_key(<span class="c-str">"premium30"</span>, str(discord_user))
+<br>&nbsp;&nbsp;user = client.get_user(user_id)
+<br>&nbsp;&nbsp;dm = <span class="c-key">await</span> user.create_dm()
+<br>&nbsp;&nbsp;<span class="c-key">await</span> dm.send(<span class="c-str">f"Pagamento confirmado! Sua key Premium 30 dias:\\n\\n```{key}```"</span>)
+          </div>
+        </div>
+
+        <!-- JAVASCRIPT EXAMPLE -->
+        <div>
+          <div style="font-family:var(--head);font-size:13px;color:var(--gold2);margin-bottom:10px">// JAVASCRIPT (discord.js)</div>
+          <div class="api-block" style="font-size:10px;line-height:2">
+<span class="c-comment">// npm install axios</span>
+<br><span class="c-key">const</span> axios = require(<span class="c-str">'axios'</span>);
+<br><br><span class="c-key">const</span> API_URL = <span class="c-str">'https://seu-site.netlify.app/api'</span>;
+<br><span class="c-key">const</span> ADMIN_TOKEN = <span class="c-str">'redux-admin-secret'</span>;
+<br><br><span class="c-key">async function</span> <span class="c-val">generateKey</span>(type, user) {
+<br>&nbsp;&nbsp;<span class="c-key">const</span> res = <span class="c-key">await</span> axios.get(<span class="c-str">`${API_URL}/generate?token=${ADMIN_TOKEN}&type=${type}&user=${encodeURIComponent(user)}`</span>);
+<br>&nbsp;&nbsp;<span class="c-key">return</span> res.data.success ? res.data.key : <span class="c-key">null</span>;
+<br>}
+<br><br><span class="c-comment">// Evento de giveaway (use o seu sistema de sorteio)</span>
+<br>client.on(<span class="c-str">'messageCreate'</span>, async (message) => {
+<br>&nbsp;&nbsp;<span class="c-key">if</span> (message.content === <span class="c-str">'!sortear'</span>) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// Seu código de sorteio aqui...</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">const</span> winner = message.mentions.users.first() || message.author;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">const</span> key = <span class="c-key">await</span> generateKey(<span class="c-str">'premium'</span>, winner.username);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">if</span> (key) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">const</span> dm = <span class="c-key">await</span> winner.createDM();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dm.send(<span class="c-str">`Parabéns! Você ganhou uma key Premium!\\n\\n\\\`\\\`\\\`${key}\\\`\\\`\\\`\\n\\nCopie e use no executor!`</span>);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;}
+<br>});
+<br><br><span class="c-comment">// Função para pagamento confirmado (chame do seu webhook)</span>
+<br><span class="c-key">async function</span> <span class="c-val">confirmarPagamento</span>(discordId, tipoKey = <span class="c-str">'premium30'</span>) {
+<br>&nbsp;&nbsp;<span class="c-key">const</span> user = client.users.cache.get(discordId);
+<br>&nbsp;&nbsp;<span class="c-key">if</span> (!user) <span class="c-key">return</span>;
+<br>&nbsp;&nbsp;<span class="c-key">const</span> key = <span class="c-key">await</span> generateKey(tipoKey, user.username);
+<br>&nbsp;&nbsp;<span class="c-key">if</span> (key) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">const</span> dm = <span class="c-key">await</span> user.createDM();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;dm.send(<span class="c-str">`Pagamento confirmado! Sua key:\\n\\n\\\`\\\`\\\`${key}\\\`\\\`\\\`\\n\\nUse no executor!`</span>);
+<br>&nbsp;&nbsp;}
+<br>}
+<br><br><span class="c-comment">// Exemplo de chamada via webhook de pagamento</span>
+<br>app.post(<span class="c-str">'/webhook/pagamento'</span>, async (req, res) => {
+<br>&nbsp;&nbsp;<span class="c-key">const</span> { discord_id, status } = req.body;
+<br>&nbsp;&nbsp;<span class="c-key">if</span> (status === <span class="c-str">'approved'</span>) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">await</span> confirmarPagamento(discord_id, <span class="c-str">'premium30'</span>);
+<br>&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;res.send(<span class="c-str">'OK'</span>);
+<br>});
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
