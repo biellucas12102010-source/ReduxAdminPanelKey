@@ -939,6 +939,8 @@ function renderUsers() {
       : `<span class="pill" style="background:rgba(60,20,30,.4);border:1px solid #2a0a10;color:var(--text3);font-size:9px">SEM CONTA</span>`;
 
     const tr = timeRemaining(item.expiry);
+    const safeKey = item.key.replace(/'/g, "\\'");
+
     const expiryCell = item.expiry && item.expiry !== 'Ilimitado'
       ? `<div style="display:flex;flex-direction:column;gap:2px">
            <span style="color:var(--text3);font-size:10px;font-family:var(--mono)">${new Date(item.expiry).toLocaleString('pt-BR')}</span>
@@ -956,13 +958,12 @@ function renderUsers() {
         </div>
       </div>` : '';
 
-    const safeKey2 = safeKey;
     const actions = `<div style="display:flex;gap:5px;flex-wrap:wrap">
-      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${safeKey2}')">RESET HWID</button>` : ''}
+      ${item.hwid  ? `<button class="btn btn-gold btn-sm" onclick="resetHWIDFromUser('${safeKey}')">RESET HWID</button>` : ''}
       ${renewMenu}
-      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${safeKey2}','reset-key')">RESET KEY</button>` : ''}
-      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${safeKey2}','removed-key')">REMOVE KEY</button>` : ''}
-      <button class="copy-btn" onclick="copyText('${safeKey2}')">COPIAR</button>
+      ${item.valid && !item.suspended ? `<button class="btn btn-sm btn-purple" onclick="quickRevoke('${safeKey}','reset-key')">RESET KEY</button>` : ''}
+      ${item.valid ? `<button class="btn btn-danger btn-sm" onclick="quickRevoke('${safeKey}','removed-key')">REMOVE KEY</button>` : ''}
+      <button class="copy-btn" onclick="copyText('${safeKey}')">COPIAR</button>
     </div>`;
 
     return `<tr style="border-bottom:1px solid #120305">
