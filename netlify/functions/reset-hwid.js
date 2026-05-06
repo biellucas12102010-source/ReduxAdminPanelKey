@@ -105,6 +105,10 @@ exports.handler = async (event, context) => {
     entry.hwid    = null;
     await store.set(key, JSON.stringify(entry));
 
+    // Remove key-owner nas duas stores para permitir novo cadastro após reset
+    try { const accStore  = getAccStore();  await accStore.delete('key-owner:'  + key).catch(() => {}); } catch {}
+    try { const userStore = getUserStore(); await userStore.delete('key-owner:' + key).catch(() => {}); } catch {}
+
     await notifyUser(key);
 
     await logAudit({
